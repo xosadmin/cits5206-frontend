@@ -199,7 +199,7 @@ class HomeBody extends StatelessWidget {
             },
           ),
         ),
-        SizedBox(height: 20.0),
+        SizedBox(height: 10.0),
         Expanded(
           child: ListView.builder(
             itemCount: listImageUrls.length,
@@ -216,41 +216,57 @@ class HomeBody extends StatelessWidget {
                     // Top part of the card: Image and title/time
                     Container(
                       padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Stack(
                         children: [
-                          // Image
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image.network(
-                              listImageUrls[index],
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Image
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Image.network(
+                                  listImageUrls[index],
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              SizedBox(width: 16.0),
+                              // Title and Time
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      listTitle[index],
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(
+                                      listTime[index],
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(width: 16.0),
-                          // Title and Time
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  listTitle[index],
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  listTime[index],
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
+                          // Settings Icon
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.more_vert),
+                              onPressed: () {
+                                // Handle settings button press
+                                print('Settings pressed for item $index');
+                              },
                             ),
                           ),
                         ],
