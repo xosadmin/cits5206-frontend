@@ -132,30 +132,30 @@ class HomeBody extends StatelessWidget {
   ];
 
   final List<String> listTitle = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
+    'The lazy Genuis',
+    'GriefCasts',
+    'The Sporkful',
+    'Think Biblically',
+    'Choses a Savoir',
+    'Slate Culture',
   ];
 
   final List<String> listTime = [
-    'Time 1',
-    'Time 2',
-    'Time 3',
-    'Time 4',
-    'Time 5',
-    'Time 6',
+    '12 mins Aug 22,2021',
+    '45 mins Aug 19,2021',
+    '1 h 30 mins Aug 19,2021',
+    '38 mins Aug 22,2021',
+    '2 mins Aug 19,2021',
+    '1 h 17 mins Aug 20,2021',
   ];
 
   final List<String> listContent = [
-    'Content 1',
-    'Content 2',
-    'Content 3',
-    'Content 4',
-    'Content 5',
-    'Content 6',
+    'There’s a long-standing legend that an Irish monk was the first European to sail to America....',
+    'This week I’m talking to writer + journalist Natalie Morris about her Dad, who died last summer....',
+    'Does Ratatouille accurately portray restaurant critics? What’s the lamest food trope in cinema? ',
+    'In her years of medical practice as a trauma surgeon, Dr. Katie Butler has seen it all, and also seen .....',
+    'La "sororité" est apparue, dans les milieux féministes, en réaction à la notion de "fraternité", perçue a...',
+    'Just for testing...',
   ];
 
 
@@ -199,7 +199,6 @@ class HomeBody extends StatelessWidget {
             },
           ),
         ),
-        SizedBox(height: 10.0),
         Expanded(
           child: ListView.builder(
             itemCount: listImageUrls.length,

@@ -82,7 +82,7 @@ class _SignInPageState extends State<SignInPage> {
                         _isClicked = false; // 恢复为深蓝色
                       });
                       // 跳转homepage，先用forgot占位
-                      Navigator.pushNamed(context, '/forgot_pwd');
+                      Navigator.pushNamed(context, '/homepage');
                     });
                   },
                   style: ElevatedButton.styleFrom(

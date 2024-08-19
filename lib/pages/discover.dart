@@ -118,19 +118,20 @@ class DiscoverBody extends StatelessWidget {
   ];
 
   final List<String> imageTxt = [
-    'tend 1',
-    'tend 2',
-    'tend 3',
-    'tend 4',
-    'tend 5',
+    'For you',
+    'News',
+    'Culture',
+    'Cryptocurrency',
+    'Education',
   ];
 
   final List<String> cateText = [
-    'cate 1',
-    'cate 2',
-    'cate 3',
-    'cate 4',
-    'cate 5',
+    'The lazy Genuis',
+    'GriefCasts',
+    'The Sporkful',
+    'Think Biblically',
+    'Choses a Savoir',
+    'Slate Culture',
   ];
 
   final List<String> items = [
@@ -151,30 +152,30 @@ class DiscoverBody extends StatelessWidget {
   ];
 
   final List<String> listTitle = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
+    'The lazy Genuis',
+    'GriefCasts',
+    'The Sporkful',
+    'Think Biblically',
+    'Choses a Savoir',
+    'Slate Culture',
   ];
 
   final List<String> listTime = [
-    'Time 1',
-    'Time 2',
-    'Time 3',
-    'Time 4',
-    'Time 5',
-    'Time 6',
+    '12 mins Aug 22,2021',
+    '45 mins Aug 19,2021',
+    '1 h 30 mins Aug 19,2021',
+    '38 mins Aug 22,2021',
+    '2 mins Aug 19,2021',
+    '1 h 17 mins Aug 20,2021',
   ];
 
   final List<String> listContent = [
-    'Content 1',
-    'Content 2',
-    'Content 3',
-    'Content 4',
-    'Content 5',
-    'Content 6',
+    'There’s a long-standing legend that an Irish monk was the first European to sail to America....',
+    'This week I’m talking to writer + journalist Natalie Morris about her Dad, who died last summer....',
+    'Does Ratatouille accurately portray restaurant critics? What’s the lamest food trope in cinema? ',
+    'In her years of medical practice as a trauma surgeon, Dr. Katie Butler has seen it all, and also seen .....',
+    'La "sororité" est apparue, dans les milieux féministes, en réaction à la notion de "fraternité", perçue a...',
+    'Just for testing...',
   ];
 
   @override
@@ -200,7 +201,7 @@ class DiscoverBody extends StatelessWidget {
           ),
           child: TextField(
             style: TextStyle(
-              fontSize: 20.0
+              fontSize: 15.0
             ),
             decoration: InputDecoration(
               hintText: "Search...", // Placeholder text
@@ -253,7 +254,7 @@ class DiscoverBody extends StatelessWidget {
           ),
         ),
         Container(
-          height: 150.0, // Increased height to accommodate text below the cubes
+          height: 100.0, // Increased height to accommodate text below the cubes
           width: MediaQuery.of(context).size.width * 0.9,
           margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
           child: ListView.builder(
@@ -264,12 +265,12 @@ class DiscoverBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center, // Center text and image horizontally
                 children: [
                   Container(
-                    width: 100.0, // Width of each cube
-                    height: 100.0, // Height of each cube
+                    width: 70.0, // Width of each cube
+                    height: 70.0, // Height of each cube
                     margin: EdgeInsets.symmetric(horizontal: 8.0),
                     color: Colors.white,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(5.0),
                       child: Image.network(
                         imageUrls[index], // Load image from the URL
                         fit: BoxFit.cover, // Cover the entire cube
@@ -289,7 +290,6 @@ class DiscoverBody extends StatelessWidget {
             },
           ),
         ),
-        SizedBox(height: 10.0),
         Expanded(
           child: ListView.builder(
             itemCount: listImageUrls.length,
