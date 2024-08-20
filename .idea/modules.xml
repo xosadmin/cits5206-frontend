@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/audiopin_frontend.iml" filepath="$PROJECT_DIR$/audiopin_frontend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/audiopin_frontend_android.iml" filepath="$PROJECT_DIR$/android/audiopin_frontend_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/cits5206-frontend.iml" filepath="$PROJECT_DIR$/.idea/cits5206-frontend.iml" />
     </modules>
   </component>
 </project>

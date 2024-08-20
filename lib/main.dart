@@ -1,8 +1,11 @@
+import 'package:audiopin_frontend/pages/discover.dart';
 import 'package:flutter/material.dart';
 import 'pages/welcome.dart';
 import 'pages/sign_in.dart';
 import 'pages/forgot_pwd.dart';
 import 'pages/verify_mail.dart';
+import 'pages/homepage.dart';
+import 'pages/discover.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +28,8 @@ class MyApp extends StatelessWidget {
         '/sign_in': (context) => SignInPage(),
         '/forgot_pwd': (context) => ForgotPasswordPage(),
         '/verify_mail': (context) => VerifyEmailPage(),
+        '/homepage': (context) => HomePage(),
+        '/discover': (context) => DiscoverPage(),
       }, // set Welcome as the first page of app
     );
   }
