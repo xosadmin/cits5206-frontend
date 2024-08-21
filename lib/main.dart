@@ -1,5 +1,6 @@
 import 'package:audiopin_frontend/pages/discover.dart';
 import 'package:flutter/material.dart';
+import 'pages/get_started.dart';
 import 'pages/welcome.dart';
 import 'pages/sign_in.dart';
 import 'pages/forgot_pwd.dart';
@@ -23,8 +24,9 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(backgroundColor: Colors.white),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Welcome(),
+      home: OnboardingPage(),
       routes: {
+        '/welcome': (context) => Welcome(),
         '/sign_in': (context) => SignInPage(),
         '/forgot_pwd': (context) => ForgotPasswordPage(),
         '/verify_mail': (context) => VerifyEmailPage(),
