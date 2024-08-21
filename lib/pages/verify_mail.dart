@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audiopin_frontend/pages/new_pwd.dart';
 
 class VerifyEmailPage extends StatelessWidget {
   @override
@@ -63,7 +64,10 @@ class VerifyEmailPage extends StatelessWidget {
               // 第三部分：Resend email 链接
               GestureDetector(
                 onTap: () {
-                  // 重发邮件逻辑
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NewPasswordPage()),
+                  ); // 重发邮件逻辑，这里先关联创建新密码页来查看新密码页的布局
                 },
                 child: Text(
                   'Resend email',
