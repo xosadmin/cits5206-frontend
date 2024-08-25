@@ -297,8 +297,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         ),
         SizedBox(height: 4.0),
         Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
+          width: MediaQuery.of(context).size.width * 0.92,
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
@@ -383,6 +383,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
             ),
           ),
         ),
+        SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
             itemCount: listImageUrls.length,

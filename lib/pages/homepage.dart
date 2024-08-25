@@ -247,6 +247,7 @@ class _HomeBodyState extends State<HomeBody>{
             ),
           ),
         ),
+        SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
             itemCount: listImageUrls.length,
