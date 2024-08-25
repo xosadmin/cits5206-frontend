@@ -4,10 +4,10 @@ import 'homepage.dart';
 
 class DiscoverPage extends StatefulWidget  {
   @override
-  _HomePageState createState() => _HomePageState();
+  _DiscoverPageState createState() => _DiscoverPageState();
 }
 
-class _HomePageState extends State<DiscoverPage> {
+class _DiscoverPageState extends State<DiscoverPage> {
 
   int _selectedIndex = 0;
 
@@ -43,7 +43,13 @@ class _HomePageState extends State<DiscoverPage> {
                     'assets/images/image1.jpg'),
               ),
             ),
-            title: Text('Explore'),
+            title: Text(
+              "Explore",
+              style: TextStyle(
+                fontFamily: 'EuclidCircularA',
+                fontSize: 20,
+              ),
+            ),
             centerTitle: true,
             actions: [
               IconButton(
@@ -65,7 +71,7 @@ class _HomePageState extends State<DiscoverPage> {
                   label: 'Feed',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.book),
+                  icon: Icon(Icons.note),
                   label: 'Pins',
                 ),
                 BottomNavigationBarItem(
@@ -73,7 +79,7 @@ class _HomePageState extends State<DiscoverPage> {
                   label: 'Discover',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.file_copy_outlined),
+                  icon: Icon(Icons.collections),
                   label: 'Library',
                 ),
                 BottomNavigationBarItem(
@@ -104,10 +110,23 @@ class _HomePageState extends State<DiscoverPage> {
   }
 }
 
+class DiscoverBody extends StatefulWidget  {
+  @override
+  _DiscoverBodyState createState() => _DiscoverBodyState();
+}
 
 
+class _DiscoverBodyState extends State<DiscoverBody> {
 
-class DiscoverBody extends StatelessWidget {
+  bool _isClickedPlay = false; // To track if the button is clicked
+  List<bool> _isSelectedCate  = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the list with false values indicating no button is selected initially
+    _isSelectedCate = List.generate(imageUrls.length, (index) => false);
+  }
 
   final List<String> imageUrls = [
     'assets/images/image1.jpg',
@@ -117,7 +136,7 @@ class DiscoverBody extends StatelessWidget {
     'assets/images/image1.jpg',
   ];
 
-  final List<String> imageTxt = [
+  final List<String> cateText = [
     'For you',
     'News',
     'Culture',
@@ -125,13 +144,22 @@ class DiscoverBody extends StatelessWidget {
     'Education',
   ];
 
-  final List<String> cateText = [
+  final List<String> imageText = [
     'The lazy Genuis',
     'GriefCasts',
     'The Sporkful',
     'Think Biblically',
     'Choses a Savoir',
     'Slate Culture',
+  ];
+
+  final List<String> imageText2 = [
+    'NBC Radio',
+    'GriefCasts',
+    'New York Times',
+    'Song Explorer',
+    'Choses',
+    'Fat',
   ];
 
   final List<String> items = [
@@ -169,6 +197,15 @@ class DiscoverBody extends StatelessWidget {
     '1 h 17 mins Aug 20,2021',
   ];
 
+  final List<String> listSubtitle = [
+    "Short Stuff: Exploring Irish Monk",
+    "#142 Natalie Morris",
+    "Why Actors Never Actually Eat In Movies",
+    "Glimmers of Grace (with Katie Butler)",
+    "Comment la “sororité” est-elle née ?",
+    "Testing one subtitle"
+  ];
+
   final List<String> listContent = [
     'There’s a long-standing legend that an Irish monk was the first European to sail to America....',
     'This week I’m talking to writer + journalist Natalie Morris about her Dad, who died last summer....',
@@ -178,6 +215,7 @@ class DiscoverBody extends StatelessWidget {
     'Just for testing...',
   ];
 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -186,10 +224,11 @@ class DiscoverBody extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-          height: 30.0,
+          height: 34.0,
           decoration: BoxDecoration(
             color: Colors.white, // Background color of the search bar
-            borderRadius: BorderRadius.circular(10.0), // Rounded corners
+            borderRadius: BorderRadius.circular(3.0), // Rounded corners
+            border: Border.all(color: Colors.grey), // Border color
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -199,23 +238,31 @@ class DiscoverBody extends StatelessWidget {
               ),
             ],
           ),
-          child: TextField(
-            style: TextStyle(
-              fontSize: 15.0
-            ),
-            decoration: InputDecoration(
-              hintText: "Search...", // Placeholder text
-              border: InputBorder.none, // Remove the default border
-              icon: Icon(Icons.search, color: Colors.grey), // Search icon
-            ),
-            onChanged: (value) {
-              // Handle search input changes here
-              print("Search query: $value");
-            },
+          child: Row(
+            children: [
+              Icon(Icons.search, color: Colors.grey, size: 14.0),
+              SizedBox(width: 8.0), // Space between the icon and the text
+              Expanded(
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 12.0, // Adjusted font size
+                  ),
+                  decoration: InputDecoration(
+                    hintText: "Search for podcasts", // Placeholder text
+                    border: InputBorder.none, // Remove the default border
+                    contentPadding: EdgeInsets.symmetric(vertical: 14.0), // Adjust vertical padding
+                  ),
+                  onChanged: (value) {
+                    // Handle search input changes here
+                    print("Search query: $value");
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         Container(
-          height: 30.0, // Increased height to accommodate text below the cubes
+          height: 20.0, // Increased height to accommodate text below the cubes
           width: MediaQuery.of(context).size.width * 0.9,
           margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
           child: ListView.builder(
@@ -223,71 +270,117 @@ class DiscoverBody extends StatelessWidget {
               itemCount: imageUrls.length,
               itemBuilder: (context, index){
                 return ElevatedButton(
-                  onPressed: (){ print(index + 1);},
+                  onPressed: () {
+                    setState(() {
+                      // Update the selected state for the button
+                      _isSelectedCate = List.generate(imageUrls.length, (i) => i == index);
+                    });
+                    print(index + 1);
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
+                    backgroundColor: _isSelectedCate[index] ? Color(0xFF1D1DD1) : Colors.white,
                     side:BorderSide.none,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // Optional: Make the border rounded
                     ),
                   ),
                   child: Text(
-                      cateText[index],
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15.0,
-                      ),
+                    cateText[index],
+                    style: TextStyle(
+                      color: _isSelectedCate[index] ? Colors.white : Colors.black,
+                      fontSize: 10.0,
+                    ),
                   ),
                 );
               }
-           ),
-        ),
-        // Subscriptions section
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Trending',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ),
+        SizedBox(height: 4.0),
         Container(
-          height: 100.0, // Increased height to accommodate text below the cubes
           width: MediaQuery.of(context).size.width * 0.9,
           margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: imageUrls.length, // Number of subscription cubes
-            itemBuilder: (context, index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center, // Center text and image horizontally
-                children: [
-                  Container(
-                    width: 70.0, // Width of each cube
-                    height: 70.0, // Height of each cube
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                    color: Colors.white,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5.0),
-                      child: Image.network(
-                        imageUrls[index], // Load image from the URL
-                        fit: BoxFit.cover, // Cover the entire cube
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8.0), // Add spacing between the cube and the text
-                  Text(
-                    imageTxt[index], // Text below each cube
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5.0),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x1A282626), // Shadow color with transparency
+                offset: Offset(0, 1), // Horizontal and vertical offsets
+                blurRadius: 4.0, // Blur radius
+                spreadRadius: 0.0, // Spread radius
+              ),
+            ],
+          ),
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Trending',
                     style: TextStyle(
-                      fontSize: 15.0,
+                      fontSize: 14.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              );
-            },
+                ),
+                // Trending Cubes
+                Container(
+                  height: 140.0, // Height of the subscription cubes
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imageUrls.length, // Number of subscription cubes
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center, // Center text and image horizontally
+                        children: [
+                          Container(
+                            width: 64.0, // Width of each cube
+                            height: 64.0, // Height of each cube
+                            margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            color: Colors.white,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5.0),
+                              child: Image.network(
+                                imageUrls[index], // Load image from the URL
+                                fit: BoxFit.cover, // Cover the entire cube
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          Container(
+                            width: 64.0,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  imageText[index], // Existing text
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                                SizedBox(height: 4.0), // Adds space between the texts
+                                Text(
+                                  imageText2[index], // New small text
+                                  style: TextStyle(
+                                    fontSize: 10.0, // Smaller font size for the new text
+                                    color: Colors.black, // Optional: Adjust color if needed
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),// Add spacing between the cube and the text
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 10.0),
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -298,7 +391,7 @@ class DiscoverBody extends StatelessWidget {
                 color: Colors.white,
                 margin: EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,11 +406,11 @@ class DiscoverBody extends StatelessWidget {
                             children: [
                               // Image
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(5.0),
                                 child: Image.network(
                                   listImageUrls[index],
-                                  width: 50,
-                                  height: 50,
+                                  width: 35,
+                                  height: 35,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -330,15 +423,14 @@ class DiscoverBody extends StatelessWidget {
                                     Text(
                                       listTitle[index],
                                       style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(height: 8.0),
                                     Text(
                                       listTime[index],
                                       style: TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
                                     ),
@@ -347,27 +439,30 @@ class DiscoverBody extends StatelessWidget {
                               ),
                             ],
                           ),
-                          // Settings Icon
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: IconButton(
-                              icon: Icon(Icons.more_vert),
-                              onPressed: () {
-                                // Handle settings button press
-                                print('Settings pressed for item $index');
-                              },
-                            ),
-                          ),
                         ],
                       ),
                     ),
                     // Middle part of the card: Content
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        listContent[index],
-                        style: TextStyle(fontSize: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            listSubtitle[index],
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text(
+                            listContent[index],
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     // Bottom part of the card: Buttons
@@ -378,29 +473,34 @@ class DiscoverBody extends StatelessWidget {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              print('Play');
+                              setState(() {
+                                _isClickedPlay = !_isClickedPlay; // Toggle the state on press
+                              });
+                              print(listTitle[index]);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
+                              minimumSize: Size(67.0, 26.0),
                               side: BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0), // Optional: Make the border rounded
+                                borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.play_circle,
+                                  _isClickedPlay ? Icons.check : Icons.play_circle,
                                   color: Color(0xFF1D1DD1),
+                                  size: 10.0,
                                 ),
                                 SizedBox(width: 8.0),
                                 Text(
                                   'Play',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                 )
                               ],
                             ),
@@ -411,12 +511,13 @@ class DiscoverBody extends StatelessWidget {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
+                              minimumSize: Size(111.0, 26.0),
                               side: BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0), // Optional: Make the border rounded
+                                borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
                             child: Row(
@@ -425,11 +526,12 @@ class DiscoverBody extends StatelessWidget {
                                 Icon(
                                   Icons.add,
                                   color: Color(0xFF1D1DD1),
+                                  size: 10.0,
                                 ),
                                 SizedBox(width: 8.0),
                                 Text(
-                                  '',
-                                  style: TextStyle(color: Colors.black),
+                                  'Add to queue',
+                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                 )
                               ],
                             ),
@@ -440,12 +542,13 @@ class DiscoverBody extends StatelessWidget {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
+                              minimumSize: Size(104.0, 26.0),
                               side: BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0), // Optional: Make the border rounded
+                                borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
                             child: Row(
@@ -454,11 +557,12 @@ class DiscoverBody extends StatelessWidget {
                                 Icon(
                                   Icons.download,
                                   color: Color(0xFF1D1DD1),
+                                  size: 10.0,
                                 ),
                                 SizedBox(width: 8.0),
                                 Text(
                                   'Download',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                 )
                               ],
                             ),

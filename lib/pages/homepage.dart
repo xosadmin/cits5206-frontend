@@ -42,7 +42,13 @@ class _HomePageState extends State<HomePage> {
                   'assets/images/image1.jpg'),
             ),
           ),
-          title: Text('My Feed'),
+          title: Text(
+              "My Feed",
+            style: TextStyle(
+              fontFamily: 'EuclidCircularA',
+              fontSize: 20,
+            ),
+          ),
           centerTitle: true,
           actions: [
             IconButton(
@@ -64,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               label: 'Feed',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.book),
+              icon: Icon(Icons.note),
               label: 'Pins',
             ),
             BottomNavigationBarItem(
@@ -72,7 +78,7 @@ class _HomePageState extends State<HomePage> {
               label: 'Discover',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.file_copy_outlined),
+              icon: Icon(Icons.collections),
               label: 'Library',
             ),
             BottomNavigationBarItem(
@@ -103,8 +109,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class HomeBody extends StatefulWidget {
+  @override
+  _HomeBodyState createState() => _HomeBodyState();
+}
 
-class HomeBody extends StatelessWidget {
+class _HomeBodyState extends State<HomeBody>{
+
+  bool _isClickedPlay = false; // To track if the button is clicked
 
   final List<String> imageUrls = [
     'assets/images/image1.jpg',
@@ -149,6 +161,15 @@ class HomeBody extends StatelessWidget {
     '1 h 17 mins Aug 20,2021',
   ];
 
+  final List<String> listSubtitle = [
+    "Short Stuff: Exploring Irish Monk",
+    "#142 Natalie Morris",
+    "Why Actors Never Actually Eat In Movies",
+    "Glimmers of Grace (with Katie Butler)",
+    "Comment la “sororité” est-elle née ?",
+    "Testing one subtitle"
+  ];
+
   final List<String> listContent = [
     'There’s a long-standing legend that an Irish monk was the first European to sail to America....',
     'This week I’m talking to writer + journalist Natalie Morris about her Dad, who died last summer....',
@@ -167,36 +188,63 @@ class HomeBody extends StatelessWidget {
       children: [
         // Subscriptions section
         Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Subscriptions',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
+          width: MediaQuery.of(context).size.width * 0.92,
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5.0),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x1A282626), // Shadow color with transparency
+                offset: Offset(0, 1), // Horizontal and vertical offsets
+                blurRadius: 4.0, // Blur radius
+                spreadRadius: 0.0, // Spread radius
+              ),
+            ],
           ),
-        ),
-        Container(
-          height: 100.0, // Height of the subscription cubes
-          width: MediaQuery.of(context).size.width * 0.9,
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: imageUrls.length, // Number of subscription cubes
-            itemBuilder: (context, index) {
-              return Container(
-                width: 100.0, // Width of each cube
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.white,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Image.network(
-                    imageUrls[index], // Load image from the URL
-                    fit: BoxFit.cover, // Cover the entire cube
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Subscriptions',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              );
-            },
+                // Subscription Cubes
+                Container(
+                  height: 64.0, // Height of the subscription cubes
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imageUrls.length, // Number of subscription cubes
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: 64.0, // Width of each cube
+                        margin: EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.0), // Border radius for the container
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4.0),
+                          child: Image.network(
+                            imageUrls[index], // Load image from the URL
+                            fit: BoxFit.cover, // Cover the entire cube
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 10.0),
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -207,7 +255,7 @@ class HomeBody extends StatelessWidget {
                 color: Colors.white,
                 margin: EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,11 +270,11 @@ class HomeBody extends StatelessWidget {
                             children: [
                               // Image
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(5.0),
                                 child: Image.network(
                                   listImageUrls[index],
-                                  width: 50,
-                                  height: 50,
+                                  width: 35,
+                                  height: 35,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -239,15 +287,14 @@ class HomeBody extends StatelessWidget {
                                     Text(
                                       listTitle[index],
                                       style: TextStyle(
-                                        fontSize: 18.0,
+                                        fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(height: 8.0),
                                     Text(
                                       listTime[index],
                                       style: TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
                                     ),
@@ -256,27 +303,30 @@ class HomeBody extends StatelessWidget {
                               ),
                             ],
                           ),
-                          // Settings Icon
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: IconButton(
-                              icon: Icon(Icons.more_vert),
-                              onPressed: () {
-                                // Handle settings button press
-                                print('Settings pressed for item $index');
-                              },
-                            ),
-                          ),
                         ],
                       ),
                     ),
                     // Middle part of the card: Content
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        listContent[index],
-                        style: TextStyle(fontSize: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            listSubtitle[index],
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text(
+                            listContent[index],
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     // Bottom part of the card: Buttons
@@ -287,29 +337,34 @@ class HomeBody extends StatelessWidget {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                print('Play');
+                                setState(() {
+                                  _isClickedPlay = !_isClickedPlay; // Toggle the state on press
+                                });
+                                print(listTitle[index]);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
+                                minimumSize: Size(67.0, 26.0),
                                 side: BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    Icons.play_circle,
+                                    _isClickedPlay ? Icons.check : Icons.play_circle,
                                     color: Color(0xFF1D1DD1),
+                                    size: 10.0,
                                   ),
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Play',
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -320,12 +375,13 @@ class HomeBody extends StatelessWidget {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
+                                minimumSize: Size(111.0, 26.0),
                                 side: BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: Row(
@@ -334,11 +390,12 @@ class HomeBody extends StatelessWidget {
                                   Icon(
                                     Icons.add,
                                     color: Color(0xFF1D1DD1),
+                                    size: 10.0,
                                   ),
                                   SizedBox(width: 8.0),
                                   Text(
-                                    '',
-                                    style: TextStyle(color: Colors.black),
+                                    'Add to queue',
+                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -349,12 +406,13 @@ class HomeBody extends StatelessWidget {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
+                                minimumSize: Size(104.0, 26.0),
                                 side: BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: Row(
@@ -363,11 +421,12 @@ class HomeBody extends StatelessWidget {
                                   Icon(
                                     Icons.download,
                                     color: Color(0xFF1D1DD1),
+                                    size: 10.0,
                                   ),
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Download',
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
