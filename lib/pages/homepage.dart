@@ -1,6 +1,9 @@
 import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For JSON decoding
 import 'discover.dart';
+import 'preview.dart';
 
 class HomePage extends StatefulWidget  {
   @override
@@ -117,6 +120,12 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody>{
 
   bool _isClickedPlay = false; // To track if the button is clicked
+
+  @override
+  void initState() {
+    super.initState();
+    registerUser(); // Fetch data when the widget is initialized
+  }
 
   final List<String> imageUrls = [
     'assets/images/image1.jpg',
@@ -252,86 +261,98 @@ class _HomeBodyState extends State<HomeBody>{
           child: ListView.builder(
             itemCount: listImageUrls.length,
             itemBuilder: (context, index) {
-              return Card(
-                color: Colors.white,
-                margin: EdgeInsets.all(16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top part of the card: Image and title/time
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Image
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image.network(
-                                  listImageUrls[index],
-                                  width: 35,
-                                  height: 35,
-                                  fit: BoxFit.cover,
+              return InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/preview',
+                    arguments: {
+                      'listtitle': listTitle[index],
+                      'listimageurls': listImageUrls[index],
+                      'listcontent': listContent[index],
+                    },
+                  );
+                },
+                child: Card(
+                  color: Colors.white,
+                  margin: EdgeInsets.all(16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top part of the card: Image and title/time
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Image
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  child: Image.network(
+                                    listImageUrls[index],
+                                    width: 35,
+                                    height: 35,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 16.0),
-                              // Title and Time
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      listTitle[index],
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
+                                SizedBox(width: 16.0),
+                                // Title and Time
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        listTitle[index],
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      listTime[index],
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.grey,
+                                      Text(
+                                        listTime[index],
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Colors.grey,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Middle part of the card: Content
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              listSubtitle[index],
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Middle part of the card: Content
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            listSubtitle[index],
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            listContent[index],
-                            style: TextStyle(
-                              fontSize: 12.0,
+                            SizedBox(height: 4.0),
+                            Text(
+                              listContent[index],
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    // Bottom part of the card: Buttons
-                    Padding(
+                      // Bottom part of the card: Buttons
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: OverflowBar(
                           alignment: MainAxisAlignment.spaceBetween,
@@ -434,8 +455,9 @@ class _HomeBodyState extends State<HomeBody>{
                             ),
                           ],
                         ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -445,6 +467,40 @@ class _HomeBodyState extends State<HomeBody>{
     );
   }
 }
+
+
+Future<void> registerUser() async {
+  final String url = 'https://cits5206.7m7.moe/register'; // API endpoint
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: <String, String>{
+        'username': "admin11",
+        'password': "admin11",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      if (responseData['Status']) {
+        print('Registration successful: ${responseData['userID']}');
+      } else {
+        print('Registration failed: ${responseData['Detailed Info']}');
+      }
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
+
+
 
 
 void main() =>

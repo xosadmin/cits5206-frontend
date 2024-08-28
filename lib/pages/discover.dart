@@ -435,7 +435,23 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                         color: Colors.grey,
                                       ),
                                     ),
+
                                   ],
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return BottomOptions();
+                                      },
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -582,6 +598,44 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   }
 }
 
+class BottomOptions extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Makes the column take up the minimal vertical space
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.block),
+            title: Text('Block show from recommendation'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.thumb_up),
+            title: Text('Show more of shows like this'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.thumb_down),
+            title: Text('Show less of shows like this'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 void main() =>
     runApp(MaterialApp(
