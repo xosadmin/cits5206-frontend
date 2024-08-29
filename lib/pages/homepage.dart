@@ -120,12 +120,26 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody>{
 
   bool _isClickedPlay = false; // To track if the button is clicked
+  List<String> noteIDs = [];
 
   @override
   void initState() {
     super.initState();
-    registerUser(); // Fetch data when the widget is initialized
+    getSubs(); // Fetch data when the widget is initialized
+    getNotes();
+    loadNotes();
+    getNotesDetails(noteIDs);
   }
+
+  void loadNotes() async {
+    List<String> fetchedNoteIDs = await getNotes();
+    setState(() {
+      noteIDs = fetchedNoteIDs;
+    });
+    print('NoteIDs: $noteIDs');  // Debug: Print all NoteIDs
+  }
+
+
 
   final List<String> imageUrls = [
     'assets/images/image1.jpg',
@@ -469,34 +483,114 @@ class _HomeBodyState extends State<HomeBody>{
 }
 
 
-Future<void> registerUser() async {
-  final String url = 'https://cits5206.7m7.moe/register'; // API endpoint
+Future<void> getSubs() async {
+  final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
 
-  try {
+  // Define the payload for the POST request
+  final payload = {
+    'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  // Encode the payload as x-www-form-urlencoded
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  // Send the POST request
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  // Check the response status code
+  if (response.statusCode == 200) {
+    print('Response: ${response.body}');
+  } else {}
+}
+
+Future<List<String>> getNotes() async {
+  final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
+
+  final payload = {
+    'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
+  };
+
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> notesList = jsonDecode(response.body);
+    print(notesList);
+    // Extract and return all NoteID values as a list of strings
+    return notesList.map<String>((note) => note['NoteID'].toString()).toList();
+  } else {
+    return [];
+  }
+}
+
+Future<List<String>> getNotesDetails(List<String> noteIDs) async {
+  final url = Uri.parse('https://cits5206.7m7.moe/getnotedetails');
+  List<String> contents = [];
+
+  for (String noteID in noteIDs) {
+    // Define the payload for the POST request
+    final payload = {
+      'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
+      'noteID': noteID,
+    };
+
+    // Set the headers to specify that the data is x-www-form-urlencoded
+    final headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    // Encode the payload as x-www-form-urlencoded
+    final encodedPayload = payload.entries.map((entry) {
+      return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+    }).join('&');
+
+    // Send the POST request
     final response = await http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: <String, String>{
-        'username': "admin11",
-        'password': "admin11",
-      },
+      url,
+      headers: headers,
+      body: encodedPayload,
     );
 
+    // Check the response status code
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      if (responseData['Status']) {
-        print('Registration successful: ${responseData['userID']}');
+      var noteDetails = jsonDecode(response.body);
+
+      // Assuming "Content" is the key for the content in the response
+      if (noteDetails['Content'] != null) {
+        contents.add(noteDetails['Content']);
       } else {
-        print('Registration failed: ${responseData['Detailed Info']}');
+        print('Content not found for NoteID $noteID');
       }
     } else {
-      print('Request failed with status: ${response.statusCode}');
+      print('Request failed for NoteID $noteID with status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
     }
-  } catch (e) {
-    print('Error: $e');
   }
+
+  print(contents);
+  return contents;
 }
 
 
