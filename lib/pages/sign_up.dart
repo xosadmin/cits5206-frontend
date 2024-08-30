@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:audiopin_frontend/pages/sign_in.dart';
 import 'package:audiopin_frontend/api_service.dart';
 
-class SignInPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _SignInPageState createState() => _SignInPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isFilled = false;
@@ -26,11 +27,31 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
+  // register function related
+  Future<void> _registerUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    //调用API服务进行注册
+    bool success = await ApiService.registerUser(email, password);
+
+    if (success) {
+      //注册成功后跳转到登录页
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => SignInPage()));
+    } else {
+      //处理注册失败的情况
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Registration failed. Please try again.'),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Sign Up'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -76,7 +97,7 @@ class _SignInPageState extends State<SignInPage> {
                     width: 327,
                     child: TextField(
                       controller: passwordController,
-                      obscureText: !_isPasswordVisible,
+                      obscureText: !_isPasswordVisible, //控制密码可见性
                       decoration: InputDecoration(
                         hintText: '**************',
                         border: OutlineInputBorder(),
@@ -99,14 +120,13 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
               SizedBox(height: 20),
-              // Sign In 按钮
+              // Sign up button
               SizedBox(
                 width: 327,
                 child: ElevatedButton(
                   onPressed: _isFilled
-                      ? () {
-                          // 跳转首页，这里用占位页代替
-                          Navigator.pushNamed(context, '/forgot_pwd');
+                      ? () async {
+                          await _registerUser(); //调用注册方法
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
@@ -119,7 +139,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   child: Text(
-                    'Sign in',
+                    'Create a free account',
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(0xFFFFFFFF),
@@ -129,14 +149,26 @@ class _SignInPageState extends State<SignInPage> {
               ),
               SizedBox(height: 10),
               // Forgot Password 链接
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/forgot_pwd');
-                },
-                child: Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: Colors.black),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Already have an account? '),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignInPage()),
+                      );
+                    },
+                    child: Text(
+                      'Sign in',
+                      style: TextStyle(
+                        color: Color(0xFF00008B),
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 260),
               // OR 和分割线
@@ -208,7 +240,7 @@ class _SignInPageState extends State<SignInPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-                    side: BorderSide(color: Color(0xFF6B7680)),
+                    side: BorderSide(color: Color(0XFF6B7680)),
                     padding: EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
