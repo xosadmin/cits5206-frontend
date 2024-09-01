@@ -1,5 +1,7 @@
 import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'discover.dart';
 
@@ -62,7 +64,6 @@ class _PreviewPageState extends State<PreviewPage> {
           body: PreviewBody(
             listtitle: args['listtitle'],
             listimageurls: args['listimageurls'],
-            listcontent: args['listcontent'],
           ),
           bottomNavigationBar: BottomNavigationBar(
               backgroundColor: Color(0xFFFCFCFF),
@@ -115,12 +116,10 @@ class _PreviewPageState extends State<PreviewPage> {
 class PreviewBody extends StatefulWidget {
   final String listtitle;
   final String listimageurls;
-  final String listcontent;
 
   PreviewBody({
     required this.listtitle,
     required this.listimageurls,
-    required this.listcontent,
   });
 
   @override
@@ -130,6 +129,30 @@ class PreviewBody extends StatefulWidget {
 class _PreviewBodyState extends State<PreviewBody>{
 
   bool _isClickedPlay = false;
+  String noteSubtitle = "testingSubtitle";
+  String noteIDs = '';
+  String noteDates = '';
+  String notePodids = '';
+  String noteContents = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getNotesDetails(widget.listtitle);
+    loadDatas();
+  }
+
+  void loadDatas() async {
+
+    List<String> fetchedLists = await getNotesDetails(widget.listtitle);
+    setState(() {
+      noteIDs = fetchedLists[0];
+      noteContents = fetchedLists[1];
+      noteDates = fetchedLists[2];
+      notePodids = fetchedLists[3];
+    });
+    print('$noteIDs $noteContents $noteDates $notePodids');
+  }
 
   final List<String> listImageUrls = [
     'assets/images/image1.jpg',
@@ -197,7 +220,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                       ),
                       SizedBox(height: 4.0),
                       Text(
-                        "testing subtitle",
+                        noteSubtitle,
                         style: TextStyle(
                           fontSize: 14.0,
                           color: Colors.grey,
@@ -265,7 +288,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                   left: 16.0,
                   right: 16.0,
                   child: Text(
-                    widget.listcontent,
+                    noteContents,
                     style: TextStyle(
                       fontSize: 14.0,
                     ),
@@ -278,7 +301,7 @@ class _PreviewBodyState extends State<PreviewBody>{
           SizedBox(height: 16.0), // Space between the container and the column of cards
           Expanded(
             child: ListView.builder(
-              itemCount: 5, // Number of cards
+              itemCount: 1, // Number of cards
               itemBuilder: (context, index) {
                 return Card(
                   color: Colors.white,
@@ -293,7 +316,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                       children: [
                         // Title at the top
                         Text(
-                          'Title $index', // Replace with your dynamic title
+                          notePodids, // Replace with your dynamic title
                           style: TextStyle(
                             fontSize: 12.0,
                             color: Colors.black
@@ -302,7 +325,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                         SizedBox(height: 8.0),
                         // Subtitle in the middle
                         Text(
-                          'Subtitle for item $index', // Replace with your dynamic subtitle
+                          noteDates, // Replace with your dynamic subtitle
                           style: TextStyle(
                             fontSize: 12.0,
                             color: Colors.grey,
@@ -427,7 +450,46 @@ class _PreviewBodyState extends State<PreviewBody>{
       ),
     );
   }
+}
 
+Future<List<String>> getNotesDetails(String noteID) async {
+  final url = Uri.parse('https://cits5206.7m7.moe/notedetails');
+  List<String> res = [];
+
+  // Define the payload for the POST request
+  final payload = {
+    'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
+    'noteID': noteID,
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  // Encode the payload as x-www-form-urlencoded
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  // Send the POST request
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  // Check the response status code
+  if (response.statusCode == 200) {
+      var noteDetails = jsonDecode(response.body);
+      Map<String, dynamic> parsedResponse = jsonDecode(response.body);
+      res.add(parsedResponse["NoteID"]);
+      res.add(parsedResponse["Content"]);
+      res.add(parsedResponse["DateCreated"]);
+      res.add(parsedResponse["PodcastID"]);
+    } else {}
+
+  return res;
 }
 
 void main() =>

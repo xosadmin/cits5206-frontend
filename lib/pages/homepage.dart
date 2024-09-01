@@ -120,23 +120,36 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody>{
 
   bool _isClickedPlay = false; // To track if the button is clicked
+  String imageUrl = 'assets/images/image1.jpg';
+  String noteContent = "Click to view details";
+  List<String> subs = [];
   List<String> noteIDs = [];
+  List<String> noteDates = [];
+  List<String> notePodids = [];
 
   @override
   void initState() {
     super.initState();
     getSubs(); // Fetch data when the widget is initialized
     getNotes();
-    loadNotes();
-    getNotesDetails(noteIDs);
+    loadDatas();
   }
 
-  void loadNotes() async {
-    List<String> fetchedNoteIDs = await getNotes();
+
+  void loadDatas() async {
+    List<String> fetchedSubs = await getSubs();
     setState(() {
-      noteIDs = fetchedNoteIDs;
+      subs = fetchedSubs;
     });
-    print('NoteIDs: $noteIDs');  // Debug: Print all NoteIDs
+    print('$subs');
+
+    List<List<String>> fetchedLists = await getNotes();
+    setState(() {
+      noteIDs = fetchedLists[0];;
+      notePodids = fetchedLists[1];
+      noteDates = fetchedLists[2];
+    });
+    print('$noteIDs $noteDates $notePodids');
   }
 
 
@@ -257,7 +270,7 @@ class _HomeBodyState extends State<HomeBody>{
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4.0),
                           child: Image.network(
-                            imageUrls[index], // Load image from the URL
+                            imageUrl, // Load image from the URL
                             fit: BoxFit.cover, // Cover the entire cube
                           ),
                         ),
@@ -273,7 +286,7 @@ class _HomeBodyState extends State<HomeBody>{
         SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
-            itemCount: listImageUrls.length,
+            itemCount: noteIDs.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
@@ -281,9 +294,8 @@ class _HomeBodyState extends State<HomeBody>{
                     context,
                     '/preview',
                     arguments: {
-                      'listtitle': listTitle[index],
-                      'listimageurls': listImageUrls[index],
-                      'listcontent': listContent[index],
+                      'listtitle': noteIDs[index],
+                      'listimageurls': imageUrl,
                     },
                   );
                 },
@@ -308,7 +320,7 @@ class _HomeBodyState extends State<HomeBody>{
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(5.0),
                                   child: Image.network(
-                                    listImageUrls[index],
+                                    imageUrl,
                                     width: 35,
                                     height: 35,
                                     fit: BoxFit.cover,
@@ -321,14 +333,14 @@ class _HomeBodyState extends State<HomeBody>{
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        listTitle[index],
+                                        noteIDs[index],
                                         style: TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        listTime[index],
+                                        noteDates[index],
                                         style: TextStyle(
                                           fontSize: 12.0,
                                           color: Colors.grey,
@@ -349,7 +361,7 @@ class _HomeBodyState extends State<HomeBody>{
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              listSubtitle[index],
+                              notePodids[index],
                               style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
@@ -357,7 +369,7 @@ class _HomeBodyState extends State<HomeBody>{
                             ),
                             SizedBox(height: 4.0),
                             Text(
-                              listContent[index],
+                              noteContent,
                               style: TextStyle(
                                 fontSize: 12.0,
                               ),
@@ -483,7 +495,8 @@ class _HomeBodyState extends State<HomeBody>{
 }
 
 
-Future<void> getSubs() async {
+Future<List<String>>getSubs() async {
+  List<String> libs = [];
   final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
 
   // Define the payload for the POST request
@@ -510,11 +523,15 @@ Future<void> getSubs() async {
 
   // Check the response status code
   if (response.statusCode == 200) {
-    print('Response: ${response.body}');
-  } else {}
+    List<dynamic> subsList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    return subsList.map<String>((sub) => sub['LibraryID'].toString()).toList();
+  } else {
+    return [];
+  }
 }
 
-Future<List<String>> getNotes() async {
+Future<List<List<String>>> getNotes() async {
   final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
 
   final payload = {
@@ -537,61 +554,62 @@ Future<List<String>> getNotes() async {
 
   if (response.statusCode == 200) {
     List<dynamic> notesList = jsonDecode(response.body);
-    print(notesList);
     // Extract and return all NoteID values as a list of strings
-    return notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
+    //return getNotesDetails(res);
+    return [id, pod, date];
   } else {
     return [];
   }
 }
 
-Future<List<String>> getNotesDetails(List<String> noteIDs) async {
-  final url = Uri.parse('https://cits5206.7m7.moe/getnotedetails');
-  List<String> contents = [];
-
-  for (String noteID in noteIDs) {
-    // Define the payload for the POST request
-    final payload = {
-      'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
-      'noteID': noteID,
-    };
-
-    // Set the headers to specify that the data is x-www-form-urlencoded
-    final headers = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    };
-
-    // Encode the payload as x-www-form-urlencoded
-    final encodedPayload = payload.entries.map((entry) {
-      return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
-    }).join('&');
-
-    // Send the POST request
-    final response = await http.post(
-      url,
-      headers: headers,
-      body: encodedPayload,
-    );
-
-    // Check the response status code
-    if (response.statusCode == 200) {
-      var noteDetails = jsonDecode(response.body);
-
-      // Assuming "Content" is the key for the content in the response
-      if (noteDetails['Content'] != null) {
-        contents.add(noteDetails['Content']);
-      } else {
-        print('Content not found for NoteID $noteID');
-      }
-    } else {
-      print('Request failed for NoteID $noteID with status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
-  }
-
-  print(contents);
-  return contents;
-}
+// Future<List<List<String>>> getNotesDetails(List<String> noteIDs) async {
+//   final url = Uri.parse('https://cits5206.7m7.moe/notedetails');
+//   List<String> contents = [];
+//   List<String> noteids = [];
+//   List<String> dates = [];
+//   List<String> podids = [];
+//
+//   for (String noteID in noteIDs) {
+//     // Define the payload for the POST request
+//     final payload = {
+//       'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
+//       'noteID': noteID,
+//     };
+//
+//     // Set the headers to specify that the data is x-www-form-urlencoded
+//     final headers = {
+//       'Content-Type': 'application/x-www-form-urlencoded',
+//     };
+//
+//     // Encode the payload as x-www-form-urlencoded
+//     final encodedPayload = payload.entries.map((entry) {
+//       return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+//     }).join('&');
+//
+//     // Send the POST request
+//     final response = await http.post(
+//       url,
+//       headers: headers,
+//       body: encodedPayload,
+//     );
+//
+//     // Check the response status code
+//     if (response.statusCode == 200) {
+//       var noteDetails = jsonDecode(response.body);
+//       print('Notes details: ${response.body}');
+//       Map<String, dynamic> parsedResponse = jsonDecode(response.body);
+//       contents.add(parsedResponse["Content"]);
+//       noteids.add(parsedResponse["NoteID"]);
+//       dates.add(parsedResponse["DateCreated"]);
+//       podids.add(parsedResponse["PodcastID"]);
+//
+//     } else {}
+//   }
+//   return [noteids, contents, dates, podids];
+// }
 
 
 
