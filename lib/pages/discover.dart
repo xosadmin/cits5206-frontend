@@ -1,5 +1,7 @@
 import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 
 class DiscoverPage extends StatefulWidget  {
@@ -120,12 +122,30 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
   bool _isClickedPlay = false; // To track if the button is clicked
   List<bool> _isSelectedCate  = [];
+  String imageUrl = 'assets/images/image1.jpg';
+  String noteContent = "Click to view details";
+  List<String> subs = [];
+  List<String> noteIDs = [];
+  List<String> noteDates = [];
+  List<String> notePodids = [];
 
   @override
   void initState() {
     super.initState();
     // Initialize the list with false values indicating no button is selected initially
     _isSelectedCate = List.generate(imageUrls.length, (index) => false);
+    getNotes();
+    loadDatas();
+  }
+
+  void loadDatas() async {
+    List<List<String>> fetchedLists = await getNotes();
+    setState(() {
+      noteIDs = fetchedLists[0];;
+      notePodids = fetchedLists[1];
+      noteDates = fetchedLists[2];
+    });
+    print('$noteIDs $noteDates $notePodids');
   }
 
   final List<String> imageUrls = [
@@ -344,7 +364,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(5.0),
                               child: Image.network(
-                                imageUrls[index], // Load image from the URL
+                                imageUrl, // Load image from the URL
                                 fit: BoxFit.cover, // Cover the entire cube
                               ),
                             ),
@@ -386,7 +406,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
-            itemCount: listImageUrls.length,
+            itemCount: noteIDs.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
@@ -409,7 +429,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(5.0),
                                 child: Image.network(
-                                  listImageUrls[index],
+                                  imageUrl,
                                   width: 35,
                                   height: 35,
                                   fit: BoxFit.cover,
@@ -422,14 +442,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      listTitle[index],
+                                      noteIDs[index],
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      listTime[index],
+                                      noteDates[index],
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
@@ -466,7 +486,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            listSubtitle[index],
+                            notePodids[index],
                             style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
@@ -474,7 +494,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           ),
                           SizedBox(height: 4.0),
                           Text(
-                            listContent[index],
+                            noteContent,
                             style: TextStyle(
                               fontSize: 12.0,
                             ),
@@ -634,6 +654,40 @@ class BottomOptions extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Future<List<List<String>>> getNotes() async {
+  final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
+
+  final payload = {
+    'tokenID': "a65526ec-8f05-4e1e-b3ef-60b6854ae926",
+  };
+
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> notesList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
+    //return getNotesDetails(res);
+    return [id, pod, date];
+  } else {
+    return [];
   }
 }
 
