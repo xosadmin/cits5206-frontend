@@ -8,6 +8,7 @@ import 'pages/verify_mail.dart';
 import 'pages/homepage.dart';
 import 'pages/discover.dart';
 import 'pages/preview.dart';
+import 'pages/episode.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/homepage': (context) => HomePage(),
         '/discover': (context) => DiscoverPage(),
         '/preview': (context) => PreviewPage(),
+        '/episode': (context) => EpisodePage(),
       }, // set Welcome as the first page of app
     );
   }

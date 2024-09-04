@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'discover.dart';
+import 'episode.dart';
 
 class PreviewPage extends StatefulWidget  {
   @override
@@ -301,148 +302,163 @@ class _PreviewBodyState extends State<PreviewBody>{
           SizedBox(height: 16.0), // Space between the container and the column of cards
           Expanded(
             child: ListView.builder(
-              itemCount: 1, // Number of cards
+              itemCount: notePodids.length, // Number of cards
               itemBuilder: (context, index) {
-                return Card(
-                  color: Colors.white,
-                  margin: EdgeInsets.symmetric(vertical: 8.0), // Space between cards
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Title at the top
-                        Text(
-                          notePodids, // Replace with your dynamic title
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.black
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        // Subtitle in the middle
-                        Text(
-                          noteDates, // Replace with your dynamic subtitle
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        SizedBox(height: 16.0),
-                        // Button at the bottom
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: OverflowBar(
-                              alignment: MainAxisAlignment.spaceBetween, // Enable horizontal scrolling if needed
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isClickedPlay = !_isClickedPlay; // Toggle the state on press
-                                    });
-                                    print(listTitle[index]);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    minimumSize: Size(60.0, 26.0),
-                                    side: BorderSide(
-                                      color: Colors.grey, // Set the border color
-                                      width: 0.7, // Set the border width (boldness)
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        _isClickedPlay ? Icons.check : Icons.play_circle,
-                                        color: Color(0xFF1D1DD1),
-                                        size: 10.0,
-                                      ),
-                                      SizedBox(width: 8.0),
-                                      Text(
-                                        'Play',
-                                        style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 8.0), // Add spacing between buttons
-                                ElevatedButton(
-                                  onPressed: () {
-                                    print('Add');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    minimumSize: Size(100.0, 26.0),
-                                    side: BorderSide(
-                                      color: Colors.grey, // Set the border color
-                                      width: 0.7, // Set the border width (boldness)
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.add,
-                                        color: Color(0xFF1D1DD1),
-                                        size: 10.0,
-                                      ),
-                                      SizedBox(width: 8.0),
-                                      Text(
-                                        'Add to queue',
-                                        style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 8.0), // Add spacing between buttons
-                                ElevatedButton(
-                                  onPressed: () {
-                                    print('Download');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    minimumSize: Size(90.0, 26.0),
-                                    side: BorderSide(
-                                      color: Colors.grey, // Set the border color
-                                      width: 0.7, // Set the border width (boldness)
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.download,
-                                        color: Color(0xFF1D1DD1),
-                                        size: 10.0,
-                                      ),
-                                      SizedBox(width: 8.0),
-                                      Text(
-                                        'Download',
-                                        style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                return InkWell(
+                    onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/episode',
+                    arguments: {
+                      'listtitle': noteIDs,
+                      'notepodid': notePodids,
+                      'notedate': noteDates,
+                      'notecontent': noteContents,
+                    },
+                  );
+                },
+                    child: Card(
+                      color: Colors.white,
+                      margin: EdgeInsets.symmetric(vertical: 8.0), // Space between cards
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title at the top
+                            Text(
+                              notePodids, // Replace with your dynamic title
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.black
+                              ),
                             ),
-                          ),
-                      ],
+                            SizedBox(height: 8.0),
+                            // Subtitle in the middle
+                            Text(
+                              noteDates, // Replace with your dynamic subtitle
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            // Button at the bottom
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: OverflowBar(
+                                alignment: MainAxisAlignment.spaceBetween, // Enable horizontal scrolling if needed
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isClickedPlay = !_isClickedPlay; // Toggle the state on press
+                                      });
+                                      print(listTitle[index]);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      minimumSize: Size(60.0, 26.0),
+                                      side: BorderSide(
+                                        color: Colors.grey, // Set the border color
+                                        width: 0.7, // Set the border width (boldness)
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          _isClickedPlay ? Icons.check : Icons.play_circle,
+                                          color: Color(0xFF1D1DD1),
+                                          size: 10.0,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text(
+                                          'Play',
+                                          style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.0), // Add spacing between buttons
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      print('Add');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      minimumSize: Size(100.0, 26.0),
+                                      side: BorderSide(
+                                        color: Colors.grey, // Set the border color
+                                        width: 0.7, // Set the border width (boldness)
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.add,
+                                          color: Color(0xFF1D1DD1),
+                                          size: 10.0,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text(
+                                          'Add to queue',
+                                          style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.0), // Add spacing between buttons
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      print('Download');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      minimumSize: Size(90.0, 26.0),
+                                      side: BorderSide(
+                                        color: Colors.grey, // Set the border color
+                                        width: 0.7, // Set the border width (boldness)
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.download,
+                                          color: Color(0xFF1D1DD1),
+                                          size: 10.0,
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Text(
+                                          'Download',
+                                          style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
                 );
+
               },
             ),
           ),
