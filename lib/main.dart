@@ -1,11 +1,12 @@
-import 'package:audiopin_frontend/pages/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'pages/get_started.dart';
 import 'pages/welcome.dart';
 import 'pages/sign_in.dart';
 import 'pages/sign_up.dart';
+import 'pages/signup_setting.dart';
 import 'pages/forgot_pwd.dart';
 import 'pages/verify_mail.dart';
+import 'pages/signup_setting.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,9 +30,11 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => Welcome(),
         '/sign_in': (context) => SignInPage(),
         '/sign_up': (context) => SignUpPage(),
+        '/signup_setting': (context) => SignUpSetting(),
         '/forgot_pwd': (context) => ForgotPasswordPage(),
         '/verify_mail': (context) => VerifyEmailPage(),
-      }, // set OnboardingPage as the first page of app
+        '/signup_setting': (context) => SignUpSetting(),
+      }, // set Welcome as the first page of app
     );
   }
 }

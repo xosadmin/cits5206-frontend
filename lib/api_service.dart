@@ -17,14 +17,14 @@ class ApiService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['Status'] == true) {
-        // 处理成功登录，例如存储 token
-        print("登录成功，Token: ${data['Token']}");
+        // Process sign in successful and save token
+        print("Sign in successful，Token: ${data['Token']}");
       } else {
-        // 处理登录失败
-        print("登录失败");
+        // Process sign in failed
+        print("Sign in failed");
       }
     } else {
-      print("服务器错误: ${response.statusCode}");
+      print("Server error: ${response.statusCode}");
     }
   }
 
@@ -39,28 +39,28 @@ class ApiService {
             'username=${Uri.encodeComponent(username)}&password=${Uri.encodeComponent(password)}',
       );
 
-      // 打印状态码
+      // print status code
       print('Status Code: ${response.statusCode}');
-      // 打印相应内容
+      // print response body
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = jsonDecode(response.body);
         if (data['Status'] == true) {
-          // 处理成功注册，存储 userID
+          // process registration successful and save userID
           print("Registration successful, user ID: ${data['userID']}");
-          return true; // 注册成功，返回 true
+          return true;
         } else {
           print("Registration failed");
-          return false; // 注册失败，返回 false
+          return false;
         }
       } else {
-        print("服务器错误: ${response.statusCode}");
-        return false; // 服务器错误时返回 false
+        print("Server error: ${response.statusCode}");
+        return false;
       }
     } catch (e) {
-      print("请求失败: $e");
-      return false; // 异常时返回 false
+      print("Request failed: $e");
+      return false;
     }
   }
 

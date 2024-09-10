@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audiopin_frontend/pages/sign_in.dart';
+import 'package:audiopin_frontend/pages/signup_setting.dart';
 import 'package:audiopin_frontend/api_service.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -36,9 +37,9 @@ class _SignUpPageState extends State<SignUpPage> {
     bool success = await ApiService.registerUser(email, password);
 
     if (success) {
-      //注册成功后跳转到登录页
+      //注册成功后跳转到设置页
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SignInPage()));
+          context, MaterialPageRoute(builder: (context) => SignUpSetting()));
     } else {
       //处理注册失败的情况
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
