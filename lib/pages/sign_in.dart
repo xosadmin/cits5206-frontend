@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
   @override
   _SignInPageState createState() => _SignInPageState();
 }
@@ -12,9 +14,9 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -26,7 +28,7 @@ class _SignInPageState extends State<SignInPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -45,8 +47,8 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Column(
+              const SizedBox(height: 20),
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -66,7 +68,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Sign In 按钮
               SizedBox(
                 width: 327,
@@ -77,7 +79,7 @@ class _SignInPageState extends State<SignInPage> {
                     });
 
                     // 延迟200毫秒后跳转页面
-                    Future.delayed(Duration(milliseconds: 120), () {
+                    Future.delayed(const Duration(milliseconds: 120), () {
                       setState(() {
                         _isClicked = false; // 恢复为深蓝色
                       });
@@ -87,14 +89,14 @@ class _SignInPageState extends State<SignInPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isClicked
-                        ? Color(0xFF6B7680) // 变为灰色
-                        : Color(0xFF00008B), // 默认颜色
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                        ? const Color(0xFF6B7680) // 变为灰色
+                        : const Color(0xFF00008B), // 默认颜色
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Sign in',
                     style: TextStyle(
                       fontSize: 16,
@@ -103,24 +105,24 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Forgot Password 链接
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/forgot_pwd');
                 },
-                child: Text(
+                child: const Text(
                   'Forgot Password?',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
-              SizedBox(height: 260),
+              const SizedBox(height: 260),
               // OR 和分割线
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text('OR',
                         style: TextStyle(
                           fontSize: 20,
@@ -129,7 +131,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               // Google 按钮
               SizedBox(
                 width: 327, // 设置按钮的宽度为327
@@ -138,19 +140,19 @@ class _SignInPageState extends State<SignInPage> {
                     // Handle Google sign in action
                   },
                   icon: Image.asset('assets/icons/google.png', height: 24),
-                  label: Text('Sign in with Google'),
+                  label: const Text('Sign in with Google'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-                    side: BorderSide(color: Colors.grey),
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                    side: const BorderSide(color: Colors.grey),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Facebook 按钮
               SizedBox(
                 width: 327, // 设置按钮的宽度为327
@@ -159,19 +161,19 @@ class _SignInPageState extends State<SignInPage> {
                     // Handle Facebook sign in action
                   },
                   icon: Image.asset('assets/icons/facebook.png', height: 24),
-                  label: Text('Sign in with Facebook'),
+                  label: const Text('Sign in with Facebook'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-                    side: BorderSide(color: Colors.grey),
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                    side: const BorderSide(color: Colors.grey),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Apple 按钮
               SizedBox(
                 width: 327, // 设置按钮的宽度为327
@@ -180,12 +182,12 @@ class _SignInPageState extends State<SignInPage> {
                     // Handle Apple sign in action
                   },
                   icon: Image.asset('assets/icons/apple.png', height: 24),
-                  label: Text('Sign in with Apple'),
+                  label: const Text('Sign in with Apple'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-                    side: BorderSide(color: Colors.grey),
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                    side: const BorderSide(color: Colors.grey),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
