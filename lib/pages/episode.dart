@@ -136,7 +136,7 @@ class EpisodeBody extends StatefulWidget {
 
 class _EpisodeBodyState extends State<EpisodeBody>{
 
-  String imageUrl = 'assets/images/image1.jpg';
+  String imageUrl = 'assets/images/note_exp.png';
   bool _isClickedPlay = false; // To track if the button is clicked
   AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;

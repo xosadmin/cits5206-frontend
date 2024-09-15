@@ -129,7 +129,7 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody>{
 
   bool _isClickedPlay = false; // To track if the button is clicked
-  String imageUrl = 'assets/images/image1.jpg';
+  String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
   List<String> subs = [];
   List<String> noteIDs = [];
@@ -164,11 +164,11 @@ class _HomeBodyState extends State<HomeBody>{
 
 
   final List<String> imageUrls = [
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
+    'assets/images/note1.png',
+    'assets/images/note2.png',
+    'assets/images/note3.png',
+    'assets/images/note4.png',
+    'assets/images/note5.png',
   ];
 
   final List<String> items = [
@@ -279,7 +279,7 @@ class _HomeBodyState extends State<HomeBody>{
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4.0),
                           child: Image.network(
-                            imageUrl, // Load image from the URL
+                            imageUrls[index], // Load image from the URL
                             fit: BoxFit.cover, // Cover the entire cube
                           ),
                         ),
