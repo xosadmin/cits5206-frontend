@@ -208,60 +208,64 @@ class _PreviewBodyState extends State<PreviewBody>{
                 Positioned(
                   top: 8.0,
                   left: 8.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Existing Text widgets
-                      Text(
-                        widget.listtitle,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0), // Add padding here
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Existing Text widgets
+                        Text(
+                          widget.listtitle,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 4.0),
-                      Text(
-                        noteSubtitle,
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
+                        SizedBox(height: 4.0),
+                        Text(
+                          noteSubtitle,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 4.0), // Optional: Add spacing between text and the row
-                      // New Row with button and share icon
-                      Row(
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              // Handle button press
-                            },
-                            icon: Icon(Icons.add, size: 16.0), // "+" icon
-                            label: Text("Subscribe"), // "Subscribe" text
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              minimumSize: Size(90.0, 25.0),
-                              side: BorderSide(
-                                color: Colors.grey, // Set the border color
-                                width: 0.7, // Set the border width (boldness)
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0), // Optional: Make the border rounded
+                        SizedBox(height: 4.0), // Optional: Add spacing between text and the row
+                        // New Row with button and share icon
+                        Row(
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                // Handle button press
+                              },
+                              icon: Icon(Icons.add, size: 16.0), // "+" icon
+                              label: Text("Subscribe"), // "Subscribe" text
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                minimumSize: Size(90.0, 25.0),
+                                side: BorderSide(
+                                  color: Colors.grey, // Set the border color
+                                  width: 0.7, // Set the border width (boldness)
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0), // Optional: Make the border rounded
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 16.0), // Space between button and share icon
-                          IconButton(
-                            icon: Icon(Icons.share, size: 16.0,),
-                            color: Colors.blue, // Icon color
-                            onPressed: () {
-                              // Handle share button press
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                            SizedBox(width: 16.0), // Space between button and share icon
+                            IconButton(
+                              icon: Icon(Icons.share, size: 16.0),
+                              color: Colors.blue, // Icon color
+                              onPressed: () {
+                                // Handle share button press
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+
                 // Image in the top right
                 Positioned(
                   top: 8.0,
@@ -330,7 +334,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                           children: [
                             // Title at the top
                             Text(
-                              notePodids, // Replace with your dynamic title
+                              "# ${notePodids}", // Replace with your dynamic title
                               style: TextStyle(
                                   fontSize: 12.0,
                                   color: Colors.black

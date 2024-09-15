@@ -496,7 +496,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            notePodids[index],
+                            "# ${notePodids[index]}",
                             style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,

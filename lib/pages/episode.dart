@@ -261,7 +261,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.notepodid,
+                                "# ${widget.notepodid}",
                                 style: TextStyle(
                                   fontSize: 12.0,
                                   fontWeight: FontWeight.bold,
