@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'discover.dart';
 import 'preview.dart';
+import 'setting.dart';
 
 class HomePage extends StatefulWidget  {
   @override
@@ -40,9 +41,17 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Color(0xFFFCFCFF),
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'assets/images/image1.jpg'),
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to the settings page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingPage()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/image1.jpg'),
+              ),
             ),
           ),
           title: Text(

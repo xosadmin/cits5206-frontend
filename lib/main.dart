@@ -9,6 +9,7 @@ import 'pages/homepage.dart';
 import 'pages/discover.dart';
 import 'pages/preview.dart';
 import 'pages/episode.dart';
+import 'pages/setting.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/discover': (context) => DiscoverPage(),
         '/preview': (context) => PreviewPage(),
         '/episode': (context) => EpisodePage(),
+        '/setting': (context) => SettingPage(),
       }, // set Welcome as the first page of app
     );
   }
