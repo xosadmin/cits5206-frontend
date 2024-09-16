@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:audiopin_frontend/pages/import.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpSetting extends StatefulWidget {
+  const SignUpSetting({super.key});
+
   @override
   _SignUpSettingState createState() => _SignUpSettingState();
 }
@@ -14,7 +17,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
   bool _isFilled = false;
 
   final dateFormatter = MaskTextInputFormatter(
-      mask: '####/##/##', filter: {"#": RegExp(r'[0-9]')});
+      mask: '##/##/####', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   void initState() {
@@ -36,9 +39,9 @@ class _SignUpSettingState extends State<SignUpSetting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: const Text('Sign Up'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -52,19 +55,19 @@ class _SignUpSettingState extends State<SignUpSetting> {
             Center(
               child: Column(
                 children: [
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildTextField(
                     label: 'First Name',
                     hintText: 'Enter first name',
                     controller: firstNameController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     label: 'Last Name',
                     hintText: 'Enter last name',
                     controller: lastNameController,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     label: 'Date of birth',
                     hintText: 'YYYY/MM/DD',
@@ -74,13 +77,13 @@ class _SignUpSettingState extends State<SignUpSetting> {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             // 将蓝框整体内容向下移动30px
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Center(
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'By continuing you agree to Audiopin\'s',
                     style: TextStyle(fontSize: 14),
                   ),
@@ -89,7 +92,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
                       const url = 'https://placeholder.com';
                       print('Navigating to $url');
                     },
-                    child: Text(
+                    child: const Text(
                       'Terms & Privacy policy',
                       style: TextStyle(
                         fontSize: 14,
@@ -98,24 +101,29 @@ class _SignUpSettingState extends State<SignUpSetting> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: 327,
                     height: 52,
                     child: ElevatedButton(
                       onPressed: _isFilled
                           ? () {
-                              // 注册操作
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ImportPage()),
+                              );
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _isFilled ? Color(0xFF00008B) : Color(0xFF6B7680),
+                        backgroundColor: _isFilled
+                            ? const Color(0xFF00008B)
+                            : const Color(0xFF6B7680),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Continue',
                         style: TextStyle(
                           fontSize: 16,
@@ -144,9 +152,9 @@ class _SignUpSettingState extends State<SignUpSetting> {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         SizedBox(
           width: 327,
           height: 48,
@@ -155,7 +163,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
             inputFormatters: TextInputFormatters,
             decoration: InputDecoration(
               hintText: hintText,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
           ),
         ),

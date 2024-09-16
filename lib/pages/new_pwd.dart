@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:audiopin_frontend/pages/sign_in.dart';
 
 class NewPasswordPage extends StatelessWidget {
+  const NewPasswordPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,7 +11,7 @@ class NewPasswordPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           color: Colors.black,
           onPressed: () {
             Navigator.pop(context);
@@ -25,7 +27,7 @@ class NewPasswordPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Create new password',
                   style: TextStyle(
                     fontSize: 24,
@@ -33,22 +35,22 @@ class NewPasswordPage extends StatelessWidget {
                     color: Color(0xFF41414E),
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
+                const SizedBox(height: 8),
+                const Text(
                   'Your new password must be different from previously used passwords',
                   style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 _buildPasswordField(
                   label: 'Password',
                   hint: 'Must be at least 8 characters',
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildPasswordField(
                   label: 'Confirm password',
                   hint: 'Both passwords must be a match',
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 Center(
                   child: SizedBox(
                     width: 327,
@@ -60,15 +62,16 @@ class NewPasswordPage extends StatelessWidget {
                           MaterialPageRoute(builder: (context) => SignInPage()),
                         );
                       },
-                      child: Text('Create password',
-                          style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF00008B),
-                        textStyle: TextStyle(fontSize: 16, color: Colors.white),
+                        backgroundColor: const Color(0xFF00008B),
+                        textStyle:
+                            const TextStyle(fontSize: 16, color: Colors.white),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
+                      child: Text('Create password',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -92,9 +95,10 @@ class NewPasswordPage extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: TextStyle(fontSize: 16, color: Color(0xFF41414E)),
+                  style:
+                      const TextStyle(fontSize: 16, color: Color(0xFF41414E)),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 SizedBox(
                   width: 327,
                   height: 48,
@@ -102,18 +106,19 @@ class NewPasswordPage extends StatelessWidget {
                     obscureText: true,
                     obscuringCharacter: '*',
                     decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.visibility),
+                      suffixIcon: const Icon(Icons.visibility),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(color: Color(0xFF6B7680)),
+                        borderSide: const BorderSide(color: Color(0xFF6B7680)),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   hint,
-                  style: TextStyle(fontSize: 12, color: Color(0xFF6B7680)),
+                  style:
+                      const TextStyle(fontSize: 12, color: Color(0xFF6B7680)),
                 ),
               ],
             ),

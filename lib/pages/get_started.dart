@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // 引入 smooth_page_indicator
 
 class OnboardingPage extends StatefulWidget {
+  const OnboardingPage({super.key});
+
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
 }
@@ -18,7 +20,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              color: Color(0xFF00008B), // 蓝色背景
+              color: const Color(0xFF00008B), // 蓝色背景
               height: 170, // 蓝色区域的高度
             ),
           ),
@@ -28,7 +30,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(48),
                         bottomRight: Radius.circular(48),
                       ),
@@ -78,7 +80,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         child: SmoothPageIndicator(
                           controller: _pageController, // 连接 PageController
                           count: 4, // 指示器的页数
-                          effect: JumpingDotEffect(
+                          effect: const JumpingDotEffect(
                             dotWidth: 10,
                             dotHeight: 10,
                             activeDotColor: Colors.black,
@@ -90,20 +92,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   // Navigate to the welcome.dart page
                   Navigator.pushReplacementNamed(context, '/welcome');
                 },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  backgroundColor: const Color(0xFF00008B), // 按钮的深蓝色背景
+                ),
                 child: Text('Get Started >>',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  backgroundColor: Color(0xFF00008B), // 按钮的深蓝色背景
-                ),
               ),
-              SizedBox(height: 40), // 调整蓝色区域中的按钮位置
+              const SizedBox(height: 40), // 调整蓝色区域中的按钮位置
             ],
           ),
         ],
@@ -122,10 +125,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(imagePath, height: 300), // 更新图片高度
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         RichText(
           textAlign: TextAlign.center,
-          text: TextSpan(
+          text: const TextSpan(
             children: [
               TextSpan(
                 text: 'Discover Your\n',
@@ -146,11 +149,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ],
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           description,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: const TextStyle(fontSize: 16, color: Colors.grey),
         ),
       ],
     );

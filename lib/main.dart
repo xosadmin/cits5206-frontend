@@ -7,21 +7,26 @@ import 'pages/signup_setting.dart';
 import 'pages/forgot_pwd.dart';
 import 'pages/verify_mail.dart';
 import 'pages/signup_setting.dart';
+import 'pages/import.dart';
+import 'pages/interests.dart' as interestsPage;
+import 'pages/subscriptions.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'AudioPin',
       theme: ThemeData(
         // define global theme, such as color, font style
-        scaffoldBackgroundColor: Color(0xFFFFFFFF),
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
         primarySwatch: Colors.blue,
-        appBarTheme: AppBarTheme(backgroundColor: Colors.white),
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: OnboardingPage(),
@@ -34,6 +39,9 @@ class MyApp extends StatelessWidget {
         '/forgot_pwd': (context) => ForgotPasswordPage(),
         '/verify_mail': (context) => VerifyEmailPage(),
         '/signup_setting': (context) => SignUpSetting(),
+        '/import': (context) => ImportPage(),
+        '/interest': (context) => interestsPage.InterestsPage(),
+        '/subscriptions': (context) => SubscriptionsPage(),
       }, // set Welcome as the first page of app
     );
   }
