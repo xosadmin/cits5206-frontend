@@ -1,6 +1,9 @@
 import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
+import 'setting.dart';
 
 class DiscoverPage extends StatefulWidget  {
   @override
@@ -38,11 +41,20 @@ class _DiscoverPageState extends State<DiscoverPage> {
             backgroundColor: Color(0xFFFCFCFF),
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'assets/images/image1.jpg'),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to the settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/image1.jpg'),
+                ),
               ),
             ),
+
             title: Text(
               "Explore",
               style: TextStyle(
@@ -120,20 +132,38 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
   bool _isClickedPlay = false; // To track if the button is clicked
   List<bool> _isSelectedCate  = [];
+  String imageUrl = 'assets/images/note_exp.png';
+  String noteContent = "Click to view details";
+  List<String> subs = [];
+  List<String> noteIDs = [];
+  List<String> noteDates = [];
+  List<String> notePodids = [];
 
   @override
   void initState() {
     super.initState();
     // Initialize the list with false values indicating no button is selected initially
     _isSelectedCate = List.generate(imageUrls.length, (index) => false);
+    getNotes();
+    loadDatas();
+  }
+
+  void loadDatas() async {
+    List<List<String>> fetchedLists = await getNotes();
+    setState(() {
+      noteIDs = fetchedLists[0];;
+      notePodids = fetchedLists[1];
+      noteDates = fetchedLists[2];
+    });
+    print('$noteIDs $noteDates $notePodids');
   }
 
   final List<String> imageUrls = [
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
+    'assets/images/note1.png',
+    'assets/images/note2.png',
+    'assets/images/note3.png',
+    'assets/images/note4.png',
+    'assets/images/note5.png',
   ];
 
   final List<String> cateText = [
@@ -386,7 +416,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
-            itemCount: listImageUrls.length,
+            itemCount: noteIDs.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
@@ -409,7 +439,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(5.0),
                                 child: Image.network(
-                                  listImageUrls[index],
+                                  imageUrl,
                                   width: 35,
                                   height: 35,
                                   fit: BoxFit.cover,
@@ -422,20 +452,36 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      listTitle[index],
+                                      noteIDs[index],
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      listTime[index],
+                                      noteDates[index],
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
                                     ),
+
                                   ],
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return BottomOptions();
+                                      },
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -450,7 +496,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            listSubtitle[index],
+                            "# ${notePodids[index]}",
                             style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
@@ -458,7 +504,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           ),
                           SizedBox(height: 4.0),
                           Text(
-                            listContent[index],
+                            noteContent,
                             style: TextStyle(
                               fontSize: 12.0,
                             ),
@@ -582,6 +628,78 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   }
 }
 
+class BottomOptions extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Makes the column take up the minimal vertical space
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.block),
+            title: Text('Block show from recommendation'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.thumb_up),
+            title: Text('Show more of shows like this'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.thumb_down),
+            title: Text('Show less of shows like this'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Future<List<List<String>>> getNotes() async {
+  final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
+
+  final payload = {
+    'tokenID': "0cd4cad2-efdb-49da-b49d-ef014a6b3223",
+  };
+
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> notesList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
+    //return getNotesDetails(res);
+    return [id, pod, date];
+  } else {
+    return [];
+  }
+}
 
 void main() =>
     runApp(MaterialApp(

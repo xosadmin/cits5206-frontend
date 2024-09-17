@@ -7,6 +7,9 @@ import 'pages/forgot_pwd.dart';
 import 'pages/verify_mail.dart';
 import 'pages/homepage.dart';
 import 'pages/discover.dart';
+import 'pages/preview.dart';
+import 'pages/episode.dart';
+import 'pages/setting.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,6 +35,9 @@ class MyApp extends StatelessWidget {
         '/verify_mail': (context) => VerifyEmailPage(),
         '/homepage': (context) => HomePage(),
         '/discover': (context) => DiscoverPage(),
+        '/preview': (context) => PreviewPage(),
+        '/episode': (context) => EpisodePage(),
+        '/setting': (context) => SettingPage(),
       }, // set Welcome as the first page of app
     );
   }
