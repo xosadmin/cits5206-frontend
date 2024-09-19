@@ -1,0 +1,16 @@
+Record the first testing of five pages functions (by Yunwei Zhang)
+
+| Test Case Name    | Test Description                                                            | Status  | Date         | Notes                                 |
+| homepage-t1       | testing home page of whether can show notes details from API                | pass    | 15-9-2024    |                                       |
+| homepage-t2       | testing home page going to preview page with correct params                 | pass    | 15-9-2024    |                                       |
+| homepage-t3       | testing home page of subscription lists from API                            | pass    | 15-9-2024    |                                       |
+| navbar-t1         | testing navigation bar with correct click actions                           | pass    | 15-9-2024    |                                       |
+| setting-t1        | testing setting profile and details functions                               | fail    | 15-9-2024    | fail update preference and settings   |
+| discover-t1       | testing discover page of whether can show notes details from API            | pass    | 15-9-2024    |                                       |
+| discover-t2       | testing discover page of trending lists from API                            | pass    | 15-9-2024    |                                       |
+| discover-t3       | testing discover page search bar functions                                  | pass    | 15-9-2024    |                                       |
+| discover-t4       | testing discover page more functions (block, unsubscription ...)            | fail    | 15-9-2024    | fail to block notes                   |
+| preview-t1        | testing preview page of whether can show correct params of details of notes | pass    | 15-9-2024    |                                       |
+| preview-t2        | testing preview page of button functions                                    | pass    | 15-9-2024    |                                       |
+| episode-t1        | testing episode page of showing note details                                | pass    | 15-9-2024    |                                       |
+| episode-t2        | testing episode page of playing audios with required basic functions        | pass    | 15-9-2024    |                                       |
