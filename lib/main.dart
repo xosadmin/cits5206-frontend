@@ -36,9 +36,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AudioPin',
-      themeMode: _themeMode,
-      theme: ThemeClass.lightTheme,
-      darkTheme: ThemeClass.darkTheme,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFF00008B)
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.blueGrey,
+      ),
+      themeMode: ThemeMode.system,
       home: MusicPlayerPage(toggleTheme: _toggleThemeMode),
       routes: {
         '/welcome': (context) => const Welcome(),
