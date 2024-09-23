@@ -1,4 +1,3 @@
-import 'package:audiopin_frontend/core/themes/theme.dart';
 import 'package:audiopin_frontend/pages/discover.dart';
 import 'package:flutter/material.dart';
 import 'pages/welcome.dart';
