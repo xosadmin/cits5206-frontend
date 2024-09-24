@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'setting.dart';
+import 'library.dart';
+import 'setting.dart';
 
 class DiscoverPage extends StatefulWidget  {
   @override
@@ -111,6 +113,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
                   );
                 }else{
                   _onItemTapped(index);

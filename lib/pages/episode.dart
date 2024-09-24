@@ -5,6 +5,8 @@ import 'dart:convert'; // For JSON decoding
 import 'package:audioplayers/audioplayers.dart';
 import 'homepage.dart';
 import 'discover.dart';
+import 'library.dart';
+import 'setting.dart';
 
 class EpisodePage extends StatefulWidget  {
   @override
@@ -106,6 +108,16 @@ class _EpisodePageState extends State<EpisodePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
                   );
                 }else{
                   _onItemTapped(index);

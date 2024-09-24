@@ -2,6 +2,7 @@ import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'discover.dart';
+import 'library.dart';
 
 class SettingPage extends StatefulWidget  {
   @override
@@ -84,6 +85,16 @@ class _SettingPageState extends State<SettingPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
                   );
                 }else{
                   _onItemTapped(index);

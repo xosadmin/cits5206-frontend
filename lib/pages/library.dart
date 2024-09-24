@@ -5,6 +5,7 @@ import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'setting.dart';
 import 'discover.dart';
+import 'setting.dart';
 
 class LibraryPage extends StatefulWidget  {
   @override
@@ -113,6 +114,16 @@ class _LibraryPageState extends State<LibraryPage> {
                     context,
                     MaterialPageRoute(builder: (context) => DiscoverPage()),
                   );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
                 }else{
                   _onItemTapped(index);
                 }
@@ -145,11 +156,10 @@ class _LibraryBodyState extends State<LibraryBody> {
   ];
 
   final List<String> cateText = [
-    'For you',
-    'News',
-    'Culture',
-    'Cryptocurrency',
-    'Education',
+    'Subscriptions',
+    'Queue',
+    'Downloads',
+    'History',
   ];
 
   final List<String> imageText = [
@@ -468,7 +478,7 @@ class _LibraryBodyState extends State<LibraryBody> {
               onPressed: () {
                 print('Floating Action Button pressed');
               },
-              child: Image.asset(
+              child: Image.network(
                 'assets/images/audio.png', // Replace with your image path
                 width: 50, // Adjust size as needed
                 height: 50,

@@ -5,6 +5,8 @@ import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'discover.dart';
 import 'episode.dart';
+import 'library.dart';
+import 'setting.dart';
 
 class PreviewPage extends StatefulWidget  {
   @override
@@ -103,6 +105,16 @@ class _PreviewPageState extends State<PreviewPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
                   );
                 }else{
                   _onItemTapped(index);
