@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'dart:async'; // For Timer
 import 'dart:io'; // For exit() method
 import 'package:share_plus/share_plus.dart';
-// import 'package:just_audio/just_audio.dart';
+import 'package:just_audio/just_audio.dart';
 // import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:shimmer/shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 // import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
 // import 'package:ffmpeg_kit_flutter/return_code.dart';
 // import 'package:bottom_picker/bottom_picker.dart';
-// import 'dart:async';
 
 class MusicPlayerPage extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -23,6 +23,19 @@ class MusicPlayerPage extends StatefulWidget {
 class _MusicPlayerPageState extends State<MusicPlayerPage> {
   Timer? _timer;
   bool isTimerSet = false;
+  late AudioPlayer _audioPlayer;
+  double currentSpeed = 1.0;
+  Duration _currentPosition = Duration.zero; // Track the current position
+  final Duration _totalDuration = Duration.zero; // Track the total duration
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+    _audioPlayer.setUrl(
+        'https://example.com/audio.mp3'); // Replace with actual audio URL
+  }
+
   // Text controllers for hours and minutes input
   final TextEditingController hoursController =
       TextEditingController(text: '01');
@@ -47,7 +60,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('App will close in $minutes minutes'),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -62,7 +75,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
 
       // Notify the user
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Sleep timer turned off'),
           duration: Duration(seconds: 3),
         ),
@@ -76,7 +89,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
       context: context,
       isScrollControlled:
           true, // Allow modal to expand when the keyboard pops up
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero, // No border radius as per the design
       ),
       builder: (BuildContext context) {
@@ -89,15 +102,15 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Set Custom Time',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -107,7 +120,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                       child: TextFormField(
                         controller: hoursController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Hours',
                           border: OutlineInputBorder(),
                         ),
@@ -117,23 +130,23 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                         },
                       ),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     // Colon separator
-                    Text(
+                    const Text(
                       ':',
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     // Minutes Input Field
                     SizedBox(
                       width: 80,
                       child: TextFormField(
                         controller: minutesController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Minutes',
                           border: OutlineInputBorder(),
                         ),
@@ -145,7 +158,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -157,9 +170,9 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey),
+                        side: const BorderSide(color: Colors.grey),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Cancel',
                         style: TextStyle(color: Colors.black),
                       ),
@@ -179,14 +192,14 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                       ),
-                      child: Text(
+                      child: const Text(
                         'Set',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -199,51 +212,51 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   void _showSleeperBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero, // No border radius as per the design
       ),
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 400,
           child: Column(
             children: [
               ListTile(
-                title: Text('Off'),
+                title: const Text('Off'),
                 onTap: () {
                   _cancelTimer(); // Cancel any active timer
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('15 Minutes'),
+                title: const Text('15 Minutes'),
                 onTap: () {
                   _scheduleAppClose(15); // Close in 15 minutes
                   Navigator.pop(context); // Close the bottom sheet
                 },
               ),
               ListTile(
-                title: Text('30 Minutes'),
+                title: const Text('30 Minutes'),
                 onTap: () {
                   _scheduleAppClose(30); // Close in 30 minutes
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('45 Minutes'),
+                title: const Text('45 Minutes'),
                 onTap: () {
                   _scheduleAppClose(45); // Close in 30 minutes
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('60 Minutes'),
+                title: const Text('60 Minutes'),
                 onTap: () {
                   _scheduleAppClose(60); // Close in 60 minutes
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('Custom Time'),
+                title: const Text('Custom Time'),
                 onTap: () {
                   Navigator.pop(context); // Close the bottom sheet
                   _showCustomTimeSelector(context); // Open custom time picker
@@ -259,7 +272,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   void _showMiscBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero, // No border radius
       ),
       builder: (BuildContext context) {
@@ -269,34 +282,37 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
             : Colors.grey[200]; // Light mode color
 
         return Container(
-          color: backgroundColor,  // Set background based on theme
+          color: backgroundColor, // Set background based on theme
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.thumb_up, color: Theme.of(context).iconTheme.color),
-                title: Text(
+                leading: Icon(Icons.thumb_up,
+                    color: Theme.of(context).iconTheme.color),
+                title: const Text(
                   'Show more of shows like this',
-                 // Adapt text color to theme
+                  // Adapt text color to theme
                 ),
                 onTap: () {
                   // Handle action
                 },
               ),
               ListTile(
-                leading: Icon(Icons.thumb_down, color: Theme.of(context).iconTheme.color),
-                title: Text(
+                leading: Icon(Icons.thumb_down,
+                    color: Theme.of(context).iconTheme.color),
+                title: const Text(
                   'Show less of shows like this',
-                    // Adapt text color to theme
+                  // Adapt text color to theme
                 ),
                 onTap: () {
                   // Handle action
                 },
               ),
               ListTile(
-                leading: Icon(Icons.file_download, color: Theme.of(context).iconTheme.color),
-                title: Text(
+                leading: Icon(Icons.file_download,
+                    color: Theme.of(context).iconTheme.color),
+                title: const Text(
                   'Download episode', // Adapt text color to theme
                 ),
                 onTap: () {
@@ -304,8 +320,9 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.share, color: Theme.of(context).iconTheme.color),
-                title: Text(
+                leading:
+                    Icon(Icons.share, color: Theme.of(context).iconTheme.color),
+                title: const Text(
                   'Share episode',
                 ),
                 onTap: () {
@@ -322,7 +339,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
 
   void _shareEpisode() {
     // Sample text or URL to share
-    final String episodeLink = 'https://example.com/podcast/episode/229';
+    const String episodeLink = 'https://example.com/podcast/episode/229';
     Share.share('Check out this podcast episode: $episodeLink');
   }
 
@@ -330,40 +347,195 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   void dispose() {
     // Cancel the timer if the widget is disposed to prevent memory leaks
     _timer?.cancel();
+    _audioPlayer.dispose();
     super.dispose();
+  }
+
+  // Fast forward function
+  void fastForwardAudio() {
+    final currentPosition = _audioPlayer.position;
+    const forwardOffset = Duration(seconds: 10);
+    final totalDuration = _audioPlayer.duration ?? Duration.zero;
+
+    final newPosition = currentPosition + forwardOffset;
+    _audioPlayer
+        .seek(newPosition < totalDuration ? newPosition : totalDuration);
+  }
+
+  // Rewind function
+  void rewindAudio() {
+    final currentPosition = _audioPlayer.position;
+    const rewindOffset = Duration(seconds: 10);
+    final newPosition = currentPosition - rewindOffset;
+
+    _audioPlayer
+        .seek(newPosition > Duration.zero ? newPosition : Duration.zero);
+  }
+
+  // Playback speed control
+  void changePlaybackSpeed(double speed) {
+    currentSpeed = speed;
+    _audioPlayer.setSpeed(speed);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Now Playing'),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.expand_more_outlined),
+      appBar: AppBar(
+        title: const Text('Now Playing'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.expand_more_outlined),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.mode_night_outlined,
+            ),
             onPressed: () {
-              Navigator.pop(context);
+              _showSleeperBottomSheet(context);
             },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.mode_night_outlined,
+          IconButton(
+            icon: const Icon(Icons.more_horiz),
+            onPressed: () {
+              _showMiscBottomSheet(context);
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius:
+                  BorderRadius.circular(16.0), // Set the radius as needed
+              child: CachedNetworkImage(
+                imageUrl: 'https://dummyimage.com/320x320/000/fff.png',
+                placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: 300,
+                    height: 200,
+                    color: Colors.white,
+                  ),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit:
+                    BoxFit.cover, // Adjust how the image fits within the widget
+                width: 320,
+                height: 320,
               ),
-              onPressed: () {
-                _showSleeperBottomSheet(context);
-              },
+            ),
+            const SizedBox(height: 20),
+            const Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Episode Title",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0, // Adjust the size as needed
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Podcast Name",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14.0, color: Color(0xFF41414e)),
+
+                )
+              ],
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.queue_music_outlined,
+                        size: 28,
+                      )),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.replay_10_rounded,
+                        size: 28,
+                      )),
+                  IconButton(
+                      onPressed: () {},
+                      icon:
+                          const Icon(Icons.play_circle_fill_rounded, size: 52)),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.forward_10_rounded, size: 28)),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.one_x_mobiledata, size: 28)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(formatDuration(_currentPosition)),
+                  Text(formatDuration(_totalDuration)),
+                ],
+              ),
+            ),
+            // Seek bar (Slider) for audio position
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SliderTheme(
+                data: const SliderThemeData(
+                    thumbColor: Color(0xFF41414e),
+                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4.75)),
+                child: Slider(
+                  value: _currentPosition.inSeconds.toDouble(),
+                  min: 0,
+                  max: _totalDuration.inSeconds.toDouble(),
+                  onChanged: (double value) {
+                    setState(() {
+                      _currentPosition = Duration(seconds: value.toInt());
+                    });
+                    _audioPlayer.seek(_currentPosition);
+                  },
+                ),
+              ),
             ),
             IconButton(
-              icon: const Icon(Icons.more_horiz),
-              onPressed: () {
-                _showMiscBottomSheet(context);
-              },
-            ),
+                onPressed: () {},
+                icon: SvgPicture.asset(
+                  'assets/icons/pin.svg',
+                  height: 72, // Adjust the size of the icon
+                  width: 72,
+                ))
           ],
         ),
-        body: const Column(
-          key: Key('music_player_body'),
-        ));
+      ),
+    );
+  }
+
+  // Helper method to format durations
+  String formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return [if (duration.inHours > 0) hours, minutes, seconds].join(':');
   }
 }
