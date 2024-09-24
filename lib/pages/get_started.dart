@@ -99,7 +99,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   Navigator.pushReplacementNamed(context, '/welcome');
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor: const Color(0xFF00008B), // 按钮的深蓝色背景
                 ),
                 child: const Text('Get Started >>',

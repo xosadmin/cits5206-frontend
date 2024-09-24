@@ -11,8 +11,6 @@ void main() {
   runApp(const MyApp());
 }
 
-
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -36,9 +34,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'AudioPin',
       theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFF00008B)
-      ),
+          brightness: Brightness.light, primaryColor: const Color(0xFF00008B)),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Colors.blueGrey,

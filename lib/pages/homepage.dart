@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'discover.dart';
 
-class HomePage extends StatefulWidget  {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
@@ -33,36 +33,35 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFFFCFCFF),
-          leading: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'assets/images/image1.jpg'),
-            ),
-          ),
-          title: const Text(
-              "My Feed",
-            style: TextStyle(
-              fontFamily: 'EuclidCircularA',
-              fontSize: 20,
-            ),
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                print("Settings pressed");
-              },
-            ),
-          ],
-        ),
+        child: Scaffold(
+      appBar: AppBar(
         backgroundColor: const Color(0xFFFCFCFF),
-        body: const HomeBody(),
-        bottomNavigationBar: BottomNavigationBar(
+        leading: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundImage: NetworkImage('assets/images/image1.jpg'),
+          ),
+        ),
+        title: const Text(
+          "My Feed",
+          style: TextStyle(
+            fontFamily: 'EuclidCircularA',
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              print("Settings pressed");
+            },
+          ),
+        ],
+      ),
+      backgroundColor: const Color(0xFFFCFCFF),
+      body: const HomeBody(),
+      bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFFCFCFF),
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
@@ -89,24 +88,22 @@ class _HomePageState extends State<HomePage> {
           ],
           currentIndex: _selectedIndex, // Current selected index
           selectedItemColor: Colors.blue, // Color of the selected item
-          onTap: (index){
-            if (index == 0){
+          onTap: (index) {
+            if (index == 0) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
               );
-            }else if (index == 2){
+            } else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const DiscoverPage()),
               );
-            }else{
+            } else {
               _onItemTapped(index);
             }
-          }
-        ),
-      )
-    );
+          }),
+    ));
   }
 }
 
@@ -117,8 +114,7 @@ class HomeBody extends StatefulWidget {
   _HomeBodyState createState() => _HomeBodyState();
 }
 
-class _HomeBodyState extends State<HomeBody>{
-
+class _HomeBodyState extends State<HomeBody> {
   bool _isClickedPlay = false; // To track if the button is clicked
 
   final List<String> imageUrls = [
@@ -182,8 +178,6 @@ class _HomeBodyState extends State<HomeBody>{
     'Just for testing...',
   ];
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -192,7 +186,8 @@ class _HomeBodyState extends State<HomeBody>{
         // Subscriptions section
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
+          margin:
+              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
@@ -232,7 +227,8 @@ class _HomeBodyState extends State<HomeBody>{
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(4.0), // Border radius for the container
+                          borderRadius: BorderRadius.circular(
+                              4.0), // Border radius for the container
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4.0),
@@ -335,108 +331,117 @@ class _HomeBodyState extends State<HomeBody>{
                     ),
                     // Bottom part of the card: Buttons
                     Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: OverflowBar(
-                          alignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isClickedPlay = !_isClickedPlay; // Toggle the state on press
-                                });
-                                print(listTitle[index]);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                minimumSize: const Size(67.0, 26.0),
-                                side: const BorderSide(
-                                  color: Colors.grey, // Set the border color
-                                  width: 0.7, // Set the border width (boldness)
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: OverflowBar(
+                        alignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _isClickedPlay =
+                                    !_isClickedPlay; // Toggle the state on press
+                              });
+                              print(listTitle[index]);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              minimumSize: const Size(67.0, 26.0),
+                              side: const BorderSide(
+                                color: Colors.grey, // Set the border color
+                                width: 0.7, // Set the border width (boldness)
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    _isClickedPlay ? Icons.check : Icons.play_circle,
-                                    color: const Color(0xFF1D1DD1),
-                                    size: 10.0,
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  const Text(
-                                    'Play',
-                                    style: TextStyle(color:Colors.grey, fontSize: 10.0),
-                                  )
-                                ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                print('Add');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                minimumSize: const Size(111.0, 26.0),
-                                side: const BorderSide(
-                                  color: Colors.grey, // Set the border color
-                                  width: 0.7, // Set the border width (boldness)
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  _isClickedPlay
+                                      ? Icons.check
+                                      : Icons.play_circle,
+                                  color: const Color(0xFF1D1DD1),
+                                  size: 10.0,
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                ),
+                                const SizedBox(width: 8.0),
+                                const Text(
+                                  'Play',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10.0),
+                                )
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              print('Add');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              minimumSize: const Size(111.0, 26.0),
+                              side: const BorderSide(
+                                color: Colors.grey, // Set the border color
+                                width: 0.7, // Set the border width (boldness)
                               ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    color: Color(0xFF1D1DD1),
-                                    size: 10.0,
-                                  ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    'Add to queue',
-                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                  )
-                                ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                print('Download');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                minimumSize: const Size(104.0, 26.0),
-                                side: const BorderSide(
-                                  color: Colors.grey, // Set the border color
-                                  width: 0.7, // Set the border width (boldness)
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add,
+                                  color: Color(0xFF1D1DD1),
+                                  size: 10.0,
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                ),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'Add to queue',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10.0),
+                                )
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              print('Download');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              minimumSize: const Size(104.0, 26.0),
+                              side: const BorderSide(
+                                color: Colors.grey, // Set the border color
+                                width: 0.7, // Set the border width (boldness)
                               ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.download,
-                                    color: Color(0xFF1D1DD1),
-                                    size: 10.0,
-                                  ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    'Download',
-                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                  )
-                                ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    5.0), // Optional: Make the border rounded
                               ),
                             ),
-                          ],
-                        ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.download,
+                                  color: Color(0xFF1D1DD1),
+                                  size: 10.0,
+                                ),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'Download',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10.0),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -449,8 +454,6 @@ class _HomeBodyState extends State<HomeBody>{
   }
 }
 
-
-void main() =>
-    runApp(const MaterialApp(
+void main() => runApp(const MaterialApp(
       home: HomePage(),
     ));

@@ -1,15 +1,20 @@
+// ignore_for_file: avoid_print
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async'; // For Timer
 import 'dart:io'; // For exit() method
 import 'package:share_plus/share_plus.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:http/http.dart' as http;
 // import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-// import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-// import 'package:ffmpeg_kit_flutter/return_code.dart';
-// import 'package:bottom_picker/bottom_picker.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MusicPlayerPage extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -25,6 +30,9 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   bool isTimerSet = false;
   late AudioPlayer _audioPlayer;
   bool isPlaying = false;
+  bool _isClipping = false;
+  String audioUrl =
+      'https://dcs-cached.megaphone.fm/SCIM2145176738.mp3?key=e925ed99d2a92b5c640e39df16bcddb1&request_event_id=016844ba-39f9-407d-83b7-f1257c956f77&timetoken=1724177734_C2A1DBA5D138FE3262B38153851C38B8';
   final ValueNotifier<double> _playbackSpeedNotifier = ValueNotifier(1.0);
   Duration _currentPosition = Duration.zero; // Track the current position
   late Duration _totalDuration = Duration.zero; // Track the total duration
@@ -35,10 +43,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
     _audioPlayer = AudioPlayer();
 
     // Set the audio URL (replace with your audio file)
-    _audioPlayer
-        .setUrl(
-            'https://dcs-cached.megaphone.fm/SCIM2145176738.mp3?key=e925ed99d2a92b5c640e39df16bcddb1&request_event_id=016844ba-39f9-407d-83b7-f1257c956f77&timetoken=1724177734_C2A1DBA5D138FE3262B38153851C38B8')
-        .then((_) {
+    _audioPlayer.setUrl(audioUrl).then((_) {
       setState(() {
         _totalDuration = _audioPlayer.duration ?? Duration.zero;
       });
@@ -386,14 +391,15 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                         divisions: 25,
                         label: playbackSpeed.toStringAsFixed(1),
                         onChanged: (value) {
-                          _playbackSpeedNotifier.value = value; // Update the ValueNotifier
+                          _playbackSpeedNotifier.value =
+                              value; // Update the ValueNotifier
                           _audioPlayer.setSpeed(value); // Set the new speed
                         },
                       ),
                       const SizedBox(height: 20),
                       Text(
                         'Speed: ${playbackSpeed.toStringAsFixed(1)}x',
-                        style: TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ],
                   );
@@ -410,6 +416,80 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
     // Sample text or URL to share
     const String episodeLink = 'https://example.com/podcast/episode/229';
     Share.share('Check out this podcast episode: $episodeLink');
+  }
+
+  Future<void> _clipAudio() async {
+    // Request permission to access external storage
+    var status = await Permission.storage.request();
+    if (status.isGranted) {
+      setState(() {
+        _isClipping = true;
+      });
+
+      try {
+        // Get the duration of the currently playing audio
+        final duration = _audioPlayer.duration;
+        if (duration == null) {
+          if (kDebugMode) {
+            print('Audio duration is null.');
+          }
+          return;
+        }
+
+        // Start time (where to clip from)
+        double startTime = _audioPlayer.position.inSeconds.toDouble();
+        // Duration to clip (15 seconds or the remaining audio duration)
+        double clipDuration = (duration.inSeconds - startTime > 15)
+            ? 15
+            : duration.inSeconds - startTime.toDouble();
+
+        // Get the app's media directory (or replace with getExternalStorageDirectory())
+        Directory? mediaDir = await getApplicationDocumentsDirectory();
+        String audioFilePath = '${mediaDir?.path}/downloaded_audio.mp3';
+        String clippedAudioPath =
+            '${mediaDir?.path}/podcasts/clipped_audio.mp3';
+
+        // Ensure the directory exists
+        await Directory('${mediaDir?.path}/podcasts').create(recursive: true);
+
+        // Download the audio file if not already downloaded
+        final response = await http.get(Uri.parse(audioUrl));
+        if (response.statusCode == 200) {
+          // Save the downloaded audio to a temporary path
+          File audioFile = File(audioFilePath);
+          await audioFile.writeAsBytes(response.bodyBytes);
+
+          // Clip the audio using FFFmpeg
+          String ffmpegCommand =
+              '-i $audioFilePath -ss $startTime -t $clipDuration -c copy $clippedAudioPath';
+
+          // Execute the FFFmpeg command
+          final result = await FFmpegKit.execute(ffmpegCommand);
+          final returnCode = await result.getReturnCode();
+
+          if (ReturnCode.isSuccess(returnCode)) {
+            print('Audio clipped successfully! Saved at: $clippedAudioPath');
+
+            // Delete the downloaded audio file after clipping
+            await audioFile.delete();
+            print('Downloaded audio file deleted: $audioFilePath');
+          } else {
+            print('Error clipping audio: ${await result.getFailStackTrace()}');
+          }
+        } else {
+          print('Failed to download audio: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      } finally {
+        setState(() {
+          _isClipping = false;
+        });
+      }
+    } else {
+      // Permission denied, handle accordingly
+      print('Permission to access storage denied.');
+    }
   }
 
   @override
@@ -599,7 +679,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
               ),
             ),
             IconButton(
-                onPressed: () {},
+                onPressed: _isClipping ? null : _clipAudio,
                 icon: SvgPicture.asset(
                   'assets/icons/pin.svg',
                   height: 72, // Adjust the size of the icon

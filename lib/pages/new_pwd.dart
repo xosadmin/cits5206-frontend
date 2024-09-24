@@ -59,12 +59,14 @@ class NewPasswordPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const SignInPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const SignInPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF00008B),
-                        textStyle: const TextStyle(fontSize: 16, color: Colors.white),
+                        textStyle:
+                            const TextStyle(fontSize: 16, color: Colors.white),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
@@ -94,7 +96,8 @@ class NewPasswordPage extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 16, color: Color(0xFF41414E)),
+                  style:
+                      const TextStyle(fontSize: 16, color: Color(0xFF41414E)),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -115,7 +118,8 @@ class NewPasswordPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   hint,
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF6B7680)),
+                  style:
+                      const TextStyle(fontSize: 12, color: Color(0xFF6B7680)),
                 ),
               ],
             ),
