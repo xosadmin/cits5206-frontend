@@ -4,13 +4,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'setting.dart';
+import 'discover.dart';
 
-class DiscoverPage extends StatefulWidget  {
+class LibraryPage extends StatefulWidget  {
   @override
-  _DiscoverPageState createState() => _DiscoverPageState();
+  _LibraryPageState createState() => _LibraryPageState();
 }
 
-class _DiscoverPageState extends State<DiscoverPage> {
+class _LibraryPageState extends State<LibraryPage> {
 
   int _selectedIndex = 0;
 
@@ -56,7 +57,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ),
 
             title: Text(
-              "Explore",
+              "Library",
               style: TextStyle(
                 fontFamily: 'EuclidCircularA',
                 fontSize: 20,
@@ -73,7 +74,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ],
           ),
           backgroundColor: Color(0xFFFCFCFF),
-          body: DiscoverBody(),
+          body: LibraryBody(),
           bottomNavigationBar: BottomNavigationBar(
               backgroundColor: Color(0xFFFCFCFF),
               type: BottomNavigationBarType.fixed,
@@ -122,41 +123,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 }
 
-class DiscoverBody extends StatefulWidget  {
+class LibraryBody extends StatefulWidget  {
   @override
-  _DiscoverBodyState createState() => _DiscoverBodyState();
+  _LibraryBodyState createState() => _LibraryBodyState();
 }
 
 
-class _DiscoverBodyState extends State<DiscoverBody> {
+class _LibraryBodyState extends State<LibraryBody> {
 
   bool _isClickedPlay = false; // To track if the button is clicked
   List<bool> _isSelectedCate  = [];
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
-  List<String> subs = [];
-  List<String> noteIDs = [];
-  List<String> noteDates = [];
-  List<String> notePodids = [];
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the list with false values indicating no button is selected initially
-    _isSelectedCate = List.generate(imageUrls.length, (index) => false);
-    getNotes();
-    loadDatas();
-  }
-
-  void loadDatas() async {
-    List<List<String>> fetchedLists = await getNotes();
-    setState(() {
-      noteIDs = fetchedLists[0];;
-      notePodids = fetchedLists[1];
-      noteDates = fetchedLists[2];
-    });
-    print('$noteIDs $noteDates $notePodids');
-  }
 
   final List<String> imageUrls = [
     'assets/images/note1.png',
@@ -202,11 +180,11 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   ];
 
   final List<String> listImageUrls = [
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
+    'assets/images/note1.png',
+    'assets/images/note2.png',
+    'assets/images/note3.png',
+    'assets/images/note4.png',
+    'assets/images/note5.png',
   ];
 
   final List<String> listTitle = [
@@ -248,67 +226,24 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      children: [
+      Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-          height: 34.0,
-          decoration: BoxDecoration(
-            color: Colors.white, // Background color of the search bar
-            borderRadius: BorderRadius.circular(3.0), // Rounded corners
-            border: Border.all(color: Colors.grey), // Border color
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(0, 3), // Shadow position
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.search, color: Colors.grey, size: 14.0),
-              SizedBox(width: 8.0), // Space between the icon and the text
-              Expanded(
-                child: TextField(
-                  style: TextStyle(
-                    fontSize: 12.0, // Adjusted font size
-                  ),
-                  decoration: InputDecoration(
-                    hintText: "Search for podcasts", // Placeholder text
-                    border: InputBorder.none, // Remove the default border
-                    contentPadding: EdgeInsets.symmetric(vertical: 14.0), // Adjust vertical padding
-                  ),
-                  onChanged: (value) {
-                    // Handle search input changes here
-                    print("Search query: $value");
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
           height: 20.0, // Increased height to accommodate text below the cubes
           width: MediaQuery.of(context).size.width * 0.9,
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05, top: 20),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: imageUrls.length,
               itemBuilder: (context, index){
                 return ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      // Update the selected state for the button
-                      _isSelectedCate = List.generate(imageUrls.length, (i) => i == index);
-                    });
-                    print(index + 1);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isSelectedCate[index] ? Color(0xFF1D1DD1) : Colors.white,
+                    backgroundColor: Colors.white,
                     side:BorderSide.none,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // Optional: Make the border rounded
@@ -317,7 +252,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   child: Text(
                     cateText[index],
                     style: TextStyle(
-                      color: _isSelectedCate[index] ? Colors.white : Colors.black,
+                      color: Colors.black,
                       fontSize: 10.0,
                     ),
                   ),
@@ -341,82 +276,10 @@ class _DiscoverBodyState extends State<DiscoverBody> {
               ),
             ],
           ),
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Trending',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                // Trending Cubes
-                Container(
-                  height: 140.0, // Height of the subscription cubes
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: imageUrls.length, // Number of subscription cubes
-                    itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center, // Center text and image horizontally
-                        children: [
-                          Container(
-                            width: 64.0, // Width of each cube
-                            height: 64.0, // Height of each cube
-                            margin: EdgeInsets.symmetric(horizontal: 8.0),
-                            color: Colors.white,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Image.network(
-                                imageUrls[index], // Load image from the URL
-                                fit: BoxFit.cover, // Cover the entire cube
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Container(
-                            width: 64.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  imageText[index], // Existing text
-                                  softWrap: true,
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                                SizedBox(height: 4.0), // Adds space between the texts
-                                Text(
-                                  imageText2[index], // New small text
-                                  style: TextStyle(
-                                    fontSize: 10.0, // Smaller font size for the new text
-                                    color: Colors.black, // Optional: Adjust color if needed
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),// Add spacing between the cube and the text
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 10.0),
-              ],
-            ),
-          ),
         ),
-        SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
-            itemCount: noteIDs.length,
+            itemCount: listImageUrls.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
@@ -435,11 +298,18 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              IconButton(
+                                icon: Icon(Icons.menu, size: 20),
+                                onPressed: () {
+                                  // Handle menu press
+                                  print('Menu pressed');
+                                },
+                              ),
                               // Image
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(5.0),
                                 child: Image.network(
-                                  imageUrl,
+                                  listImageUrls[index],
                                   width: 35,
                                   height: 35,
                                   fit: BoxFit.cover,
@@ -452,14 +322,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      noteIDs[index],
+                                      listTitle[index],
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      noteDates[index],
+                                      listTime[index],
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
@@ -469,45 +339,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   ],
                                 ),
                               ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: IconButton(
-                                  icon: Icon(Icons.more_vert),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return BottomOptions();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
                             ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Middle part of the card: Content
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "# ${notePodids[index]}",
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            noteContent,
-                            style: TextStyle(
-                              fontSize: 12.0,
-                            ),
                           ),
                         ],
                       ),
@@ -624,84 +456,35 @@ class _DiscoverBodyState extends State<DiscoverBody> {
           ),
         ),
       ],
+    ),
+        Positioned(
+          height: 50,
+          width: 50,
+          bottom: 15.0, // Adjust how far from the bottom of the screen
+          right: 15.0, // Adjust how far from the right of the screen
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50.0), // Set custom border radius
+            child: FloatingActionButton(
+              onPressed: () {
+                print('Floating Action Button pressed');
+              },
+              child: Image.asset(
+                'assets/images/audio.png', // Replace with your image path
+                width: 50, // Adjust size as needed
+                height: 50,
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0, // Optional: Remove shadow if needed
+            ),
+          ),
+        ),
+
+      ],
     );
-  }
-}
-
-class BottomOptions extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // Makes the column take up the minimal vertical space
-        children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.block),
-            title: Text('Block show from recommendation'),
-            onTap: () {
-              // Add your action here
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.thumb_up),
-            title: Text('Show more of shows like this'),
-            onTap: () {
-              // Add your action here
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.thumb_down),
-            title: Text('Show less of shows like this'),
-            onTap: () {
-              // Add your action here
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-Future<List<List<String>>> getNotes() async {
-  final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
-
-  final payload = {
-    'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
-  };
-
-  final headers = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  };
-
-  final encodedPayload = payload.entries.map((entry) {
-    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
-  }).join('&');
-
-  final response = await http.post(
-    url,
-    headers: headers,
-    body: encodedPayload,
-  );
-
-  if (response.statusCode == 200) {
-    List<dynamic> notesList = jsonDecode(response.body);
-    // Extract and return all NoteID values as a list of strings
-    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
-    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
-    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
-    //return getNotesDetails(res);
-    return [id, pod, date];
-  } else {
-    return [];
   }
 }
 
 void main() =>
     runApp(MaterialApp(
-      home: DiscoverPage(),
+      home: LibraryPage(),
     ));
