@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         '/verify_mail': (context) => VerifyEmailPage(),
         '/signup_setting': (context) => SignUpSetting(),
         '/import': (context) => ImportPage(),
-        '/interest': (context) => interestsPage.InterestsPage(),
+        '/interests': (context) => interestsPage.InterestsPage(),
         '/subscriptions': (context) => SubscriptionsPage(),
       }, // set Welcome as the first page of app
     );

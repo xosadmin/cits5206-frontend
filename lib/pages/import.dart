@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audiopin_frontend/pages/interests.dart';
 
 class ImportPage extends StatelessWidget {
   const ImportPage({super.key});
@@ -44,7 +45,7 @@ class ImportPage extends StatelessWidget {
               height: 52,
               child: ElevatedButton(
                 onPressed: () {
-                  // 跳转逻辑
+                  Navigator.pushNamed(context, '/interests');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00008B), // 蓝色背景
@@ -78,9 +79,9 @@ class ImportPage extends StatelessWidget {
       height: 52,
       child: OutlinedButton.icon(
         onPressed: () {
-          // 点击逻辑
+          // click logic
         },
-        icon: icon, // 图标颜色与边框一致
+        icon: icon,
         label: Text(
           label,
           style: const TextStyle(color: Color(0xFF41414E)),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class InterestsPage extends StatefulWidget {
-  const InterestsPage({super.key});
-
   @override
   _InterestsPageState createState() => _InterestsPageState();
 }
 
 class _InterestsPageState extends State<InterestsPage> {
+  List<String> selectedInterests = [];
+
   final List<String> interests = [
     'Art',
     'Music',
@@ -23,33 +23,36 @@ class _InterestsPageState extends State<InterestsPage> {
     'Education'
   ];
 
-  final Set<String> selectedInterests = {};
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Interests')),
+      appBar: AppBar(
+        title: Text(''),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 第一部分: 标题
-            const Text(
-              'Tell us what your interests are',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            // 第一部分：标题
+            SizedBox(height: 20),
+            Text(
+              'Tell us what your',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
-
-            // 第二部分: 标签选择
+            Text(
+              'interests are',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24),
+            // 第二部分：兴趣标签
             Wrap(
-              spacing: 12.0,
-              runSpacing: 12.0,
+              alignment: WrapAlignment.center,
+              spacing: 10,
+              runSpacing: 10,
               children: interests.map((interest) {
-                final isSelected = selectedInterests.contains(interest);
+                bool isSelected = selectedInterests.contains(interest);
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -61,21 +64,16 @@ class _InterestsPageState extends State<InterestsPage> {
                     });
                   },
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Colors.black),
                       gradient: isSelected
-                          ? const LinearGradient(
+                          ? LinearGradient(
                               colors: [Color(0xFF00008B), Color(0xFF1D1DD1)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
                             )
                           : null,
-                      color: isSelected ? null : Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: isSelected ? Colors.transparent : Colors.grey,
-                      ),
+                      color: !isSelected ? Colors.white : null,
                     ),
                     child: Text(
                       interest,
@@ -87,47 +85,58 @@ class _InterestsPageState extends State<InterestsPage> {
                 );
               }).toList(),
             ),
-
-            const SizedBox(height: 20),
-
-            // 第三部分: 按钮
-            if (selectedInterests.isEmpty)
-              TextButton(
-                onPressed: () {
-                  // 跳过逻辑
-                },
-                child: const Text('I’ll rather not'),
+            Spacer(),
+            // 第三部分：按钮
+            SizedBox(
+              width: 327,
+              height: 52,
+              child: OutlinedButton(
+                onPressed: selectedInterests.isNotEmpty
+                    ? () {
+                        // Continue button logic
+                      }
+                    : null,
+                child: Text(
+                  "I'll rather not",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: Color(0xFF6B7680)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    )),
               ),
-
-            const SizedBox(height: 20),
-
-            // Continue 按钮
+            ),
+            SizedBox(height: 16),
             SizedBox(
               width: 327,
               height: 52,
               child: ElevatedButton(
-                onPressed: selectedInterests.isEmpty
-                    ? null
-                    : () {
-                        // Continue 按钮逻辑
-                      },
+                onPressed: selectedInterests.isNotEmpty
+                    ? () {
+                        // Navigate to next page
+                      }
+                    : null,
+                child: Text(
+                  'Continue',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedInterests.isEmpty
-                      ? const Color(0xFF6B7680) // 灰色状态
-                      : const Color(0xFF00008B), // 深蓝色
+                  backgroundColor: selectedInterests.isNotEmpty
+                      ? Color(0xFF00008B)
+                      : Color(0xFF6B7680),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
               ),
             ),
+            SizedBox(height: 30),
           ],
         ),
       ),

@@ -64,14 +64,14 @@ class ApiService {
     }
   }
 
-  // 更改密码功能
+  // Change password
   static Future<void> changePassword(String token, String newPassword) async {
     final url = Uri.parse('$baseUrl/changepass');
     final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token', // 使用token进行授权
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode({'password': newPassword}),
     );
@@ -79,13 +79,39 @@ class ApiService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['Status'] == true) {
-        // 处理成功更改密码
         print("密码修改成功");
       } else {
         print("密码修改失败");
       }
     } else {
       print("服务器错误: ${response.statusCode}");
+    }
+  }
+
+  // Interest mark
+  static Future<void> sendUserInterests(
+      String userId, List<String> interests) async {
+    final url = Uri.parse('$baseUrl/setuserinterest');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'userId': userId,
+          'interests': interests,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Interests sent successfully');
+      } else {
+        print('Failed to send interests: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending interests: $e');
     }
   }
 }

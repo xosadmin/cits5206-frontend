@@ -17,7 +17,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
   bool _isFilled = false;
 
   final dateFormatter = MaskTextInputFormatter(
-      mask: '##/##/####', filter: {"#": RegExp(r'[0-9]')});
+      mask: '####/##/##', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   void initState() {
