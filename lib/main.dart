@@ -1,3 +1,4 @@
+import 'package:audiopin_frontend/pages/discover.dart';
 import 'package:flutter/material.dart';
 import 'pages/get_started.dart';
 import 'pages/welcome.dart';
@@ -6,6 +7,12 @@ import 'pages/sign_up.dart';
 import 'pages/signup_setting.dart';
 import 'pages/forgot_pwd.dart';
 import 'pages/verify_mail.dart';
+import 'pages/homepage.dart';
+import 'pages/discover.dart';
+import 'pages/preview.dart';
+import 'pages/episode.dart';
+import 'pages/setting.dart';
+import 'pages/library.dart';
 import 'pages/signup_setting.dart';
 import 'pages/import.dart';
 import 'pages/interests.dart' as interestsPage;
@@ -38,6 +45,12 @@ class MyApp extends StatelessWidget {
         '/signup_setting': (context) => SignUpSetting(),
         '/forgot_pwd': (context) => ForgotPasswordPage(),
         '/verify_mail': (context) => VerifyEmailPage(),
+        '/homepage': (context) => HomePage(),
+        '/discover': (context) => DiscoverPage(),
+        '/preview': (context) => PreviewPage(),
+        '/episode': (context) => EpisodePage(),
+        '/setting': (context) => SettingPage(),
+        '/library': (context) => LibraryPage(),
         '/signup_setting': (context) => SignUpSetting(),
         '/import': (context) => ImportPage(),
         '/interests': (context) => interestsPage.InterestsPage(),
