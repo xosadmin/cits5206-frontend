@@ -1,7 +1,10 @@
 import 'package:audiopin_frontend/pages/sign_in.dart';
+import 'package:audiopin_frontend/pages/sign_up.dart';
 import 'package:flutter/material.dart';
 
 class Welcome extends StatelessWidget {
+  const Welcome({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +27,7 @@ class Welcome extends StatelessWidget {
                     width: 488,
                     height: 326,
                   ),
-                  Text(
+                  const Text(
                     'Welcome to AudioPin',
                     style: TextStyle(
                       fontSize: 24,
@@ -32,7 +35,7 @@ class Welcome extends StatelessWidget {
                       color: Color(0xFF00008B),
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Discover thousands of podcasts from your favorite creators',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -43,29 +46,34 @@ class Welcome extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 30), // padding
+            const SizedBox(height: 30), // padding
             // 创建账户按钮
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF00008B),
-                minimumSize: Size(327, 52), // button size
+                backgroundColor: const Color(0xFF00008B),
+                minimumSize: const Size(327, 52), // button size
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              onPressed: () {}, // button click event
-              child: Text(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                );
+              }, // button click event
+              child: const Text(
                 'Create a free account',
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // login button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFFFFF),
-                  side: BorderSide(color: Color(0xFF00008B)),
-                  minimumSize: Size(327, 52),
+                  backgroundColor: const Color(0xFFFFFFFF),
+                  side: const BorderSide(color: Color(0xFF00008B)),
+                  minimumSize: const Size(327, 52),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   )),
@@ -75,7 +83,7 @@ class Welcome extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => SignInPage()),
                 );
               }, // button click event
-              child: Text(
+              child: const Text(
                 'Sign in',
                 style: TextStyle(fontSize: 16, color: Color(0xFF41414E)),
               ),
