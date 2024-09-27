@@ -103,7 +103,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor: const Color(0xFF00008B), // 按钮的深蓝色背景
                 ),
-                child: const Text('Get Started >>',
+                child: Text('Get Started >>',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
               const SizedBox(height: 40), // 调整蓝色区域中的按钮位置

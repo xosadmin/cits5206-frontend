@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:audiopin_frontend/pages/sign_in.dart';
+import 'package:audiopin_frontend/pages/signup_setting.dart';
 import 'package:audiopin_frontend/api_service.dart';
-import 'package:audiopin_frontend/pages/forgot_pwd.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  _SignInPageState createState() => _SignInPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isFilled = false;
-  bool _isPasswordVisible = false;
-  bool _isClicked = false;
+  bool _isPasswordVisible = false; //通过此变量控制密码可见性
 
   @override
   void initState() {
@@ -30,11 +30,31 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
+  // register function related
+  Future<void> _registerUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    //调用API服务进行注册
+    bool success = await ApiService.registerUser(email, password);
+
+    if (success) {
+      //注册成功后跳转到设置页
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => SignUpSetting()));
+    } else {
+      //处理注册失败的情况
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Registration failed. Please try again.'),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Sign Up'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -48,7 +68,7 @@ class _SignInPageState extends State<SignInPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
@@ -80,7 +100,7 @@ class _SignInPageState extends State<SignInPage> {
                     width: 327,
                     child: TextField(
                       controller: passwordController,
-                      obscureText: !_isPasswordVisible,
+                      obscureText: !_isPasswordVisible, //控制密码可见性
                       decoration: InputDecoration(
                         hintText: '**************',
                         border: const OutlineInputBorder(),
@@ -103,24 +123,15 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              // Sign In 按钮
+              // Sign up button
               SizedBox(
                 width: 327,
                 child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isClicked = true; // 点击后将按钮变灰
-                    });
-
-                    // 延迟200毫秒后跳转页面
-                    Future.delayed(const Duration(milliseconds: 120), () {
-                      setState(() {
-                        _isClicked = false; // 恢复为深蓝色
-                      });
-                      // 跳转homepage，先用forgot占位
-                      Navigator.pushNamed(context, '/homepage');
-                    });
-                  },
+                  onPressed: _isFilled
+                      ? () async {
+                          await _registerUser(); //调用注册方法
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isFilled
                         ? const Color(0xFF00008B) // 默认颜色
@@ -131,7 +142,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   child: const Text(
-                    'Sign in',
+                    'Create a free account',
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(0xFFFFFFFF),
@@ -141,14 +152,26 @@ class _SignInPageState extends State<SignInPage> {
               ),
               const SizedBox(height: 10),
               // Forgot Password 链接
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/forgot_pwd');
-                },
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: Colors.black),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have an account? '),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignInPage()),
+                      );
+                    },
+                    child: const Text(
+                      'Sign in',
+                      style: TextStyle(
+                        color: Color(0xFF00008B),
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 260),
               // OR 和分割线
@@ -220,8 +243,7 @@ class _SignInPageState extends State<SignInPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-
-                    side: const BorderSide(color: Color(0xFF6B7680)),
+                    side: const BorderSide(color: Color(0XFF6B7680)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),

@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For JSON decoding
 import 'discover.dart';
+import 'preview.dart';
+import 'setting.dart';
+import 'library.dart';
+import 'setting.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,13 +39,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFCFCFF),
-        leading: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage('assets/images/image1.jpg'),
+
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFFFCFCFF),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to the settings page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingPage()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/image1.jpg'),
+              ),
+            ),
           ),
         ),
         title: const Text(
@@ -99,7 +116,17 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(builder: (context) => const DiscoverPage()),
               );
-            } else {
+            }else if (index == 3){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LibraryPage()),
+              );
+            }else if (index == 4){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingPage()),
+              );
+            }else{
               _onItemTapped(index);
             }
           }),
@@ -116,13 +143,46 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> {
   bool _isClickedPlay = false; // To track if the button is clicked
+  String imageUrl = 'assets/images/note_exp.png';
+  String noteContent = "Click to view details";
+  List<String> subs = [];
+  List<String> noteIDs = [];
+  List<String> noteDates = [];
+  List<String> notePodids = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSubs(); // Fetch data when the widget is initialized
+    getNotes();
+    loadDatas();
+  }
+
+
+  void loadDatas() async {
+    List<String> fetchedSubs = await getSubs();
+    setState(() {
+      subs = fetchedSubs;
+    });
+    print('$subs');
+
+    List<List<String>> fetchedLists = await getNotes();
+    setState(() {
+      noteIDs = fetchedLists[0];;
+      notePodids = fetchedLists[1];
+      noteDates = fetchedLists[2];
+    });
+    print('$noteIDs $noteDates $notePodids');
+  }
+
+
 
   final List<String> imageUrls = [
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
+    'assets/images/note1.png',
+    'assets/images/note2.png',
+    'assets/images/note3.png',
+    'assets/images/note4.png',
+    'assets/images/note5.png',
   ];
 
   final List<String> items = [
@@ -249,106 +309,120 @@ class _HomeBodyState extends State<HomeBody> {
         const SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
-            itemCount: listImageUrls.length,
+            itemCount: noteIDs.length,
             itemBuilder: (context, index) {
-              return Card(
-                color: Colors.white,
-                margin: const EdgeInsets.all(16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top part of the card: Image and title/time
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Image
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image.network(
-                                  listImageUrls[index],
-                                  width: 35,
-                                  height: 35,
-                                  fit: BoxFit.cover,
+              return InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/preview',
+                    arguments: {
+                      'listtitle': noteIDs[index],
+                      'listimageurls': imageUrl,
+                    },
+                  );
+                },
+                child: Card(
+                  color: Colors.white,
+                  margin: EdgeInsets.all(16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top part of the card: Image and title/time
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Image
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  child: Image.network(
+                                    imageUrl,
+                                    width: 35,
+                                    height: 35,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 16.0),
-                              // Title and Time
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      listTitle[index],
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
+                                SizedBox(width: 16.0),
+                                // Title and Time
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        noteIDs[index],
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      listTime[index],
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.grey,
+                                      Text(
+                                        noteDates[index],
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Colors.grey,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Middle part of the card: Content
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "# ${notePodids[index]}",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Middle part of the card: Content
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            listSubtitle[index],
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            listContent[index],
-                            style: const TextStyle(
-                              fontSize: 12.0,
+                            SizedBox(height: 4.0),
+                            Text(
+                              noteContent,
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    // Bottom part of the card: Buttons
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OverflowBar(
-                        alignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _isClickedPlay =
-                                    !_isClickedPlay; // Toggle the state on press
-                              });
-                              print(listTitle[index]);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              minimumSize: const Size(67.0, 26.0),
-                              side: const BorderSide(
-                                color: Colors.grey, // Set the border color
-                                width: 0.7, // Set the border width (boldness)
+                      // Bottom part of the card: Buttons
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OverflowBar(
+                          alignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isClickedPlay = !_isClickedPlay; // Toggle the state on press
+                                });
+                                print(listTitle[index]);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                minimumSize: Size(67.0, 26.0),
+                                side: BorderSide(
+                                  color: Colors.grey, // Set the border color
+                                  width: 0.7, // Set the border width (boldness)
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                ),
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -423,27 +497,11 @@ class _HomeBodyState extends State<HomeBody> {
                                     5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.download,
-                                  color: Color(0xFF1D1DD1),
-                                  size: 10.0,
-                                ),
-                                SizedBox(width: 8.0),
-                                Text(
-                                  'Download',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 10.0),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
@@ -454,6 +512,128 @@ class _HomeBodyState extends State<HomeBody> {
   }
 }
 
-void main() => runApp(const MaterialApp(
+
+Future<List<String>>getSubs() async {
+  List<String> libs = [];
+  final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
+
+  // Define the payload for the POST request
+  final payload = {
+    'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  // Encode the payload as x-www-form-urlencoded
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  // Send the POST request
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  // Check the response status code
+  if (response.statusCode == 200) {
+    List<dynamic> subsList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    return subsList.map<String>((sub) => sub['LibraryID'].toString()).toList();
+  } else {
+    return [];
+  }
+}
+
+Future<List<List<String>>> getNotes() async {
+  final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
+
+  final payload = {
+    'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
+  };
+
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> notesList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
+    //return getNotesDetails(res);
+    return [id, pod, date];
+  } else {
+    return [];
+  }
+}
+
+// Future<List<List<String>>> getNotesDetails(List<String> noteIDs) async {
+//   final url = Uri.parse('https://cits5206.7m7.moe/notedetails');
+//   List<String> contents = [];
+//   List<String> noteids = [];
+//   List<String> dates = [];
+//   List<String> podids = [];
+//
+//   for (String noteID in noteIDs) {
+//     // Define the payload for the POST request
+//     final payload = {
+//       'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
+//       'noteID': noteID,
+//     };
+//
+//     // Set the headers to specify that the data is x-www-form-urlencoded
+//     final headers = {
+//       'Content-Type': 'application/x-www-form-urlencoded',
+//     };
+//
+//     // Encode the payload as x-www-form-urlencoded
+//     final encodedPayload = payload.entries.map((entry) {
+//       return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+//     }).join('&');
+//
+//     // Send the POST request
+//     final response = await http.post(
+//       url,
+//       headers: headers,
+//       body: encodedPayload,
+//     );
+//
+//     // Check the response status code
+//     if (response.statusCode == 200) {
+//       var noteDetails = jsonDecode(response.body);
+//       print('Notes details: ${response.body}');
+//       Map<String, dynamic> parsedResponse = jsonDecode(response.body);
+//       contents.add(parsedResponse["Content"]);
+//       noteids.add(parsedResponse["NoteID"]);
+//       dates.add(parsedResponse["DateCreated"]);
+//       podids.add(parsedResponse["PodcastID"]);
+//
+//     } else {}
+//   }
+//   return [noteids, contents, dates, podids];
+// }
+
+
+
+
+
+void main() =>
+    runApp(MaterialApp(
       home: HomePage(),
     ));

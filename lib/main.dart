@@ -3,61 +3,63 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'pages/welcome.dart';
 import 'pages/sign_in.dart';
+import 'pages/sign_up.dart';
+import 'pages/signup_setting.dart';
 import 'pages/forgot_pwd.dart';
 import 'pages/verify_mail.dart';
 import 'pages/homepage.dart';
 import 'pages/music_player.dart';
+import 'pages/discover.dart';
+import 'pages/preview.dart';
+import 'pages/episode.dart';
+import 'pages/setting.dart';
+import 'pages/library.dart';
+import 'pages/signup_setting.dart';
+import 'pages/import.dart';
+import 'pages/interests.dart' as interestsPage;
+import 'pages/subscriptions.dart';
+
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system; // Initially system theme
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _toggleThemeMode() {
-    setState(() {
-      _themeMode =
-          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'AudioPin',
-        theme: ThemeData(
-            brightness: Brightness.light,
-            primaryColor: const Color(0xFF00008B)),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: Colors.blueGrey,
-        ),
-        themeMode: ThemeMode.system,
-        home: MusicPlayerPage(toggleTheme: _toggleThemeMode),
-        routes: {
-          '/welcome': (context) => const Welcome(),
-          '/sign_in': (context) => const SignInPage(),
-          '/forgot_pwd': (context) => const ForgotPasswordPage(),
-          '/verify_mail': (context) => const VerifyEmailPage(),
-          '/homepage': (context) => const HomePage(),
-          '/discover': (context) => const DiscoverPage(),
-          '/music_player': (context) =>
-              MusicPlayerPage(toggleTheme: _toggleThemeMode),
-        });
+      title: 'AudioPin',
+      theme: ThemeData(
+        // define global theme, such as color, font style
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+        primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: OnboardingPage(),
+      routes: {
+        '/get_started': (context) => OnboardingPage(),
+        '/welcome': (context) => Welcome(),
+        '/sign_in': (context) => SignInPage(),
+        '/sign_up': (context) => SignUpPage(),
+        '/signup_setting': (context) => SignUpSetting(),
+        '/forgot_pwd': (context) => ForgotPasswordPage(),
+        '/verify_mail': (context) => VerifyEmailPage(),
+        '/homepage': (context) => HomePage(),
+        '/discover': (context) => DiscoverPage(),
+        '/preview': (context) => PreviewPage(),
+        '/episode': (context) => EpisodePage(),
+        '/setting': (context) => SettingPage(),
+        '/library': (context) => LibraryPage(),
+        '/signup_setting': (context) => SignUpSetting(),
+        '/import': (context) => ImportPage(),
+        '/interests': (context) => interestsPage.InterestsPage(),
+        '/subscriptions': (context) => SubscriptionsPage(),
+        '/music_player': (context) => MusicPlayerPage(),
+      }, // set Welcome as the first page of app
+    );
   }
 }

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
+import 'setting.dart';
+import 'library.dart';
+import 'setting.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -34,19 +39,95 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFCFCFF),
-        leading: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage('assets/images/image1.jpg'),
+          appBar: AppBar(
+            backgroundColor: Color(0xFFFCFCFF),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to the settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/image1.jpg'),
+                ),
+              ),
+            ),
+
+            title: Text(
+              "Explore",
+              style: TextStyle(
+                fontFamily: 'EuclidCircularA',
+                fontSize: 20,
+              ),
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () {
+                  print("Settings pressed");
+                },
+              ),
+            ],
           ),
-        ),
-        title: const Text(
-          "Explore",
-          style: TextStyle(
-            fontFamily: 'EuclidCircularA',
-            fontSize: 20,
+          backgroundColor: Color(0xFFFCFCFF),
+          body: DiscoverBody(),
+          bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Color(0xFFFCFCFF),
+              type: BottomNavigationBarType.fixed,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Feed',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.note),
+                  label: 'Pins',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  label: 'Discover',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.collections),
+                  label: 'Library',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Settings',
+                ),
+              ],
+              currentIndex: _selectedIndex, // Current selected index
+              selectedItemColor: Colors.blue, // Color of the selected item
+              onTap: (index){
+                if (index == 0){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }else if (index == 2){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                }else{
+                  _onItemTapped(index);
+                }
+              }
           ),
         ),
         centerTitle: true,
@@ -116,21 +197,39 @@ class DiscoverBody extends StatefulWidget {
 
 class _DiscoverBodyState extends State<DiscoverBody> {
   bool _isClickedPlay = false; // To track if the button is clicked
-  List<bool> _isSelectedCate = [];
+  List<bool> _isSelectedCate  = [];
+  String imageUrl = 'assets/images/note_exp.png';
+  String noteContent = "Click to view details";
+  List<String> subs = [];
+  List<String> noteIDs = [];
+  List<String> noteDates = [];
+  List<String> notePodids = [];
 
   @override
   void initState() {
     super.initState();
     // Initialize the list with false values indicating no button is selected initially
     _isSelectedCate = List.generate(imageUrls.length, (index) => false);
+    getNotes();
+    loadDatas();
+  }
+
+  void loadDatas() async {
+    List<List<String>> fetchedLists = await getNotes();
+    setState(() {
+      noteIDs = fetchedLists[0];;
+      notePodids = fetchedLists[1];
+      noteDates = fetchedLists[2];
+    });
+    print('$noteIDs $noteDates $notePodids');
   }
 
   final List<String> imageUrls = [
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
+    'assets/images/note1.png',
+    'assets/images/note2.png',
+    'assets/images/note3.png',
+    'assets/images/note4.png',
+    'assets/images/note5.png',
   ];
 
   final List<String> cateText = [
@@ -394,7 +493,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         const SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
-            itemCount: listImageUrls.length,
+            itemCount: noteIDs.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
@@ -417,7 +516,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(5.0),
                                 child: Image.network(
-                                  listImageUrls[index],
+                                  imageUrl,
                                   width: 35,
                                   height: 35,
                                   fit: BoxFit.cover,
@@ -430,20 +529,37 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      listTitle[index],
-                                      style: const TextStyle(
+
+                                      noteIDs[index],
+                                      style: TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      listTime[index],
-                                      style: const TextStyle(
+                                      noteDates[index],
+                                      style: TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
                                     ),
+
                                   ],
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return BottomOptions();
+                                      },
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -458,16 +574,16 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            listSubtitle[index],
-                            style: const TextStyle(
+                            "# ${notePodids[index]}",
+                            style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 4.0),
                           Text(
-                            listContent[index],
-                            style: const TextStyle(
+                            noteContent,
+                            style: TextStyle(
                               fontSize: 12.0,
                             ),
                           ),
@@ -599,6 +715,80 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   }
 }
 
-void main() => runApp(const MaterialApp(
+class BottomOptions extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Makes the column take up the minimal vertical space
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.block),
+            title: Text('Block show from recommendation'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.thumb_up),
+            title: Text('Show more of shows like this'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.thumb_down),
+            title: Text('Show less of shows like this'),
+            onTap: () {
+              // Add your action here
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Future<List<List<String>>> getNotes() async {
+  final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
+
+  final payload = {
+    'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
+  };
+
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> notesList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
+    //return getNotesDetails(res);
+    return [id, pod, date];
+  } else {
+    return [];
+  }
+}
+
+void main() =>
+    runApp(MaterialApp(
       home: DiscoverPage(),
     ));

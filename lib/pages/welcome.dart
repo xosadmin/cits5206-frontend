@@ -1,4 +1,5 @@
 import 'package:audiopin_frontend/pages/sign_in.dart';
+import 'package:audiopin_frontend/pages/sign_up.dart';
 import 'package:flutter/material.dart';
 
 class Welcome extends StatelessWidget {
@@ -55,7 +56,13 @@ class Welcome extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              onPressed: () {}, // button click event
+
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                );
+              }, // button click event
               child: const Text(
                 'Create a free account',
                 style: TextStyle(fontSize: 16, color: Colors.white),

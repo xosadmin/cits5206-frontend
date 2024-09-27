@@ -71,7 +71,8 @@ class NewPasswordPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      child: const Text('Create password',
+
+                      child: Text('Create password',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
