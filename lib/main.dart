@@ -1,4 +1,5 @@
 import 'package:audiopin_frontend/pages/discover.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'pages/welcome.dart';
 import 'pages/sign_in.dart';
@@ -20,6 +21,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system; // Initially system theme
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _toggleThemeMode() {
     setState(() {
@@ -31,26 +38,26 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'AudioPin',
-      theme: ThemeData(
-          brightness: Brightness.light, primaryColor: const Color(0xFF00008B)),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.blueGrey,
-      ),
-      themeMode: ThemeMode.system,
-      home: MusicPlayerPage(toggleTheme: _toggleThemeMode),
-      routes: {
-        '/welcome': (context) => const Welcome(),
-        '/sign_in': (context) => const SignInPage(),
-        '/forgot_pwd': (context) => const ForgotPasswordPage(),
-        '/verify_mail': (context) => const VerifyEmailPage(),
-        '/homepage': (context) => const HomePage(),
-        '/discover': (context) => const DiscoverPage(),
-        '/music_player': (context) =>
-            MusicPlayerPage(toggleTheme: _toggleThemeMode),
-      },
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'AudioPin',
+        theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: const Color(0xFF00008B)),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.blueGrey,
+        ),
+        themeMode: ThemeMode.system,
+        home: MusicPlayerPage(toggleTheme: _toggleThemeMode),
+        routes: {
+          '/welcome': (context) => const Welcome(),
+          '/sign_in': (context) => const SignInPage(),
+          '/forgot_pwd': (context) => const ForgotPasswordPage(),
+          '/verify_mail': (context) => const VerifyEmailPage(),
+          '/homepage': (context) => const HomePage(),
+          '/discover': (context) => const DiscoverPage(),
+          '/music_player': (context) =>
+              MusicPlayerPage(toggleTheme: _toggleThemeMode),
+        });
   }
 }

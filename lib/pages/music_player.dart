@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async'; // For Timer
@@ -9,12 +10,11 @@ import 'dart:io'; // For exit() method
 import 'package:share_plus/share_plus.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:http/http.dart' as http;
-// import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter/return_code.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
 class MusicPlayerPage extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -31,7 +31,9 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   late AudioPlayer _audioPlayer;
   bool isPlaying = false;
   bool _isClipping = false;
-  String audioUrl =
+  String _transcription = '';
+  Uint8List? _cachedAudio;
+  late String audioUrl =
       'https://dcs-cached.megaphone.fm/SCIM2145176738.mp3?key=e925ed99d2a92b5c640e39df16bcddb1&request_event_id=016844ba-39f9-407d-83b7-f1257c956f77&timetoken=1724177734_C2A1DBA5D138FE3262B38153851C38B8';
   final ValueNotifier<double> _playbackSpeedNotifier = ValueNotifier(1.0);
   Duration _currentPosition = Duration.zero; // Track the current position
@@ -419,77 +421,162 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   }
 
   Future<void> _clipAudio() async {
-    // Request permission to access external storage
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
+    setState(() {
+      _isClipping = true;
+      _transcription = ''; // Clear previous transcription
+    });
+
+    try {
+      final duration = _audioPlayer.duration;
+      final currentPosition = _audioPlayer.position;
+
+      if (duration == null) {
+        print('Audio duration is null.');
+        _showErrorMessage('Audio duration is null');
+        return;
+      }
+
+      double startTime = currentPosition.inSeconds.toDouble();
+      double clipDuration = (duration.inSeconds - startTime > 15)
+          ? 15
+          : duration.inSeconds - startTime.toDouble();
+
+      // Use cached audio if available, otherwise download
+      Uint8List audioData;
+      if (_cachedAudio != null) {
+        audioData = _cachedAudio!;
+      } else {
+        final response = await http.get(Uri.parse(audioUrl));
+        if (response.statusCode != 200) {
+          throw Exception('Failed to download audio: ${response.statusCode}');
+        }
+        audioData = response.bodyBytes;
+        _cachedAudio = audioData; // Cache the audio for future use
+      }
+
+      // Perform clipping on the main isolate, as FFmpegKit uses platform channels
+      final clippedAudio = await _clipAudioOnMainIsolate(audioData, startTime, clipDuration);
+
+      // Run the model on the newly clipped audio
+      String transcription = await _runModelOnClippedAudio(clippedAudio);
+
       setState(() {
-        _isClipping = true;
+        _transcription = transcription;
       });
 
-      try {
-        // Get the duration of the currently playing audio
-        final duration = _audioPlayer.duration;
-        if (duration == null) {
-          if (kDebugMode) {
-            print('Audio duration is null.');
-          }
-          return;
-        }
-
-        // Start time (where to clip from)
-        double startTime = _audioPlayer.position.inSeconds.toDouble();
-        // Duration to clip (15 seconds or the remaining audio duration)
-        double clipDuration = (duration.inSeconds - startTime > 15)
-            ? 15
-            : duration.inSeconds - startTime.toDouble();
-
-        // Get the app's media directory (or replace with getExternalStorageDirectory())
-        Directory? mediaDir = await getApplicationDocumentsDirectory();
-        String audioFilePath = '${mediaDir?.path}/downloaded_audio.mp3';
-        String clippedAudioPath =
-            '${mediaDir?.path}/podcasts/clipped_audio.mp3';
-
-        // Ensure the directory exists
-        await Directory('${mediaDir?.path}/podcasts').create(recursive: true);
-
-        // Download the audio file if not already downloaded
-        final response = await http.get(Uri.parse(audioUrl));
-        if (response.statusCode == 200) {
-          // Save the downloaded audio to a temporary path
-          File audioFile = File(audioFilePath);
-          await audioFile.writeAsBytes(response.bodyBytes);
-
-          // Clip the audio using FFFmpeg
-          String ffmpegCommand =
-              '-i $audioFilePath -ss $startTime -t $clipDuration -c copy $clippedAudioPath';
-
-          // Execute the FFFmpeg command
-          final result = await FFmpegKit.execute(ffmpegCommand);
-          final returnCode = await result.getReturnCode();
-
-          if (ReturnCode.isSuccess(returnCode)) {
-            print('Audio clipped successfully! Saved at: $clippedAudioPath');
-
-            // Delete the downloaded audio file after clipping
-            await audioFile.delete();
-            print('Downloaded audio file deleted: $audioFilePath');
-          } else {
-            print('Error clipping audio: ${await result.getFailStackTrace()}');
-          }
-        } else {
-          print('Failed to download audio: ${response.statusCode}');
-        }
-      } catch (e) {
-        print('Error: $e');
-      } finally {
-        setState(() {
-          _isClipping = false;
-        });
-      }
-    } else {
-      // Permission denied, handle accordingly
-      print('Permission to access storage denied.');
+      _showSuccessMessage('Audio clipped and transcribed successfully!');
+    } catch (e) {
+      print('Error: $e');
+      _showErrorMessage('An error occurred');
+    } finally {
+      setState(() {
+        _isClipping = false;
+      });
     }
+  }
+
+  // Now run FFmpegKit on the main isolate
+  Future<Uint8List> _clipAudioOnMainIsolate(Uint8List audioData, double startTime, double clipDuration) async {
+    // Create a temporary file for input
+    final tempDir = await getTemporaryDirectory();
+    final inputFile = File('${tempDir.path}/temp_input.mp3');
+    await inputFile.writeAsBytes(audioData);
+
+    // Create a temporary file for output
+    final outputFile = File('${tempDir.path}/temp_output.wav');
+
+    // Optimize FFmpeg command: use -c:a pcm_s16le for WAV output (faster than MP3)
+    String ffmpegCommand = '-i ${inputFile.path} -ss $startTime -t $clipDuration -c:a pcm_s16le -ar 16000 ${outputFile.path}';
+
+    final result = await FFmpegKit.execute(ffmpegCommand);
+    final returnCode = await result.getReturnCode();
+
+    if (ReturnCode.isSuccess(returnCode)) {
+      final clippedAudio = await outputFile.readAsBytes();
+
+      // Clean up temporary files
+      await inputFile.delete();
+      await outputFile.delete();
+
+      return clippedAudio;
+    } else {
+      throw Exception('Error clipping audio: ${await result.getFailStackTrace()}');
+    }
+  }
+
+  Future<String> _runModelOnClippedAudio(Uint8List audioData) async {
+    try {
+      // Load the TFLite model
+      Interpreter interpreter = await Interpreter.fromAsset('conformer_model.tflite');
+
+      // Preprocess the audio data to create input for the model
+      Uint8List inputAudioData = await _preprocessAudio(audioData);
+
+      // Prepare the input and output buffers for the model
+      var input = inputAudioData.buffer.asUint8List(); // Adjust shape to match model input
+
+      // The output shape can vary based on your model. Adjust it according to your model's output.
+      var output = List.filled(100, 0).reshape([1, 100]); // Example, adjust based on your model output size
+
+      // Run the TFLite model on the input data
+      interpreter.run(input, output);
+
+      // Convert the dynamic output into List<List<int>>
+      List<List<int>> processedOutput = output.map((e) => List<int>.from(e)).toList();
+
+      // Convert the model output into readable text
+      String transcription = _processModelOutput(processedOutput);
+      return transcription;
+
+    } catch (e) {
+      print('Error running model: $e');
+      return 'Error during transcription';
+    }
+  }
+
+  Future<Uint8List> _preprocessAudio(Uint8List audioData) async {
+    // For raw PCM processing, return the audio data as is.
+    // Assuming it's 16-bit PCM at 16000 Hz (as set in the FFmpeg command).
+    return audioData;
+  }
+
+  String _processModelOutput(List<List<int>> output) {
+    // Process the output from the TFLite model and convert it to readable text
+    StringBuffer transcription = StringBuffer();
+
+    for (int i = 0; i < output[0].length; i++) {
+      int token = output[0][i];
+      if (token != 0) {
+        transcription.write(_mapTokenToText(token));
+      }
+    }
+
+    return transcription.toString();
+  }
+
+  String _mapTokenToText(int token) {
+    const List<String> vocab = [' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    return vocab[token % vocab.length];
+  }
+
+  void _showSuccessMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -684,7 +771,21 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                   'assets/icons/pin.svg',
                   height: 72, // Adjust the size of the icon
                   width: 72,
-                ))
+                )),
+            const SizedBox(height: 20),
+            const Text(
+              'Transcription:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  _transcription,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
           ],
         ),
       ),
