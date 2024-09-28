@@ -49,7 +49,6 @@ class MyApp extends StatelessWidget {
         '/episode': (context) => EpisodePage(),
         '/setting': (context) => SettingPage(),
         '/library': (context) => LibraryPage(),
-        '/signup_setting': (context) => const SignUpSetting(),
         '/import': (context) => const ImportPage(),
         '/interests': (context) => interestsPage.InterestsPage(),
         '/subscriptions': (context) => const SubscriptionsPage(),
