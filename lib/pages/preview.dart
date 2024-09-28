@@ -1,10 +1,8 @@
-import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'discover.dart';
-import 'episode.dart';
 import 'library.dart';
 import 'setting.dart';
 
@@ -513,7 +511,7 @@ Future<List<String>> getNotesDetails(String noteID) async {
 
   // Check the response status code
   if (response.statusCode == 200) {
-      var noteDetails = jsonDecode(response.body);
+      jsonDecode(response.body);
       Map<String, dynamic> parsedResponse = jsonDecode(response.body);
       res.add(parsedResponse["NoteID"]);
       res.add(parsedResponse["Content"]);

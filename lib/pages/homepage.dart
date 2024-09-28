@@ -1,12 +1,9 @@
-import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'discover.dart';
-import 'preview.dart';
 import 'setting.dart';
 import 'library.dart';
-import 'setting.dart';
 
 class HomePage extends StatefulWidget  {
   @override
@@ -517,7 +514,6 @@ class _HomeBodyState extends State<HomeBody>{
 
 
 Future<List<String>>getSubs() async {
-  List<String> libs = [];
   final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
 
   // Define the payload for the POST request

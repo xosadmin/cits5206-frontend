@@ -1,7 +1,5 @@
-import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert'; // For JSON decoding
+// For JSON decoding
 import 'package:audioplayers/audioplayers.dart';
 import 'homepage.dart';
 import 'discover.dart';

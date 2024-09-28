@@ -1,11 +1,8 @@
-import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert'; // For JSON decoding
+// For JSON decoding
 import 'homepage.dart';
 import 'setting.dart';
 import 'discover.dart';
-import 'setting.dart';
 
 class LibraryPage extends StatefulWidget  {
   @override
@@ -143,7 +140,6 @@ class LibraryBody extends StatefulWidget  {
 class _LibraryBodyState extends State<LibraryBody> {
 
   bool _isClickedPlay = false; // To track if the button is clicked
-  List<bool> _isSelectedCate  = [];
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
 
