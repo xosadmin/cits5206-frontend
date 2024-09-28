@@ -23,10 +23,9 @@ class VerifyEmailPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 第一部分：图片和提示文字
               const SizedBox(height: 40),
               Image.asset(
-                'assets/images/Email_13_1.png', // 替换为你的图片路径
+                'assets/images/Email_13_1.png',
                 width: 150,
                 height: 150,
               ),
@@ -40,19 +39,17 @@ class VerifyEmailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-
-              // 第二部分：按钮
               SizedBox(
                 width: 327,
-                height: 50, // 设置按钮高度为50
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    // 打开邮件应用程序的逻辑
+                    // logic about opening email app on users' devices
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00008B), // 按钮背景色
+                    backgroundColor: const Color(0xFF00008B),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6), // 按钮圆角
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                   child: const Text(
@@ -62,20 +59,18 @@ class VerifyEmailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // 第三部分：Resend email 链接
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NewPasswordPage()),
-                  ); // 重发邮件逻辑，这里先关联创建新密码页来查看新密码页的布局
+                  );
                 },
                 child: const Text(
                   'Resend email',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF41414E), // 链接颜色
+                    color: Color(0xFF41414E),
                   ),
                 ),
               ),

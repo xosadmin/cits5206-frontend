@@ -79,12 +79,12 @@ class ApiService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['Status'] == true) {
-        print("密码修改成功");
+        print("Password change successful");
       } else {
-        print("密码修改失败");
+        print("Password change failed");
       }
     } else {
-      print("服务器错误: ${response.statusCode}");
+      print("Server error: ${response.statusCode}");
     }
   }
 
@@ -106,12 +106,12 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        print('Interests sent successfully');
+        print('Interests marked successfully');
       } else {
-        print('Failed to send interests: ${response.statusCode}');
+        print('Failed to mark interests: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error sending interests: $e');
+      print('Error marking interests: $e');
     }
   }
 }

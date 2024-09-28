@@ -8,7 +8,7 @@ class SubscriptionsPage extends StatefulWidget {
 }
 
 class _SubscriptionsPageState extends State<SubscriptionsPage> {
-  bool _isFollowing = true; // 是否关注所有播客
+  bool _isFollowing = true;
   final List<String> podcastNames = [
     "Dateline NBC",
     "The Daily",
@@ -31,7 +31,6 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 第一部分：标题和说明文本
             const SizedBox(height: 20),
             const Text(
               'Import your subscriptions',
@@ -43,8 +42,6 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-
-            // 第二部分：找到的节目数+取消关注按钮
             const Text(
               'We found 3 shows',
               style: TextStyle(fontSize: 16),
@@ -56,15 +53,13 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
               child: OutlinedButton(
                 onPressed: () {
                   setState(() {
-                    _isFollowing = !_isFollowing; // 切换关注状态
+                    _isFollowing = !_isFollowing;
                   });
                 },
                 child: Text(_isFollowing ? 'Unfollow all' : 'Follow all'),
               ),
             ),
             const SizedBox(height: 16),
-
-            // 第三部分：播客封面、名称和关注按钮
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(podcastNames.length, (index) {
@@ -122,8 +117,6 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
               }),
             ),
             const Spacer(),
-
-            // 第四部分：继续按钮
             SizedBox(
               width: 327,
               height: 52,
@@ -131,8 +124,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => InterestsPage()), // 跳转到兴趣页面
+                    MaterialPageRoute(builder: (context) => InterestsPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

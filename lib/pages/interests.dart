@@ -1,3 +1,4 @@
+import 'package:audiopin_frontend/pages/homepage.dart';
 import 'package:flutter/material.dart';
 
 class InterestsPage extends StatefulWidget {
@@ -33,7 +34,6 @@ class _InterestsPageState extends State<InterestsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
-            // 第一部分：标题
             SizedBox(height: 20),
             Text(
               'Tell us what your',
@@ -46,7 +46,6 @@ class _InterestsPageState extends State<InterestsPage> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 24),
-            // 第二部分：兴趣标签
             Wrap(
               alignment: WrapAlignment.center,
               spacing: 10,
@@ -86,7 +85,6 @@ class _InterestsPageState extends State<InterestsPage> {
               }).toList(),
             ),
             Spacer(),
-            // 第三部分：按钮
             SizedBox(
               width: 327,
               height: 52,
@@ -117,7 +115,10 @@ class _InterestsPageState extends State<InterestsPage> {
               child: ElevatedButton(
                 onPressed: selectedInterests.isNotEmpty
                     ? () {
-                        // Navigate to next page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        ); // Navigate to next page
                       }
                     : null,
                 child: Text(

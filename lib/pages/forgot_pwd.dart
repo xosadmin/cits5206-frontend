@@ -22,7 +22,7 @@ class ForgotPasswordPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 第一部分：图片和提示文字
+              // First part: images and text
               const SizedBox(height: 40),
               Image.asset(
                 'assets/images/Email_3_1.png',
@@ -40,7 +40,7 @@ class ForgotPasswordPage extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              // 第二部分：Email和输入框
+              // Second part: Email and input
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -49,7 +49,7 @@ class ForgotPasswordPage extends StatelessWidget {
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                   SizedBox(
-                    width: 327, // 设置宽度为327像素
+                    width: 327,
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
@@ -62,19 +62,19 @@ class ForgotPasswordPage extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              // 第三部分：Send按钮
+              // Third part: send button
               SizedBox(
                 width: 327,
-                height: 50, // 设置按钮高度为50
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(
                         context, '/verify_mail'); // Handle send action
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00008B), // 按钮背景色
+                    backgroundColor: const Color(0xFF00008B),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6), // 按钮圆角
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                   child: const Text(

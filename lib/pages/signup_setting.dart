@@ -50,7 +50,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, // 确保整体内容居中
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
               child: Column(
@@ -72,13 +72,12 @@ class _SignUpSettingState extends State<SignUpSetting> {
                     label: 'Date of birth',
                     hintText: 'YYYY/MM/DD',
                     controller: dobController,
-                    TextInputFormatters: [dateFormatter], // 添加生日的格式限制
+                    TextInputFormatters: [dateFormatter],
                   ),
                 ],
               ),
             ),
             const Spacer(),
-            // 将蓝框整体内容向下移动30px
             const SizedBox(height: 30),
             Center(
               child: Column(
@@ -145,7 +144,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
     required String label,
     required String hintText,
     required TextEditingController controller,
-    List<TextInputFormatter>? TextInputFormatters, //添加inputFormatters参数
+    List<TextInputFormatter>? TextInputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
