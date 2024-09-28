@@ -359,4 +359,3 @@ hs_err_pid*
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,flutter,androidstudio,android,intellij
-/pubspec.lock
