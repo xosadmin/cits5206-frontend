@@ -24,39 +24,16 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   Timer? _timer;
   bool isTimerSet = false;
   late AudioPlayer _audioPlayer;
-  bool isPlaying = false;
-  final ValueNotifier<double> _playbackSpeedNotifier = ValueNotifier(1.0);
+  double currentSpeed = 1.0;
   Duration _currentPosition = Duration.zero; // Track the current position
-  late Duration _totalDuration = Duration.zero; // Track the total duration
+  final Duration _totalDuration = Duration.zero; // Track the total duration
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
-
-    // Set the audio URL (replace with your audio file)
-    _audioPlayer
-        .setUrl(
-            'https://dcs-cached.megaphone.fm/SCIM2145176738.mp3?key=e925ed99d2a92b5c640e39df16bcddb1&request_event_id=016844ba-39f9-407d-83b7-f1257c956f77&timetoken=1724177734_C2A1DBA5D138FE3262B38153851C38B8')
-        .then((_) {
-      setState(() {
-        _totalDuration = _audioPlayer.duration ?? Duration.zero;
-      });
-    });
-
-    // Listen to changes in the audio player state (playing, paused, etc.)
-    _audioPlayer.playerStateStream.listen((playerState) {
-      setState(() {
-        isPlaying = playerState.playing;
-      });
-    });
-
-    // Listen to changes in the audio position
-    _audioPlayer.positionStream.listen((position) {
-      setState(() {
-        _currentPosition = position;
-      });
-    });
+    _audioPlayer.setUrl(
+        'https://example.com/audio.mp3'); // Replace with actual audio URL
   }
 
   // Text controllers for hours and minutes input
@@ -360,52 +337,6 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
     );
   }
 
-  void _showPlaybackSpeedModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Playback Speed',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              ValueListenableBuilder<double>(
-                valueListenable: _playbackSpeedNotifier,
-                builder: (context, playbackSpeed, child) {
-                  return Column(
-                    children: [
-                      Slider(
-                        value: playbackSpeed,
-                        min: 0.5,
-                        max: 3.0,
-                        divisions: 25,
-                        label: playbackSpeed.toStringAsFixed(1),
-                        onChanged: (value) {
-                          _playbackSpeedNotifier.value = value; // Update the ValueNotifier
-                          _audioPlayer.setSpeed(value); // Set the new speed
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        'Speed: ${playbackSpeed.toStringAsFixed(1)}x',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _shareEpisode() {
     // Sample text or URL to share
     const String episodeLink = 'https://example.com/podcast/episode/229';
@@ -416,7 +347,6 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
   void dispose() {
     // Cancel the timer if the widget is disposed to prevent memory leaks
     _timer?.cancel();
-    _playbackSpeedNotifier.dispose();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -440,6 +370,12 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
 
     _audioPlayer
         .seek(newPosition > Duration.zero ? newPosition : Duration.zero);
+  }
+
+  // Playback speed control
+  void changePlaybackSpeed(double speed) {
+    currentSpeed = speed;
+    _audioPlayer.setSpeed(speed);
   }
 
   @override
@@ -513,10 +449,8 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                 Text(
                   "Podcast Name",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 14.0,
-                      color: Color(0xFF41414e)),
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14.0, color: Color(0xFF41414e)),
+
                 )
               ],
             ),
@@ -534,34 +468,20 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
                         size: 28,
                       )),
                   IconButton(
-                      onPressed: () {
-                        rewindAudio();
-                      },
+                      onPressed: () {},
                       icon: const Icon(
                         Icons.replay_10_rounded,
                         size: 28,
                       )),
                   IconButton(
-                      onPressed: () {
-                        if (isPlaying) {
-                          _audioPlayer.pause();
-                        } else {
-                          _audioPlayer.play();
-                        }
-                      },
-                      icon: Icon(
-                        isPlaying
-                            ? Icons.pause_circle_filled
-                            : Icons.play_circle_fill_rounded,
-                        size: 52,
-                      )),
+                      onPressed: () {},
+                      icon:
+                          const Icon(Icons.play_circle_fill_rounded, size: 52)),
                   IconButton(
-                      onPressed: () {
-                        fastForwardAudio();
-                      },
+                      onPressed: () {},
                       icon: const Icon(Icons.forward_10_rounded, size: 28)),
                   IconButton(
-                      onPressed: _showPlaybackSpeedModal,
+                      onPressed: () {},
                       icon: const Icon(Icons.one_x_mobiledata, size: 28)),
                 ],
               ),
@@ -583,8 +503,7 @@ class _MusicPlayerPageState extends State<MusicPlayerPage> {
               child: SliderTheme(
                 data: const SliderThemeData(
                     thumbColor: Color(0xFF41414e),
-                    thumbShape:
-                        RoundSliderThumbShape(enabledThumbRadius: 4.75)),
+                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4.75)),
                 child: Slider(
                   value: _currentPosition.inSeconds.toDouble(),
                   min: 0,
