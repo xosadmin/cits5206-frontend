@@ -30,20 +30,32 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  // register function related
+  // Register user function
   Future<void> _registerUser() async {
     String email = emailController.text;
     String password = passwordController.text;
 
-    bool success = await ApiService.registerUser(email, password);
+    try {
+      bool success = await ApiService.registerUser(email, password);
 
-    if (success) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SignUpSetting()));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Registration failed. Please try again.'),
-      ));
+      if (success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpSetting()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registration failed. Please try again.'),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
     }
   }
 

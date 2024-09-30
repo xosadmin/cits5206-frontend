@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audiopin_frontend/pages/import.dart';
+import 'package:audiopin_frontend/api_service.dart'; // Import your API service
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpSetting extends StatefulWidget {
@@ -16,8 +17,11 @@ class _SignUpSettingState extends State<SignUpSetting> {
   final TextEditingController dobController = TextEditingController();
   bool _isFilled = false;
 
+  // Assume these are fetched from storage or passed in
+  String userID = "your_userID_here";
+
   final dateFormatter = MaskTextInputFormatter(
-      mask: '####/##/##', filter: {"#": RegExp(r'[0-9]')});
+      mask: '##/##/####', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   void initState() {
@@ -33,6 +37,15 @@ class _SignUpSettingState extends State<SignUpSetting> {
           lastNameController.text.isNotEmpty &&
           dobController.text.isNotEmpty;
     });
+  }
+
+  // Update user information using API
+  Future<void> _updateUserInfo() async {
+    String firstName = firstNameController.text;
+    String lastName = lastNameController.text;
+    String dob = dobController.text;
+
+    await ApiService.setUserInfo(userID, firstName, lastName, dob);
   }
 
   @override
@@ -70,7 +83,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     label: 'Date of birth',
-                    hintText: 'YYYY/MM/DD',
+                    hintText: 'DD/MM/YYYY',
                     controller: dobController,
                     TextInputFormatters: [dateFormatter],
                   ),
@@ -106,7 +119,8 @@ class _SignUpSettingState extends State<SignUpSetting> {
                     height: 52,
                     child: ElevatedButton(
                       onPressed: _isFilled
-                          ? () {
+                          ? () async {
+                              await _updateUserInfo();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

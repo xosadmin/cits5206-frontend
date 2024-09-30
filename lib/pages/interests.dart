@@ -1,4 +1,5 @@
 import 'package:audiopin_frontend/pages/homepage.dart';
+import 'package:audiopin_frontend/api_service.dart'; // Ensure you import the API service
 import 'package:flutter/material.dart';
 
 class InterestsPage extends StatefulWidget {
@@ -23,6 +24,25 @@ class _InterestsPageState extends State<InterestsPage> {
     'Health',
     'Education'
   ];
+
+  // Replace with actual token and userID once you obtain them after login/registration
+  String token = "your_token_here";
+  String userID = "your_userID_here";
+
+  // Function to save interests using the setUserInterests API method
+  Future<void> _saveInterests() async {
+    if (selectedInterests.isNotEmpty) {
+      try {
+        await ApiService.setUserInterests(token, userID, selectedInterests);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } catch (e) {
+        print('Failed to save interests: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +111,10 @@ class _InterestsPageState extends State<InterestsPage> {
               child: OutlinedButton(
                 onPressed: selectedInterests.isNotEmpty
                     ? () {
-                        // Continue button logic
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        ); // No interest logic
                       }
                     : null,
                 child: Text(
@@ -118,7 +141,7 @@ class _InterestsPageState extends State<InterestsPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => HomePage()),
-                        ); // Navigate to next page
+                        );
                       }
                     : null,
                 child: Text(
