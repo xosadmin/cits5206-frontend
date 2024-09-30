@@ -70,10 +70,10 @@ class ApiService {
     final response = await http.post(
       url,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'password': newPassword}),
+      body: 'password=${Uri.encodeComponent(newPassword)}',
     );
 
     if (response.statusCode == 200) {
@@ -95,14 +95,10 @@ class ApiService {
     final response = await http.post(
       url,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: jsonEncode({
-        'userID': userID,
-        'firstname': firstname,
-        'lastname': lastname,
-        'dob': dob,
-      }),
+      body:
+          'userID=${Uri.encodeComponent(userID)}&firstname=${Uri.encodeComponent(firstname)}&lastname=${Uri.encodeComponent(lastname)}&dob=${Uri.encodeComponent(dob)}',
     );
 
     if (response.statusCode == 200) {
@@ -124,14 +120,11 @@ class ApiService {
     final response = await http.post(
       url,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        'userID': userID,
-        'interests':
-            interests.join(','), // Convert list to a comma-separated string
-      }),
+      body:
+          'userID=${Uri.encodeComponent(userID)}&interests=${Uri.encodeComponent(interests.join(","))}',
     );
 
     if (response.statusCode == 200) {
