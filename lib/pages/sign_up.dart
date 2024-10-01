@@ -39,9 +39,15 @@ class _SignUpPageState extends State<SignUpPage> {
       bool success = await ApiService.registerUser(email, password);
 
       if (success) {
+        // 获取 userID 后保存到本地
+        String? userID = await UserService.getUserID();
+        if (userID != null) {
+          await UserService.saveUserID(userID); // 保存 userID
+        }
+
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SignUpSetting()),
+          MaterialPageRoute(builder: (context) => const SignUpSetting()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -167,7 +173,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SignInPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const SignInPage()),
                       );
                     },
                     child: const Text(

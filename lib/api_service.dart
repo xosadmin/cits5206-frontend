@@ -1,5 +1,45 @@
 import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 import 'dart:convert';
+
+class UserService {
+  // store userID to hive
+  static Future<void> saveUserID(String userID) async {
+    var box = await Hive.openBox('userBox');
+    await box.put('userID', userID);
+    print('Stored userID: $userID');
+  }
+
+  // get userID from hive
+  static Future<String?> getUserID() async {
+    var box = await Hive.openBox('userBox');
+    String? userID = box.get('userID');
+    print('Retrieved userID: $userID');
+    return userID;
+  }
+
+  // store Token to hive
+  static Future<void> saveToken(String token) async {
+    var box = await Hive.openBox('authBox');
+    await box.put('token', token);
+    print('Stored token: $token');
+  }
+
+  // get Token from hive
+  static Future<String?> getToken() async {
+    var box = await Hive.openBox('authBox');
+    String? token = box.get('token');
+    print('Retrieved token: $token');
+    return token;
+  }
+
+  // clear token when user logs out
+  static Future<void> clearToken() async {
+    var box = await Hive.openBox('authBox');
+    await box.delete('token');
+    print('Token cleared');
+  }
+}
 
 class ApiService {
   static const String baseUrl = "https://cits5206.7m7.moe";
@@ -17,8 +57,13 @@ class ApiService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['Status'] == true) {
+        // get token from backend API requests
+        String token = data['token'];
+        print("Login successful, token: $token");
+        // store token to hive
+        await UserService.saveToken(token);
         // Sign in successful, save token
-        print("Sign in successful, Token: ${data['Token']}");
+        print("Sign in successful, Token: $token");
         // You need to store the token for future use
       } else {
         print("Sign in failed");
@@ -47,8 +92,11 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = jsonDecode(response.body);
         if (data['Status'] == true) {
-          // Registration successful, save userID
+          // get userID from backend API requests
+          String userID = data['userID'];
           print("Registration successful, user ID: ${data['userID']}");
+          // store userID to hive
+          await UserService.saveUserID(userID);
           return true;
         } else {
           print("Registration failed");
@@ -115,13 +163,12 @@ class ApiService {
 
   // Update user interests function
   static Future<void> setUserInterests(
-      String token, String userID, List<String> interests) async {
+      String userID, List<String> interests) async {
     final url = Uri.parse('$baseUrl/setuserinterest');
     final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer $token',
       },
       body:
           'userID=${Uri.encodeComponent(userID)}&interests=${Uri.encodeComponent(interests.join(","))}',

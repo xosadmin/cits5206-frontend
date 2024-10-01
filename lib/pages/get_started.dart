@@ -101,7 +101,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   backgroundColor: const Color(0xFF00008B),
                 ),
-                child: Text('Get Started >>',
+                child: const Text('Get Started >>',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
               const SizedBox(height: 40),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:audiopin_frontend/api_service.dart';
-import 'package:audiopin_frontend/pages/forgot_pwd.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -28,6 +27,31 @@ class _SignInPageState extends State<SignInPage> {
       _isFilled =
           emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
     });
+  }
+
+  // login and save token
+  Future<void> _loginUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    setState(() {
+      _isClicked = true;
+    });
+
+    try {
+      await ApiService.loginUser(emailController.text, passwordController.text);
+      Navigator.pushReplacementNamed(context, '/homepage');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
+    } finally {
+      setState(() {
+        _isClicked = false;
+      });
+    }
   }
 
   @override

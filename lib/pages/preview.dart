@@ -1,14 +1,14 @@
-import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'discover.dart';
-import 'episode.dart';
 import 'library.dart';
 import 'setting.dart';
 
-class PreviewPage extends StatefulWidget  {
+class PreviewPage extends StatefulWidget {
+  const PreviewPage({super.key});
+
   @override
   _PreviewPageState createState() => _PreviewPageState();
 }
@@ -16,12 +16,12 @@ class PreviewPage extends StatefulWidget  {
 class _PreviewPageState extends State<PreviewPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -37,92 +37,92 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
-              onPressed: () {
-                Navigator.pop(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeBody(),
-                  ),
-                ); // Navigate back to the previous screen
-              },
-            ),
-            centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.notifications),
-                onPressed: () {
-                  print("Settings pressed");
-                },
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFCFCFF),
+        leading: IconButton(
+          icon: const Icon(Icons
+              .arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
+          onPressed: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeBody(),
               ),
-            ],
+            ); // Navigate back to the previous screen
+          },
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              print("Settings pressed");
+            },
           ),
-          backgroundColor: Color(0xFFFCFCFF),
-          body: PreviewBody(
-            listtitle: args['listtitle'],
-            listimageurls: args['listimageurls'],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Color(0xFFFCFCFF),
-              type: BottomNavigationBarType.fixed,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Feed',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.note),
-                  label: 'Pins',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.search),
-                  label: 'Discover',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.collections),
-                  label: 'Library',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
-                ),
-              ],
-              currentIndex: _selectedIndex, // Current selected index
-              selectedItemColor: Colors.blue, // Color of the selected item
-              onTap: (index){
-                if (index == 0){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                }else if (index == 2){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DiscoverPage()),
-                  );
-                }else if (index == 3){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LibraryPage()),
-                  );
-                }else if (index == 4){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingPage()),
-                  );
-                }else{
-                  _onItemTapped(index);
-                }
-              }
-          ),
-        )
-    );
+        ],
+      ),
+      backgroundColor: const Color(0xFFFCFCFF),
+      body: PreviewBody(
+        listtitle: args['listtitle'],
+        listimageurls: args['listimageurls'],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: const Color(0xFFFCFCFF),
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Feed',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.note),
+              label: 'Pins',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Discover',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.collections),
+              label: 'Library',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex, // Current selected index
+          selectedItemColor: Colors.blue, // Color of the selected item
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            } else if (index == 2) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DiscoverPage()),
+              );
+            } else if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LibraryPage()),
+              );
+            } else if (index == 4) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingPage()),
+              );
+            } else {
+              _onItemTapped(index);
+            }
+          }),
+    ));
   }
 }
 
@@ -130,7 +130,8 @@ class PreviewBody extends StatefulWidget {
   final String listtitle;
   final String listimageurls;
 
-  PreviewBody({
+  const PreviewBody({
+    super.key,
     required this.listtitle,
     required this.listimageurls,
   });
@@ -139,8 +140,7 @@ class PreviewBody extends StatefulWidget {
   _PreviewBodyState createState() => _PreviewBodyState();
 }
 
-class _PreviewBodyState extends State<PreviewBody>{
-
+class _PreviewBodyState extends State<PreviewBody> {
   bool _isClickedPlay = false;
   String noteSubtitle = "testingSubtitle";
   String noteIDs = '';
@@ -156,7 +156,6 @@ class _PreviewBodyState extends State<PreviewBody>{
   }
 
   void loadDatas() async {
-
     List<String> fetchedLists = await getNotesDetails(widget.listtitle);
     setState(() {
       noteIDs = fetchedLists[0];
@@ -205,7 +204,7 @@ class _PreviewBodyState extends State<PreviewBody>{
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Color(0x1A282626), // Shadow color with transparency
                   offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -228,20 +227,22 @@ class _PreviewBodyState extends State<PreviewBody>{
                         // Existing Text widgets
                         Text(
                           widget.listtitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 4.0),
+                        const SizedBox(height: 4.0),
                         Text(
                           noteSubtitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 4.0), // Optional: Add spacing between text and the row
+                        const SizedBox(
+                            height:
+                                4.0), // Optional: Add spacing between text and the row
                         // New Row with button and share icon
                         Row(
                           children: [
@@ -249,23 +250,28 @@ class _PreviewBodyState extends State<PreviewBody>{
                               onPressed: () {
                                 // Handle button press
                               },
-                              icon: Icon(Icons.add, size: 16.0), // "+" icon
-                              label: Text("Subscribe"), // "Subscribe" text
+                              icon:
+                                  const Icon(Icons.add, size: 16.0), // "+" icon
+                              label:
+                                  const Text("Subscribe"), // "Subscribe" text
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                minimumSize: Size(90.0, 25.0),
-                                side: BorderSide(
+                                minimumSize: const Size(90.0, 25.0),
+                                side: const BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(
+                                      15.0), // Optional: Make the border rounded
                                 ),
                               ),
                             ),
-                            SizedBox(width: 16.0), // Space between button and share icon
+                            const SizedBox(
+                                width:
+                                    16.0), // Space between button and share icon
                             IconButton(
-                              icon: Icon(Icons.share, size: 16.0),
+                              icon: const Icon(Icons.share, size: 16.0),
                               color: Colors.blue, // Icon color
                               onPressed: () {
                                 // Handle share button press
@@ -285,10 +291,11 @@ class _PreviewBodyState extends State<PreviewBody>{
                   child: Container(
                     width: 76.0, // Width of each cube
                     height: 76.0,
-                    margin: EdgeInsets.symmetric(horizontal: 4.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(4.0), // Border radius for the container
+                      borderRadius: BorderRadius.circular(
+                          4.0), // Border radius for the container
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(4.0),
@@ -306,7 +313,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                   right: 16.0,
                   child: Text(
                     noteContents,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14.0,
                     ),
                     textAlign: TextAlign.left, // Center the text horizontally
@@ -315,166 +322,184 @@ class _PreviewBodyState extends State<PreviewBody>{
               ],
             ),
           ),
-          SizedBox(height: 16.0), // Space between the container and the column of cards
+          const SizedBox(
+              height:
+                  16.0), // Space between the container and the column of cards
           Expanded(
             child: ListView.builder(
               itemCount: notePodids.length, // Number of cards
               itemBuilder: (context, index) {
                 return InkWell(
-                    onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/episode',
-                    arguments: {
-                      'listtitle': noteIDs,
-                      'notepodid': notePodids,
-                      'notedate': noteDates,
-                      'notecontent': noteContents,
-                    },
-                  );
-                },
-                    child: Card(
-                      color: Colors.white,
-                      margin: EdgeInsets.symmetric(vertical: 8.0), // Space between cards
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Title at the top
-                            Text(
-                              "# ${notePodids}", // Replace with your dynamic title
-                              style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.black
-                              ),
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/episode',
+                      arguments: {
+                        'listtitle': noteIDs,
+                        'notepodid': notePodids,
+                        'notedate': noteDates,
+                        'notecontent': noteContents,
+                      },
+                    );
+                  },
+                  child: Card(
+                    color: Colors.white,
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0), // Space between cards
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title at the top
+                          Text(
+                            "# $notePodids", // Replace with your dynamic title
+                            style: const TextStyle(
+                                fontSize: 12.0, color: Colors.black),
+                          ),
+                          const SizedBox(height: 8.0),
+                          // Subtitle in the middle
+                          Text(
+                            noteDates, // Replace with your dynamic subtitle
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
                             ),
-                            SizedBox(height: 8.0),
-                            // Subtitle in the middle
-                            Text(
-                              noteDates, // Replace with your dynamic subtitle
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            SizedBox(height: 16.0),
-                            // Button at the bottom
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: OverflowBar(
-                                alignment: MainAxisAlignment.spaceBetween, // Enable horizontal scrolling if needed
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _isClickedPlay = !_isClickedPlay; // Toggle the state on press
-                                      });
-                                      print(listTitle[index]);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      minimumSize: Size(60.0, 26.0),
-                                      side: BorderSide(
-                                        color: Colors.grey, // Set the border color
-                                        width: 0.7, // Set the border width (boldness)
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                      ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          // Button at the bottom
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: OverflowBar(
+                              alignment: MainAxisAlignment
+                                  .spaceBetween, // Enable horizontal scrolling if needed
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _isClickedPlay =
+                                          !_isClickedPlay; // Toggle the state on press
+                                    });
+                                    print(listTitle[index]);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    minimumSize: const Size(60.0, 26.0),
+                                    side: const BorderSide(
+                                      color:
+                                          Colors.grey, // Set the border color
+                                      width:
+                                          0.7, // Set the border width (boldness)
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          _isClickedPlay ? Icons.check : Icons.play_circle,
-                                          color: Color(0xFF1D1DD1),
-                                          size: 10.0,
-                                        ),
-                                        SizedBox(width: 8.0),
-                                        Text(
-                                          'Play',
-                                          style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                        ),
-                                      ],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          5.0), // Optional: Make the border rounded
                                     ),
                                   ),
-                                  SizedBox(width: 8.0), // Add spacing between buttons
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      print('Add');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      minimumSize: Size(100.0, 26.0),
-                                      side: BorderSide(
-                                        color: Colors.grey, // Set the border color
-                                        width: 0.7, // Set the border width (boldness)
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        _isClickedPlay
+                                            ? Icons.check
+                                            : Icons.play_circle,
+                                        color: const Color(0xFF1D1DD1),
+                                        size: 10.0,
                                       ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                      const SizedBox(width: 8.0),
+                                      const Text(
+                                        'Play',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10.0),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width: 8.0), // Add spacing between buttons
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print('Add');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    minimumSize: const Size(100.0, 26.0),
+                                    side: const BorderSide(
+                                      color:
+                                          Colors.grey, // Set the border color
+                                      width:
+                                          0.7, // Set the border width (boldness)
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.add,
-                                          color: Color(0xFF1D1DD1),
-                                          size: 10.0,
-                                        ),
-                                        SizedBox(width: 8.0),
-                                        Text(
-                                          'Add to queue',
-                                          style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                        ),
-                                      ],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          5.0), // Optional: Make the border rounded
                                     ),
                                   ),
-                                  SizedBox(width: 8.0), // Add spacing between buttons
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      print('Download');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      minimumSize: Size(90.0, 26.0),
-                                      side: BorderSide(
-                                        color: Colors.grey, // Set the border color
-                                        width: 0.7, // Set the border width (boldness)
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: Color(0xFF1D1DD1),
+                                        size: 10.0,
                                       ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                      SizedBox(width: 8.0),
+                                      Text(
+                                        'Add to queue',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10.0),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width: 8.0), // Add spacing between buttons
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print('Download');
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    minimumSize: const Size(90.0, 26.0),
+                                    side: const BorderSide(
+                                      color:
+                                          Colors.grey, // Set the border color
+                                      width:
+                                          0.7, // Set the border width (boldness)
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.download,
-                                          color: Color(0xFF1D1DD1),
-                                          size: 10.0,
-                                        ),
-                                        SizedBox(width: 8.0),
-                                        Text(
-                                          'Download',
-                                          style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                        ),
-                                      ],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          5.0), // Optional: Make the border rounded
                                     ),
                                   ),
-                                ],
-                              ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.download,
+                                        color: Color(0xFF1D1DD1),
+                                        size: 10.0,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text(
+                                        'Download',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10.0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
                 );
-
               },
             ),
           ),
@@ -513,18 +538,17 @@ Future<List<String>> getNotesDetails(String noteID) async {
 
   // Check the response status code
   if (response.statusCode == 200) {
-      var noteDetails = jsonDecode(response.body);
-      Map<String, dynamic> parsedResponse = jsonDecode(response.body);
-      res.add(parsedResponse["NoteID"]);
-      res.add(parsedResponse["Content"]);
-      res.add(parsedResponse["DateCreated"]);
-      res.add(parsedResponse["PodcastID"]);
-    } else {}
+    var noteDetails = jsonDecode(response.body);
+    Map<String, dynamic> parsedResponse = jsonDecode(response.body);
+    res.add(parsedResponse["NoteID"]);
+    res.add(parsedResponse["Content"]);
+    res.add(parsedResponse["DateCreated"]);
+    res.add(parsedResponse["PodcastID"]);
+  } else {}
 
   return res;
 }
 
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(const MaterialApp(
       home: PreviewPage(),
     ));

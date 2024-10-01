@@ -124,7 +124,8 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => InterestsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const InterestsPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
