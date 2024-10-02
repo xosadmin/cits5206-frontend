@@ -1,5 +1,7 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:audiopin_frontend/pages/discover.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'pages/get_started.dart';
 import 'pages/welcome.dart';
 import 'pages/sign_in.dart';
@@ -15,9 +17,30 @@ import 'pages/library.dart';
 import 'pages/import.dart';
 import 'pages/interests.dart' as interestsPage;
 import 'pages/subscriptions.dart';
+import 'services/audio_handler.dart';
+import 'services/audio_clip_transcription_service.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+   // Create an instance of the AudioClipTranscriptionService
+  final audioClipService = AudioClipTranscriptionService();
+
+  // Preload FFmpeg before initializing the app
+  await audioClipService.preload();
+  final handler = await AudioService.init(
+    builder: () => PodcastAudioHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.example.audiopin_frontend',
+      androidNotificationChannelName: 'AudioPin',
+      androidNotificationOngoing: true,
+    ),
+  );
+  runApp(
+    Provider<PodcastAudioHandler>.value(
+      value: handler,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
