@@ -1,7 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:audiopin_frontend/api_service.dart';
+import 'package:audiopin_frontend/pages/subscriptions.dart';
 
-class ImportPage extends StatelessWidget {
-  const ImportPage({super.key});
+class ImportPage extends StatefulWidget {
+  @override
+  _ImportPageState createState() => _ImportPageState();
+}
+
+class _ImportPageState extends State<ImportPage> {
+  String? userID;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserID(); // Fetch userID on page initialization
+  }
+
+  Future<void> _getUserID() async {
+    String? id = await UserService.getUserID();
+    setState(() {
+      userID = id;
+      print(
+          'Retrieved userID: $userID'); // Confirm that userID is fetched correctly
+    });
+  }
+
+  Future<void> _importOPML(BuildContext context) async {
+    // Let the user pick the OPML or XML file
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xml', 'opml'], // Allow XML or OPML files
+      withData: true, // Ensure file data is available
+    );
+
+    if (result != null) {
+      // Get the selected file's name to check its extension
+      String? fileName = result.files.single.name;
+
+      // Check if the selected file has the correct extension
+      if (fileName.endsWith('.opml') || fileName.endsWith('.xml')) {
+        // If the file is valid, proceed with handling the OPML content
+        String opmlContent = String.fromCharCodes(result.files.single.bytes!);
+
+        // Debugging step: Print the OPML content
+        print('OPML Content: $opmlContent');
+
+        // Ensure userID exists
+        if (userID == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('User not authenticated. Please log in.')),
+          );
+          return;
+        }
+
+        try {
+          // Call the API to upload and parse OPML
+          List<Map<String, String>> podcasts =
+              await ApiService.uploadAndParseOPML(opmlContent);
+
+          // Navigate to Subscriptions page with the parsed podcasts
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImportSubscriptionsPage(podcasts: podcasts),
+            ),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to import OPML: $e')),
+          );
+        }
+      } else {
+        // If the file extension is not valid, show a message
+        print('Selected file is not a valid OPML or XML file.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a valid OPML or XML file.')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +101,7 @@ class ImportPage extends StatelessWidget {
               backgroundColor: const Color(0xFFEAFEF1),
               borderColor: const Color(0xFF1ED660),
               icon: Image.asset('assets/icons/spotify.png'),
+              context: context,
             ),
             const SizedBox(height: 12),
             _buildImportButton(
@@ -30,6 +109,7 @@ class ImportPage extends StatelessWidget {
               backgroundColor: const Color(0xFFF9F4FF),
               borderColor: const Color(0xFF986FC3),
               icon: Image.asset('assets/icons/applemusic.png'),
+              context: context,
             ),
             const SizedBox(height: 12),
             _buildImportButton(
@@ -37,6 +117,7 @@ class ImportPage extends StatelessWidget {
               backgroundColor: const Color(0xFFFFE9E9),
               borderColor: const Color(0xFFFF0000),
               icon: Image.asset('assets/icons/youtube.png'),
+              context: context,
             ),
             const SizedBox(height: 450),
             SizedBox(
@@ -47,7 +128,7 @@ class ImportPage extends StatelessWidget {
                   Navigator.pushNamed(context, '/interests');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00008B), // 蓝色背景
+                  backgroundColor: const Color(0xFF00008B),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -72,13 +153,14 @@ class ImportPage extends StatelessWidget {
     required Color backgroundColor,
     required Color borderColor,
     required Widget icon,
+    required BuildContext context,
   }) {
     return SizedBox(
       width: 327,
       height: 52,
       child: OutlinedButton.icon(
         onPressed: () {
-          // click logic
+          _importOPML(context); // Trigger import operation on button click
         },
         icon: icon,
         label: Text(

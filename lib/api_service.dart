@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'dart:convert';
+import 'package:xml/xml.dart' as xml;
 
 class UserService {
   // store userID to hive
@@ -183,6 +184,49 @@ class ApiService {
       }
     } else {
       print("Server error: ${response.statusCode}");
+    }
+  }
+
+  // upload and parse OPML file
+  static Future<List<Map<String, String>>> uploadAndParseOPML(
+      String opmlContent) async {
+    final url = Uri.parse('$baseUrl/uploadopml');
+    String? userID = await UserService.getUserID();
+    String? token = await UserService.getToken();
+
+    if (userID == null) {
+      throw Exception('User not authenticated');
+    }
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body:
+            'userID=${Uri.encodeComponent(userID)}&opmlContent=${Uri.encodeComponent(opmlContent)}',
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['Status'] == true) {
+          List<Map<String, String>> podcasts = (data['podcasts'] as List)
+              .map((podcast) => {
+                    'title': podcast['title'] as String,
+                    'xmlUrl': podcast['xmlurl'] as String,
+                  })
+              .toList();
+          return podcasts;
+        } else {
+          throw Exception(data['Message'] ?? 'Failed to upload and parse OPML');
+        }
+      } else {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("OPML upload and parse failed: $e");
+      rethrow;
     }
   }
 }

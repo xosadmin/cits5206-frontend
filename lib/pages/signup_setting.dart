@@ -124,7 +124,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const ImportPage()),
+                                    builder: (context) => ImportPage()),
                               );
                             }
                           : null,

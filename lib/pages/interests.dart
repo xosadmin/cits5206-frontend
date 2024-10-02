@@ -53,7 +53,7 @@ class _InterestsPageState extends State<InterestsPage> {
 
   // Function to get userID from Hive storage
   Future<void> _getUserID() async {
-    String? id = await UserService.getUserID(); // 使用 UserService 获取 userID
+    String? id = await UserService.getUserID();
     setState(() {
       userID = id;
       print(

@@ -55,9 +55,9 @@ class MyApp extends StatelessWidget {
         '/setting': (context) => const SettingPage(),
         '/library': (context) => const LibraryPage(),
         '/signup_setting': (context) => const SignUpSetting(),
-        '/import': (context) => const ImportPage(),
+        '/import': (context) => ImportPage(),
         '/interests': (context) => const interestsPage.InterestsPage(),
-        '/subscriptions': (context) => const SubscriptionsPage(),
+        '/subscriptions': (context) => ImportSubscriptionsPage(podcasts: []),
       }, // set Welcome as the first page of app
     );
   }
