@@ -200,7 +200,7 @@ class PodcastAudioHandler extends BaseAudioHandler
   }
 
   @override
-  Future<void> customAction(String name, [Map<String, dynamic>? extras]) async {
+  Future<String> customAction(String name, [Map<String, dynamic>? extras]) async {
     switch (name) {
       case 'dispose':
         await _dispose();
@@ -215,33 +215,38 @@ class PodcastAudioHandler extends BaseAudioHandler
         _cancelSleepTimer();
         break;
     }
+    return "";
   }
 
-  Future<void> _dispose() async {
+  Future<String> _dispose() async {
     await _player.dispose();
     await _playbackState.close();
     await _mediaItem.close();
     await super.stop();
+    return "";
   }
 
-  Future<void> _transcribeClip(Map<String, dynamic>? extras) async {
+  Future<String> _transcribeClip(Map<String, dynamic>? extras) async {
     final url = extras?['url'] as String?;
     final start = extras?['start'] as Duration?;
     final end = extras?['end'] as Duration?;
     if (url != null && start != null && end != null) {
       await _transcriptionService.clipAndTranscribe(url, start, end);
     }
+    return "";
   }
 
-  void _setSleepTimer(Duration? duration) {
-    if (duration == null) return;
+  String _setSleepTimer(Duration? duration) {
+    if (duration == null) return "";
     _cancelSleepTimer();
     _sleepTimer = Timer(duration, stop);
+    return "";
   }
 
-  void _cancelSleepTimer() {
+  String _cancelSleepTimer() {
     _sleepTimer?.cancel();
     _sleepTimer = null;
+    return "";
   }
 
   @override

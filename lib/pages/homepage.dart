@@ -5,7 +5,7 @@ import 'discover.dart';
 import 'setting.dart';
 import 'library.dart';
 
-class HomePage extends StatefulWidget  {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
@@ -37,44 +37,44 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFFFCFCFF),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to the settings page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingPage()),
-                );
-              },
-              child: const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/image1.jpg'),
-              ),
-            ),
-          ),
-          title: const Text(
-              "My Feed",
-            style: TextStyle(
-              fontFamily: 'EuclidCircularA',
-              fontSize: 20,
-            ),
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                print("Settings pressed");
-              },
-            ),
-          ],
-        ),
+        child: Scaffold(
+      appBar: AppBar(
         backgroundColor: const Color(0xFFFCFCFF),
-        body: HomeBody(),
-        bottomNavigationBar: BottomNavigationBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: () {
+              // Navigate to the settings page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingPage()),
+              );
+            },
+            child: const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/image1.jpg'),
+            ),
+          ),
+        ),
+        title: const Text(
+          "My Feed",
+          style: TextStyle(
+            fontFamily: 'EuclidCircularA',
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              print("Settings pressed");
+            },
+          ),
+        ],
+      ),
+      backgroundColor: const Color(0xFFFCFCFF),
+      body: HomeBody(),
+      bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFFCFCFF),
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
@@ -101,34 +101,32 @@ class _HomePageState extends State<HomePage> {
           ],
           currentIndex: _selectedIndex, // Current selected index
           selectedItemColor: Colors.blue, // Color of the selected item
-          onTap: (index){
-            if (index == 0){
+          onTap: (index) {
+            if (index == 0) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
               );
-            }else if (index == 2){
+            } else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => DiscoverPage()),
               );
-            }else if (index == 3){
+            } else if (index == 3) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => LibraryPage()),
               );
-            }else if (index == 4){
+            } else if (index == 4) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SettingPage()),
               );
-            }else{
+            } else {
               _onItemTapped(index);
             }
-          }
-        ),
-      )
-    );
+          }),
+    ));
   }
 }
 
@@ -139,8 +137,7 @@ class HomeBody extends StatefulWidget {
   _HomeBodyState createState() => _HomeBodyState();
 }
 
-class _HomeBodyState extends State<HomeBody>{
-
+class _HomeBodyState extends State<HomeBody> {
   bool _isClickedPlay = false; // To track if the button is clicked
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
@@ -157,7 +154,6 @@ class _HomeBodyState extends State<HomeBody>{
     loadDatas();
   }
 
-
   void loadDatas() async {
     List<String> fetchedSubs = await getSubs();
     setState(() {
@@ -167,14 +163,14 @@ class _HomeBodyState extends State<HomeBody>{
 
     List<List<String>> fetchedLists = await getNotes();
     setState(() {
-      noteIDs = fetchedLists[0];
-      notePodids = fetchedLists[1];
-      noteDates = fetchedLists[2];
+      if (fetchedLists.isNotEmpty && fetchedLists.length == 3) {
+        noteIDs = fetchedLists[0];
+        notePodids = fetchedLists[1];
+        noteDates = fetchedLists[2];
+      }
     });
     print('$noteIDs $noteDates $notePodids');
   }
-
-
 
   final List<String> imageUrls = [
     'assets/images/note1.png',
@@ -194,11 +190,11 @@ class _HomeBodyState extends State<HomeBody>{
   ];
 
   final List<String> listImageUrls = [
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
-    'assets/images/image1.jpg',
+    'assets/images/image1.png',
+    'assets/images/image1.png',
+    'assets/images/image1.png',
+    'assets/images/image1.png',
+    'assets/images/image1.png',
   ];
 
   final List<String> listTitle = [
@@ -237,8 +233,6 @@ class _HomeBodyState extends State<HomeBody>{
     'Just for testing...',
   ];
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -247,7 +241,8 @@ class _HomeBodyState extends State<HomeBody>{
         // Subscriptions section
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
+          margin:
+              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
@@ -287,11 +282,12 @@ class _HomeBodyState extends State<HomeBody>{
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(4.0), // Border radius for the container
+                          borderRadius: BorderRadius.circular(
+                              4.0), // Border radius for the container
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4.0),
-                          child: Image.network(
+                          child: Image.asset(
                             imageUrls[index], // Load image from the URL
                             fit: BoxFit.cover, // Cover the entire cube
                           ),
@@ -341,7 +337,7 @@ class _HomeBodyState extends State<HomeBody>{
                                 // Image
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(5.0),
-                                  child: Image.network(
+                                  child: Image.asset(
                                     imageUrl,
                                     width: 35,
                                     height: 35,
@@ -352,7 +348,8 @@ class _HomeBodyState extends State<HomeBody>{
                                 // Title and Time
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         noteIDs[index],
@@ -408,7 +405,8 @@ class _HomeBodyState extends State<HomeBody>{
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  _isClickedPlay = !_isClickedPlay; // Toggle the state on press
+                                  _isClickedPlay =
+                                      !_isClickedPlay; // Toggle the state on press
                                 });
                                 print(listTitle[index]);
                               },
@@ -420,21 +418,25 @@ class _HomeBodyState extends State<HomeBody>{
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    _isClickedPlay ? Icons.check : Icons.play_circle,
+                                    _isClickedPlay
+                                        ? Icons.check
+                                        : Icons.play_circle,
                                     color: const Color(0xFF1D1DD1),
                                     size: 10.0,
                                   ),
                                   const SizedBox(width: 8.0),
                                   const Text(
                                     'Play',
-                                    style: TextStyle(color:Colors.grey, fontSize: 10.0),
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -451,7 +453,8 @@ class _HomeBodyState extends State<HomeBody>{
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: const Row(
@@ -465,7 +468,8 @@ class _HomeBodyState extends State<HomeBody>{
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Add to queue',
-                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -482,7 +486,8 @@ class _HomeBodyState extends State<HomeBody>{
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: const Row(
@@ -496,7 +501,8 @@ class _HomeBodyState extends State<HomeBody>{
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Download',
-                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -516,8 +522,7 @@ class _HomeBodyState extends State<HomeBody>{
   }
 }
 
-
-Future<List<String>>getSubs() async {
+Future<List<String>> getSubs() async {
   final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
 
   // Define the payload for the POST request
@@ -542,14 +547,27 @@ Future<List<String>>getSubs() async {
     body: encodedPayload,
   );
 
-  // Check the response status code
   if (response.statusCode == 200) {
-    List<dynamic> subsList = jsonDecode(response.body);
-    // Extract and return all NoteID values as a list of strings
-    return subsList.map<String>((sub) => sub['LibraryID'].toString()).toList();
-  } else {
-    return [];
+    // Decode the response body
+    if (jsonDecode(response.body) is List<Map<String, dynamic>>) {
+      // Decode the response body
+      List<dynamic> subsList = jsonDecode(response.body);
+
+      // Ensure subsList is a List<Map<String, dynamic>>
+      if (subsList is List<Map<String, dynamic>>) {
+        // Extract and return a list of LibraryID strings
+        return subsList
+            .map<String>((sub) => sub['LibraryID'].toString())
+            .toList();
+      } else {
+        throw Exception('Expected a list of subscriptions');
+      }
+    } else {
+      return []; // Return an empty list on error
+    }
   }
+  // Default return statement (in case the above conditions don't cover all paths)
+  return [];
 }
 
 Future<List<List<String>>> getNotes() async {
@@ -576,9 +594,13 @@ Future<List<List<String>>> getNotes() async {
   if (response.statusCode == 200) {
     List<dynamic> notesList = jsonDecode(response.body);
     // Extract and return all NoteID values as a list of strings
-    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
-    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
-    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
+    List<String> id =
+        notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod =
+        notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList
+        .map<String>((note) => note['DateCreated'].toString())
+        .toList();
     //return getNotesDetails(res);
     return [id, pod, date];
   } else {
@@ -632,11 +654,6 @@ Future<List<List<String>>> getNotes() async {
 //   return [noteids, contents, dates, podids];
 // }
 
-
-
-
-
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(MaterialApp(
       home: HomePage(),
     ));

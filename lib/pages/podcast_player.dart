@@ -19,6 +19,7 @@ class PodcastPlayerPage extends StatelessWidget {
             _buildEpisodeInfo(audioHandler),
             _buildProgressBar(audioHandler),
             _buildPlaybackControls(audioHandler),
+            _buildClippingButton(audioHandler), // New Clipping Button
             _buildBottomTabs(),
           ],
         ),
@@ -170,6 +171,66 @@ class PodcastPlayerPage extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildClippingButton(PodcastAudioHandler audioHandler) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16.0),
+    child: ElevatedButton(
+      onPressed: () async {
+       var transcription =  await _handleClipAudio(audioHandler);  // Call the clip handler
+       print(transcription + ": transcribed");
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+        child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
+      ),
+    ),
+  );
+}
+
+Future<String> _handleClipAudio(PodcastAudioHandler audioHandler) async {
+  // Get current media item and playback position
+  final mediaItem = audioHandler.mediaItem.value;
+  final currentPosition = audioHandler.playbackState.value.position;
+
+  // Ensure mediaItem is not null and has a valid duration
+  if (mediaItem == null || mediaItem.duration == null) {
+    print('No valid media item or media duration');
+    return "";
+  }
+
+  // Define a clip duration around the current position (e.g., 30 seconds)
+  const clipDuration = Duration(seconds: 15);
+  final startPosition = currentPosition - clipDuration;
+  final endPosition = currentPosition + clipDuration;
+
+  // Validate positions to ensure they are within the bounds of the media item
+  final validStart = startPosition.isNegative ? Duration.zero : startPosition;
+  final validEnd = (endPosition > mediaItem.duration!)
+      ? mediaItem.duration!
+      : endPosition;
+
+  // Extract the media URL (if it's in the extras or use mediaItem id)
+  final mediaUrl = mediaItem.extras?['url'] ?? mediaItem.id;
+
+  // Trigger the clipping and transcription using customAction
+  if (mediaUrl != null) {
+    return await audioHandler.customAction('transcribeClip', {
+      'url': mediaUrl,
+      'start': validStart,
+      'end': validEnd,
+    });
+  } else {
+    print("Media URL is not available, cannot clip");
+  }
+  return "";
+}
+
 
   Widget _buildBottomTabs() {
     return Expanded(

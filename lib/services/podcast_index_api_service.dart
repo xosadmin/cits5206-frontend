@@ -9,8 +9,8 @@ class PodcastIndexApiService {
   final String? _apiSecret;
 
   PodcastIndexApiService()
-      : _apiKey = dotenv.env['API_KEY'],
-        _apiSecret = dotenv.env['API_SECRET'] {
+      : _apiKey = "KZFH5SQFVVVG2L6WKERY",
+        _apiSecret ="dEVnsjphw\$VAzk6sznj5pEg\$Nvt8t8yQyqAAq3dR" {
     // Ensure API key and secret are not null
     if (_apiKey == null || _apiSecret == null) {
       throw Exception("API Key or Secret is not set!");
@@ -21,20 +21,22 @@ class PodcastIndexApiService {
     final uri = Uri.parse('$_baseUrl$endpoint');
     final timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString();
     final authHash = _generateAuthHash(timestamp);
-
+    print(_apiKey! + _apiSecret! + timestamp + "check123");
     final response = await http.get(
       uri.replace(queryParameters: queryParams),
       headers: {
         'X-Auth-Date': timestamp,
-        'X-Auth-Key': _apiKey!,
+        'X-Auth-Key': _apiKey,
         'Authorization': authHash,
-        'User-Agent': 'YourAppName/1.0',
+        'User-Agent': 'AudioPin/1.0',
       },
     );
 
     if (response.statusCode == 200) {
+      print(json.decode(response.body).toString());
       return json.decode(response.body);
     } else {
+      print(json.decode(response.body).toString());
       throw Exception('API request failed: ${response.statusCode}');
     }
   }

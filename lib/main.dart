@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audiopin_frontend/pages/discover.dart';
+import 'package:audiopin_frontend/pages/podcast_player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/get_started.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
         '/import': (context) => const ImportPage(),
         '/interests': (context) => interestsPage.InterestsPage(),
         '/subscriptions': (context) => const SubscriptionsPage(),
+        '/podcastplayer': (context)=> PodcastPlayerPage()
       }, // set Welcome as the first page of app
     );
   }

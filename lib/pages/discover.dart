@@ -1,5 +1,8 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../services/audio_handler.dart';
 import '../services/podcast_index_api_service.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'dart:convert'; // For JSON decoding
@@ -142,31 +145,267 @@ class DiscoverBody extends StatefulWidget {
 class _DiscoverBodyState extends State<DiscoverBody> {
   bool _isClickedPlay = false; // To track if the button is clicked
   List<bool> _isSelectedCate = [];
+  int selectedCategory = 0;
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
-
+  List<String>? _cachedCategories;
   List<String> subs = [];
   List<String> noteIDs = [];
   List<String> noteDates = [];
   List<String> notePodids = [];
+  List<Map<String, dynamic>> _trendingPodcasts = [];
+  bool _isLoading = true;
+
+  Widget _buildCategoryTags() {
+    if (_cachedCategories == null) {
+      return _buildSkeletonLoader();
+    }
+
+    return Container(
+      height: 20.0,
+      width: MediaQuery.of(context).size.width * 0.9,
+      margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _cachedCategories!.length,
+        itemBuilder: (context, index) {
+          return ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _isSelectedCate =
+                    List.generate(_cachedCategories!.length, (i) => i == index);
+                selectedCategory = index + 1;
+              });
+              print(index + 1);
+              // Add any additional logic you need when a category is selected
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isSelectedCate[index]
+                  ? const Color(0xFF1D1DD1)
+                  : Colors.white,
+              side: BorderSide.none,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+            ),
+            child: Text(
+              _cachedCategories![index],
+              style: TextStyle(
+                color: _isSelectedCate[index] ? Colors.white : Colors.black,
+                fontSize: 10.0,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSkeletonLoader() {
+    return Container(
+      height: 20.0,
+      width: MediaQuery.of(context).size.width * 0.9,
+      margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Skeletonizer(
+            enabled: true,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[300],
+                side: BorderSide.none,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              child: Text(
+                'Loading...',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 10.0,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     // Initialize the list with false values indicating no button is selected initially
     _isSelectedCate = List.generate(imageUrls.length, (index) => false);
+    selectedCategory = 0;
+    _fetchTrendingPodcasts();
+    _fetchCategories();
     getNotes();
     loadDatas();
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final categories = await getCategoriesText();
+      setState(() {
+        _cachedCategories = categories;
+        _isSelectedCate = List.generate(categories.length, (index) => false);
+      });
+    } catch (e) {
+      print('Error fetching categories: $e');
+    }
   }
 
   void loadDatas() async {
     List<List<String>> fetchedLists = await getNotes();
     setState(() {
-      noteIDs = fetchedLists[0];
-      notePodids = fetchedLists[1];
-      noteDates = fetchedLists[2];
+      if (fetchedLists.isNotEmpty && fetchedLists.length == 3) {
+        noteIDs = fetchedLists[0];
+        notePodids = fetchedLists[1];
+        noteDates = fetchedLists[2];
+      }
     });
     print('$noteIDs $noteDates $notePodids');
+  }
+
+  Future<void> _fetchTrendingPodcasts() async {
+    try {
+      final response = await PodcastIndexApiService()
+          .podcastsTrending(max: 10, cat: selectedCategory.toString());
+      if (response['status'] == "true") {
+        setState(() {
+          _trendingPodcasts =
+              List<Map<String, dynamic>>.from(response['feeds']);
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load podcasts');
+      }
+    } catch (e) {
+      print('Error fetching podcasts: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Widget _buildSkeletonListLoader() {
+    return Skeletonizer(
+      enabled: true,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+        itemBuilder: (context, index) => _buildPodcastItem({
+          'title': 'Loading...',
+          'author': 'Author',
+          'artwork': 'https://via.placeholder.com/64.png',
+        }),
+      ),
+    );
+  }
+
+  Widget _buildPodcastList() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: _trendingPodcasts.length,
+      itemBuilder: (context, index) =>
+          _buildPodcastItem(_trendingPodcasts[index]),
+    );
+  }
+
+  void addEpisodesToQueue(
+      BuildContext context, List<Map<String, dynamic>> episodes) {
+    final handler = Provider.of<PodcastAudioHandler>(context, listen: false);
+
+    // Step 1: Convert each episode to a MediaItem
+    List<MediaItem> mediaItems = episodes.map((episode) {
+      return MediaItem(
+        id: episode['enclosureUrl'] ??
+            '', // enclosureUrl is used as the unique ID
+        title: episode['title'] ?? '',
+        album: episode['feedUrl'] ??
+            '', // Assuming feedUrl as the album (or use another field)
+        artist: episode['persons'] != null && episode['persons'].isNotEmpty
+            ? episode['persons'][0]['name'] // First person as artist
+            : '',
+        duration:
+            Duration(seconds: episode['duration'] ?? 0), // Episode duration
+        artUri: Uri.parse(episode['feedImage'] ?? ''), // Podcast cover art URL
+      );
+    }).toList();
+
+    // Step 2: Use the handler to add the items to the queue
+    handler.addQueueItems(mediaItems);
+  }
+
+  Widget _buildPodcastItem(Map<String, dynamic> podcast) {
+    return GestureDetector(
+      onTap: () async {
+        var episodeResponse =
+            await PodcastIndexApiService().episodesByFeedId(podcast['id']);
+        var items = episodeResponse['items'];
+
+        if (items is List) {
+          // Safely cast and filter
+          var episodes = items
+              .whereType<Map<String, dynamic>>() // Ensure each item is a Map
+              .toList();
+          addEpisodesToQueue(context, episodes);
+          Navigator.pushNamed(context, '/podcastplayer');
+
+          // Now episodes will be of type List<Map<String, dynamic>>
+          print(episodes); // Debugging line to check the contents
+        } else {
+          // Handle the case where items is not a List
+          throw Exception("Expected a list but got ${items.runtimeType}");
+        }
+      },
+      child: Container(
+        width: 80.0,
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 64.0,
+              height: 64.0,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: FadeInImage.assetNetwork(
+                  image: podcast['artwork'] ?? podcast['image'] ?? '',
+                  placeholder:
+                      'assets/images/Podcast_doodle_illustration_1.png',
+                  fit: BoxFit.cover,
+                  fadeInDuration: const Duration(milliseconds: 300),
+                  fadeInCurve: Curves.easeIn,
+                  imageErrorBuilder: (context, error, stackTrace) =>
+                      Icon(Icons.error),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              podcast['title'] ?? '',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12.0),
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              podcast['author'] ?? '',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 10.0, color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   final List<String> imageUrls = [
@@ -177,13 +416,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
     'assets/images/note5.png',
   ];
 
-  final List<String> cateText = [
-    'For you',
-    'News',
-    'Culture',
-    'Cryptocurrency',
-    'Education',
-  ];
+  List<String> cateText = [];
 
   final List<String> imageText = [
     'The lazy Genuis',
@@ -300,97 +533,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
             ],
           ),
         ),
-        FutureBuilder<List<String>>(
-          future: getCategoriesText(), // Function to fetch categories
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // Show skeleton while loading
-              return Container(
-                height: 20.0,
-                width: MediaQuery.of(context).size.width * 0.9,
-                margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.05),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5, // Number of skeletons
-                  itemBuilder: (context, index) {
-                    return Skeletonizer(
-                      enabled: true,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300],
-                          side: BorderSide.none,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                        child: Text(
-                          'Loading...',
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 10.0,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (snapshot.hasData) {
-              List<String> cateText = snapshot.data!;
-
-              // Initialize _isSelectedCate list for button selection state
-              if (_isSelectedCate.length != cateText.length) {
-                _isSelectedCate =
-                    List.generate(cateText.length, (index) => false);
-              }
-
-              return Container(
-                height: 20.0,
-                width: MediaQuery.of(context).size.width * 0.9,
-                margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.05),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: cateText.length,
-                  itemBuilder: (context, index) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isSelectedCate =
-                              List.generate(cateText.length, (i) => i == index);
-                        });
-                        print(index + 1);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _isSelectedCate[index]
-                            ? const Color(0xFF1D1DD1)
-                            : Colors.white,
-                        side: BorderSide.none,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                      ),
-                      child: Text(
-                        cateText[index],
-                        style: TextStyle(
-                          color: _isSelectedCate[index]
-                              ? Colors.white
-                              : Colors.black,
-                          fontSize: 10.0,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            }
-            return Container(); // Fallback empty container
-          },
-        ),
+        _buildCategoryTags(),
         const SizedBox(height: 4.0),
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
@@ -422,56 +565,10 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                 ),
               ),
               SizedBox(
-                height: 140.0,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: imageUrls.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 64.0,
-                          height: 64.0,
-                          margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                          color: Colors.white,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5.0),
-                            child: Image.network(
-                              imageUrls[index],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4.0),
-                        SizedBox(
-                          width: 64.0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                imageText[index],
-                                softWrap: true,
-                                style: const TextStyle(
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                              const SizedBox(height: 4.0),
-                              Text(
-                                imageText2[index],
-                                style: const TextStyle(
-                                  fontSize: 10.0,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
+                  height: 140.0,
+                  child: _isLoading
+                      ? _buildSkeletonListLoader()
+                      : _buildPodcastList()),
               const SizedBox(height: 10.0),
             ],
           ),
@@ -499,7 +596,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(5.0),
-                                child: Image.network(
+                                child: Image.asset(
                                   imageUrl,
                                   width: 35,
                                   height: 35,
@@ -637,8 +734,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
   // Simulated asynchronous function to fetch the category text.
   Future<List<String>> getCategoriesText() async {
-    Map<String, dynamic> response = await PodcastIndexApiService().categoriesList();
-
+    Map<String, dynamic> response =
+        await PodcastIndexApiService().categoriesList();
     if (response['status'] == 'true') {
       List<dynamic> feeds = response['feeds'];
       return feeds.map((feed) => feed['name'].toString()).toList();

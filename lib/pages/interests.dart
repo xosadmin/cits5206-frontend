@@ -66,7 +66,8 @@ class _InterestsPageState extends State<InterestsPage> {
                     });
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: Colors.black),
@@ -117,11 +118,12 @@ class _InterestsPageState extends State<InterestsPage> {
               width: 327,
               height: 52,
               child: ElevatedButton(
-                onPressed: selectedInterests.isNotEmpty
-                    ? () {
-                        // Navigate to next page
-                      }
-                    : null,
+                onPressed: () {
+                  print('Selected Interests: ${selectedInterests.length}');
+                  if (selectedInterests.isNotEmpty) {
+                    Navigator.pushNamed(context, '/homepage');
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedInterests.isNotEmpty
                       ? const Color(0xFF00008B)

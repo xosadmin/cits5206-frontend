@@ -6,7 +6,7 @@ import 'discover.dart';
 import 'library.dart';
 import 'setting.dart';
 
-class EpisodePage extends StatefulWidget  {
+class EpisodePage extends StatefulWidget {
   const EpisodePage({super.key});
 
   @override
@@ -14,7 +14,6 @@ class EpisodePage extends StatefulWidget  {
 }
 
 class _EpisodePageState extends State<EpisodePage> {
-
   int _selectedIndex = 0;
 
   static final List<Widget> _pages = <Widget>[
@@ -38,94 +37,94 @@ class _EpisodePageState extends State<EpisodePage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xFFFCFCFF),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
-              onPressed: () {
-                Navigator.pop(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeBody(),
-                  ),
-                ); // Navigate back to the previous screen
-              },
-            ),
-            centerTitle: true,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.notifications),
-                onPressed: () {
-                  print("Settings pressed");
-                },
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFCFCFF),
+        leading: IconButton(
+          icon: const Icon(Icons
+              .arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
+          onPressed: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeBody(),
               ),
-            ],
+            ); // Navigate back to the previous screen
+          },
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              print("Settings pressed");
+            },
           ),
+        ],
+      ),
+      backgroundColor: const Color(0xFFFCFCFF),
+      body: EpisodeBody(
+        listtitle: args['listtitle'],
+        notepodid: args['notepodid'],
+        notedate: args['notedate'],
+        notecontent: args['notecontent'],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFFCFCFF),
-          body: EpisodeBody(
-            listtitle: args['listtitle'],
-            notepodid: args['notepodid'],
-            notedate: args['notedate'],
-            notecontent: args['notecontent'],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: const Color(0xFFFCFCFF),
-              type: BottomNavigationBarType.fixed,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Feed',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.note),
-                  label: 'Pins',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.search),
-                  label: 'Discover',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.collections),
-                  label: 'Library',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
-                ),
-              ],
-              currentIndex: _selectedIndex, // Current selected index
-              selectedItemColor: Colors.blue, // Color of the selected item
-              onTap: (index){
-                if (index == 0){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                }else if (index == 2){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DiscoverPage()),
-                  );
-                }else if (index == 3){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LibraryPage()),
-                  );
-                }else if (index == 4){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingPage()),
-                  );
-                }else{
-                  _onItemTapped(index);
-                }
-              }
-          ),
-        )
-    );
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Feed',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.note),
+              label: 'Pins',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Discover',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.collections),
+              label: 'Library',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex, // Current selected index
+          selectedItemColor: Colors.blue, // Color of the selected item
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            } else if (index == 2) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DiscoverPage()),
+              );
+            } else if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LibraryPage()),
+              );
+            } else if (index == 4) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingPage()),
+              );
+            } else {
+              _onItemTapped(index);
+            }
+          }),
+    ));
   }
 }
 
@@ -135,7 +134,8 @@ class EpisodeBody extends StatefulWidget {
   final String notedate;
   final String notecontent;
 
-  const EpisodeBody({super.key, 
+  const EpisodeBody({
+    super.key,
     required this.listtitle,
     required this.notepodid,
     required this.notedate,
@@ -146,8 +146,7 @@ class EpisodeBody extends StatefulWidget {
   _EpisodeBodyState createState() => _EpisodeBodyState();
 }
 
-class _EpisodeBodyState extends State<EpisodeBody>{
-
+class _EpisodeBodyState extends State<EpisodeBody> {
   String imageUrl = 'assets/images/note_exp.png';
   bool _isClickedPlay = false; // To track if the button is clicked
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -170,14 +169,16 @@ class _EpisodeBodyState extends State<EpisodeBody>{
       // Update the total duration of the audio
       _audioPlayer.onDurationChanged.listen((Duration duration) {
         setState(() {
-          _totalDuration = duration.inSeconds.toDouble(); // Set the total duration
+          _totalDuration =
+              duration.inSeconds.toDouble(); // Set the total duration
         });
       });
 
       // Update the current position of the audio
       _audioPlayer.onPositionChanged.listen((Duration position) {
         setState(() {
-          _currentPosition = position.inSeconds.toDouble(); // Update the current position
+          _currentPosition =
+              position.inSeconds.toDouble(); // Update the current position
         });
       });
 
@@ -187,15 +188,16 @@ class _EpisodeBodyState extends State<EpisodeBody>{
     }
   }
 
-   void _showAudioPlayer() {
-     setState(() {
-       _showPlayer = true;
-     });
-   }
+  void _showAudioPlayer() {
+    setState(() {
+      _showPlayer = true;
+    });
+  }
 
   @override
   void dispose() {
-    _audioPlayer.dispose(); // Dispose of the audio player when the widget is destroyed
+    _audioPlayer
+        .dispose(); // Dispose of the audio player when the widget is destroyed
     super.dispose();
   }
 
@@ -212,192 +214,204 @@ class _EpisodeBodyState extends State<EpisodeBody>{
               itemCount: 1,
               itemBuilder: (context, index) {
                 return Card(
-                    color: Colors.white,
-                    margin: const EdgeInsets.all(16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Top part of the card: Image and title/time
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Stack(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                  color: Colors.white,
+                  margin: const EdgeInsets.all(16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top part of the card: Image and title/time
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Image
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  child: Image.network(
+                                    imageUrl,
+                                    width: 35,
+                                    height: 35,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                const SizedBox(width: 16.0),
+                                // Title and Time
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.listtitle,
+                                        style: const TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.notedate,
+                                        style: const TextStyle(
+                                          fontSize: 12.0,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Middle part of the card: Content
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "# ${widget.notepodid}",
+                              style: const TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Bottom part of the card: Buttons
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: OverflowBar(
+                          alignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isClickedPlay =
+                                      !_isClickedPlay; // Toggle the state on press
+                                });
+                                _showAudioPlayer(); // Show the audio player
+                                _playMusic(); // Start playing music
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                minimumSize: const Size(67.0, 26.0),
+                                side: const BorderSide(
+                                  color: Colors.grey, // Set the border color
+                                  width: 0.7, // Set the border width (boldness)
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Optional: Make the border rounded
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Image
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    child: Image.network(
-                                      imageUrl,
-                                      width: 35,
-                                      height: 35,
-                                      fit: BoxFit.cover,
-                                    ),
+                                  Icon(
+                                    _isClickedPlay
+                                        ? Icons.check
+                                        : Icons.play_circle,
+                                    color: const Color(0xFF1D1DD1),
+                                    size: 10.0,
                                   ),
-                                  const SizedBox(width: 16.0),
-                                  // Title and Time
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          widget.listtitle,
-                                          style: const TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          widget.notedate,
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  const SizedBox(width: 8.0),
+                                  const Text(
+                                    'Play',
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
+                                  )
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                print('Add');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                minimumSize: const Size(111.0, 26.0),
+                                side: const BorderSide(
+                                  color: Colors.grey, // Set the border color
+                                  width: 0.7, // Set the border width (boldness)
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Optional: Make the border rounded
+                                ),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    color: Color(0xFF1D1DD1),
+                                    size: 10.0,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    'Add to queue',
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
+                                  )
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                print('Download');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                minimumSize: const Size(104.0, 26.0),
+                                side: const BorderSide(
+                                  color: Colors.grey, // Set the border color
+                                  width: 0.7, // Set the border width (boldness)
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Optional: Make the border rounded
+                                ),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.download,
+                                    color: Color(0xFF1D1DD1),
+                                    size: 10.0,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    'Download',
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        // Middle part of the card: Content
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "# ${widget.notepodid}",
-                                style: const TextStyle(
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Bottom part of the card: Buttons
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: OverflowBar(
-                            alignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _isClickedPlay = !_isClickedPlay; // Toggle the state on press
-                                  });
-                                  _showAudioPlayer(); // Show the audio player
-                                  _playMusic(); // Start playing music
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  minimumSize: const Size(67.0, 26.0),
-                                  side: const BorderSide(
-                                    color: Colors.grey, // Set the border color
-                                    width: 0.7, // Set the border width (boldness)
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      _isClickedPlay ? Icons.check : Icons.play_circle,
-                                      color: const Color(0xFF1D1DD1),
-                                      size: 10.0,
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    const Text(
-                                      'Play',
-                                      style: TextStyle(color:Colors.grey, fontSize: 10.0),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  print('Add');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  minimumSize: const Size(111.0, 26.0),
-                                  side: const BorderSide(
-                                    color: Colors.grey, // Set the border color
-                                    width: 0.7, // Set the border width (boldness)
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.add,
-                                      color: Color(0xFF1D1DD1),
-                                      size: 10.0,
-                                    ),
-                                    SizedBox(width: 8.0),
-                                    Text(
-                                      'Add to queue',
-                                      style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  print('Download');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  minimumSize: const Size(104.0, 26.0),
-                                  side: const BorderSide(
-                                    color: Colors.grey, // Set the border color
-                                    width: 0.7, // Set the border width (boldness)
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.download,
-                                      color: Color(0xFF1D1DD1),
-                                      size: 10.0,
-                                    ),
-                                    SizedBox(width: 8.0),
-                                    Text(
-                                      'Download',
-                                      style: TextStyle(color: Colors.grey, fontSize: 10.0),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ),
           Container(
-            height: 400.0, // Set the height of the container to the screen height
+            height:
+                400.0, // Set the height of the container to the screen height
             width: MediaQuery.of(context).size.width * 0.92,
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+            margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.04),
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -411,13 +425,13 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                 ),
               ],
             ),
-              child: Text(
-                widget.notecontent, // Content to display inside the container
-                style: const TextStyle(
-                  fontSize: 14.0, // Text size
-                  color: Colors.grey, // Text color
-                ),
+            child: Text(
+              widget.notecontent, // Content to display inside the container
+              style: const TextStyle(
+                fontSize: 14.0, // Text size
+                color: Colors.grey, // Text color
               ),
+            ),
           ),
           if (_showPlayer)
             Expanded(
@@ -441,7 +455,8 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                         ),
                       ),
 
-                      const SizedBox(width: 16.0), // Space between image and text
+                      const SizedBox(
+                          width: 16.0), // Space between image and text
 
                       // Middle section with title and slider
                       Expanded(
@@ -451,7 +466,8 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                           children: [
                             // Title
                             Padding(
-                              padding: const EdgeInsets.only(left: 22.0), // Add 10.0 padding to the left
+                              padding: const EdgeInsets.only(
+                                  left: 22.0), // Add 10.0 padding to the left
                               child: Text(
                                 widget.listtitle,
                                 style: const TextStyle(
@@ -467,20 +483,26 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                             if (_totalDuration > 0)
                               SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: Colors.blue, // Color of the active part of the slider
-                                  inactiveTrackColor: Colors.grey, // Color of the inactive part of the slider
-                                  trackHeight: 2.0, // Height of the slider track
+                                  activeTrackColor: Colors
+                                      .blue, // Color of the active part of the slider
+                                  inactiveTrackColor: Colors
+                                      .grey, // Color of the inactive part of the slider
+                                  trackHeight:
+                                      2.0, // Height of the slider track
                                   thumbShape: SliderComponentShape.noThumb,
                                 ),
                                 child: Slider(
-                                  value: _currentPosition, // Current position of the slider
+                                  value:
+                                      _currentPosition, // Current position of the slider
                                   min: 0.0,
-                                  max: _totalDuration, // Total duration of the audio
+                                  max:
+                                      _totalDuration, // Total duration of the audio
                                   onChanged: (newValue) {
                                     setState(() {
                                       _currentPosition = newValue;
                                     });
-                                    _audioPlayer.seek(Duration(seconds: newValue.toInt()));
+                                    _audioPlayer.seek(
+                                        Duration(seconds: newValue.toInt()));
                                   },
                                 ),
                               )
@@ -502,17 +524,12 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                 ),
               ),
             ),
-
-
         ],
       ),
     );
   }
 }
 
-
-
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(MaterialApp(
       home: EpisodePage(),
     ));
