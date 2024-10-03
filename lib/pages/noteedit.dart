@@ -1,4 +1,5 @@
 import 'package:audiopin_frontend/main.dart';
+import 'package:audiopin_frontend/pages/pins.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
@@ -48,10 +49,17 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 Navigator.pop(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomeBody(),
+                    builder: (context) => PinsBody(),
                   ),
                 ); // Navigate back to the previous screen
               },
+            ),
+            title: Text(
+              "Note",
+              style: TextStyle(
+                fontFamily: 'EuclidCircularA',
+                fontSize: 20,
+              ),
             ),
             centerTitle: true,
             actions: [

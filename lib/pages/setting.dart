@@ -146,6 +146,7 @@ class _SettingBodyState extends State<SettingBody> {
                   'Profile Setting',
                   Icons.arrow_forward_ios, // Right-side icon
                       () {
+                    Navigator.pushNamed(context, '/profile_setting');
                     // Navigate to Profile Setting
                   },
                 ),
