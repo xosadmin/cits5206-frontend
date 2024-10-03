@@ -4,6 +4,8 @@ import 'package:audiopin_frontend/api_service.dart';
 import 'package:audiopin_frontend/pages/subscriptions.dart';
 
 class ImportPage extends StatefulWidget {
+  const ImportPage({super.key});
+
   @override
   _ImportPageState createState() => _ImportPageState();
 }
@@ -39,7 +41,8 @@ class _ImportPageState extends State<ImportPage> {
       // Ensure userID exists
       if (userID == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User not authenticated. Please log in.')),
+          const SnackBar(
+              content: Text('User not authenticated. Please log in.')),
         );
         return;
       }

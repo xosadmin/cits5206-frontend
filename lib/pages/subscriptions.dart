@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ImportSubscriptionsPage extends StatelessWidget {
   final List<Map<String, String>> podcasts; // List of podcasts from OPML
 
-  ImportSubscriptionsPage({super.key, required this.podcasts});
+  const ImportSubscriptionsPage({super.key, required this.podcasts});
 
   @override
   Widget build(BuildContext context) {

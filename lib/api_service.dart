@@ -1,7 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'dart:convert';
-import 'package:xml/xml.dart' as xml;
 
 class UserService {
   // store userID to hive
