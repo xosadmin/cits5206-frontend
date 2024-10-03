@@ -6,6 +6,7 @@ import 'homepage.dart';
 import 'setting.dart';
 import 'discover.dart';
 import 'setting.dart';
+import 'pins.dart';
 
 class LibraryPage extends StatefulWidget  {
   @override
@@ -109,6 +110,11 @@ class _LibraryPageState extends State<LibraryPage> {
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
+                }else if (index == 1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinsPage()),
+                  );
                 }else if (index == 2){
                   Navigator.push(
                     context,
@@ -160,6 +166,7 @@ class _LibraryBodyState extends State<LibraryBody> {
     'Queue',
     'Downloads',
     'History',
+    'Other'
   ];
 
   final List<String> imageText = [

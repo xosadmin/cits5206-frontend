@@ -6,6 +6,7 @@ import 'homepage.dart';
 import 'setting.dart';
 import 'library.dart';
 import 'setting.dart';
+import 'pins.dart';
 
 class DiscoverPage extends StatefulWidget  {
   @override
@@ -108,6 +109,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }else if (index == 1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinsPage()),
                   );
                 }else if (index == 2){
                   Navigator.push(
@@ -683,7 +689,7 @@ Future<List<List<String>>> getNotes() async {
   final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
 
   final payload = {
-    'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
+    'tokenID': "df09ecde-ca2e-47e5-b660-54d60ac35276",
   };
 
   final headers = {

@@ -17,6 +17,8 @@ import 'pages/signup_setting.dart';
 import 'pages/import.dart';
 import 'pages/interests.dart' as interestsPage;
 import 'pages/subscriptions.dart';
+import 'pages/pins.dart';
+import 'pages/noteedit.dart';
 
 void main() {
   runApp(MyApp());
@@ -55,6 +57,8 @@ class MyApp extends StatelessWidget {
         '/import': (context) => ImportPage(),
         '/interests': (context) => interestsPage.InterestsPage(),
         '/subscriptions': (context) => SubscriptionsPage(),
+        '/pins':(context) => PinsPage(),
+        '/noteedit':(context) => NoteEditPage()
       }, // set Welcome as the first page of app
     );
   }

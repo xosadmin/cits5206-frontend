@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'discover.dart';
 import 'library.dart';
+import 'pins.dart';
 
 class SettingPage extends StatefulWidget  {
   @override
@@ -80,6 +81,11 @@ class _SettingPageState extends State<SettingPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }else if (index == 1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinsPage()),
                   );
                 }else if (index == 2){
                   Navigator.push(
