@@ -43,12 +43,13 @@ class UserService {
 }
 
 class ApiService {
+  static http.Client client = http.Client();
   static const String baseUrl = "https://cits5206.7m7.moe";
 
   // Sign in function
   static Future<void> loginUser(String username, String password) async {
     final url = Uri.parse('$baseUrl/login');
-    final response = await http.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body:
@@ -78,7 +79,7 @@ class ApiService {
   static Future<bool> registerUser(String username, String password) async {
     final url = Uri.parse('$baseUrl/register');
     try {
-      final response = await http.post(
+      final response = await client.post(
         url,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body:
