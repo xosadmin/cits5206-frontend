@@ -203,6 +203,7 @@ class ApiService {
         url,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer $token',
         },
         body:
             'userID=${Uri.encodeComponent(userID)}&opmlContent=${Uri.encodeComponent(opmlContent)}',

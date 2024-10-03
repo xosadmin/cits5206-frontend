@@ -2,10 +2,28 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIFileSharingEnabled</key>
-	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+    	<dict>
+        	<key>UTTypeIdentifier</key>
+        	<string>com.example.opml</string> <!-- customize the file format-->
+       	 	<key>UTTypeDescription</key>
+       	 	<string>OPML File</string>
+        	<key>UTTypeTagSpecification</key>
+        	<dict>
+            	<key>public.filename-extension</key>
+            	<array>
+                	<string>opml</string>
+            	</array>
+            	<key>public.mime-type</key>
+            	<string>application/xml</string>
+        	</dict>
+        	<key>UTTypeConformsTo</key>
+        	<array>
+            	<string>public.xml</string> <!-- declare this is based on XML file -->
+        	</array>
+    	</dict>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

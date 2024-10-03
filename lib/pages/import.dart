@@ -27,55 +27,38 @@ class _ImportPageState extends State<ImportPage> {
   }
 
   Future<void> _importOPML(BuildContext context) async {
-    // Let the user pick the OPML or XML file
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xml', 'opml'], // Allow XML or OPML files
-      withData: true, // Ensure file data is available
+      withData: true,
     );
 
     if (result != null) {
-      // Get the selected file's name to check its extension
-      String? fileName = result.files.single.name;
+      String opmlContent = String.fromCharCodes(result.files.single.bytes!);
 
-      // Check if the selected file has the correct extension
-      if (fileName.endsWith('.opml') || fileName.endsWith('.xml')) {
-        // If the file is valid, proceed with handling the OPML content
-        String opmlContent = String.fromCharCodes(result.files.single.bytes!);
-
-        // Debugging step: Print the OPML content
-        print('OPML Content: $opmlContent');
-
-        // Ensure userID exists
-        if (userID == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('User not authenticated. Please log in.')),
-          );
-          return;
-        }
-
-        try {
-          // Call the API to upload and parse OPML
-          List<Map<String, String>> podcasts =
-              await ApiService.uploadAndParseOPML(opmlContent);
-
-          // Navigate to Subscriptions page with the parsed podcasts
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ImportSubscriptionsPage(podcasts: podcasts),
-            ),
-          );
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to import OPML: $e')),
-          );
-        }
-      } else {
-        // If the file extension is not valid, show a message
-        print('Selected file is not a valid OPML or XML file.');
+      // Ensure userID exists
+      if (userID == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select a valid OPML or XML file.')),
+          SnackBar(content: Text('User not authenticated. Please log in.')),
+        );
+        return;
+      }
+
+      try {
+        // Call the API to upload and parse OPML
+        List<Map<String, String>> podcasts =
+            await ApiService.uploadAndParseOPML(opmlContent);
+
+        // Navigate to Subscriptions page with the parsed podcasts
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImportSubscriptionsPage(podcasts: podcasts),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to import OPML: $e')),
         );
       }
     }
