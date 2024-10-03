@@ -19,12 +19,13 @@ import 'pages/interests.dart' as interestsPage;
 import 'pages/subscriptions.dart';
 import 'services/audio_handler.dart';
 import 'services/audio_clip_transcription_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
    // Create an instance of the AudioClipTranscriptionService
   final audioClipService = AudioClipTranscriptionService();
-
+  await dotenv.load(fileName: ".env");  // Load the .env file
   // Preload FFmpeg before initializing the app
   await audioClipService.preload();
   final handler = await AudioService.init(

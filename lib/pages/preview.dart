@@ -7,6 +7,8 @@ import 'library.dart';
 import 'setting.dart';
 
 class PreviewPage extends StatefulWidget  {
+  const PreviewPage({super.key});
+
   @override
   _PreviewPageState createState() => _PreviewPageState();
 }
@@ -14,12 +16,12 @@ class PreviewPage extends StatefulWidget  {
 class _PreviewPageState extends State<PreviewPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -39,9 +41,9 @@ class _PreviewPageState extends State<PreviewPage> {
     return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
+            backgroundColor: const Color(0xFFFCFCFF),
             leading: IconButton(
-              icon: Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
+              icon: const Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
               onPressed: () {
                 Navigator.pop(
                   context,
@@ -54,20 +56,20 @@ class _PreviewPageState extends State<PreviewPage> {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications),
                 onPressed: () {
                   print("Settings pressed");
                 },
               ),
             ],
           ),
-          backgroundColor: Color(0xFFFCFCFF),
+          backgroundColor: const Color(0xFFFCFCFF),
           body: PreviewBody(
             listtitle: args['listtitle'],
             listimageurls: args['listimageurls'],
           ),
           bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Color(0xFFFCFCFF),
+              backgroundColor: const Color(0xFFFCFCFF),
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -128,7 +130,7 @@ class PreviewBody extends StatefulWidget {
   final String listtitle;
   final String listimageurls;
 
-  PreviewBody({
+  const PreviewBody({super.key, 
     required this.listtitle,
     required this.listimageurls,
   });
@@ -203,7 +205,7 @@ class _PreviewBodyState extends State<PreviewBody>{
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Color(0x1A282626), // Shadow color with transparency
                   offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -226,20 +228,20 @@ class _PreviewBodyState extends State<PreviewBody>{
                         // Existing Text widgets
                         Text(
                           widget.listtitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 4.0),
+                        const SizedBox(height: 4.0),
                         Text(
                           noteSubtitle,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 4.0), // Optional: Add spacing between text and the row
+                        const SizedBox(height: 4.0), // Optional: Add spacing between text and the row
                         // New Row with button and share icon
                         Row(
                           children: [
@@ -247,12 +249,12 @@ class _PreviewBodyState extends State<PreviewBody>{
                               onPressed: () {
                                 // Handle button press
                               },
-                              icon: Icon(Icons.add, size: 16.0), // "+" icon
-                              label: Text("Subscribe"), // "Subscribe" text
+                              icon: const Icon(Icons.add, size: 16.0), // "+" icon
+                              label: const Text("Subscribe"), // "Subscribe" text
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                minimumSize: Size(90.0, 25.0),
-                                side: BorderSide(
+                                minimumSize: const Size(90.0, 25.0),
+                                side: const BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
@@ -261,9 +263,9 @@ class _PreviewBodyState extends State<PreviewBody>{
                                 ),
                               ),
                             ),
-                            SizedBox(width: 16.0), // Space between button and share icon
+                            const SizedBox(width: 16.0), // Space between button and share icon
                             IconButton(
-                              icon: Icon(Icons.share, size: 16.0),
+                              icon: const Icon(Icons.share, size: 16.0),
                               color: Colors.blue, // Icon color
                               onPressed: () {
                                 // Handle share button press
@@ -283,7 +285,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                   child: Container(
                     width: 76.0, // Width of each cube
                     height: 76.0,
-                    margin: EdgeInsets.symmetric(horizontal: 4.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(4.0), // Border radius for the container
@@ -304,7 +306,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                   right: 16.0,
                   child: Text(
                     noteContents,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14.0,
                     ),
                     textAlign: TextAlign.left, // Center the text horizontally
@@ -313,7 +315,7 @@ class _PreviewBodyState extends State<PreviewBody>{
               ],
             ),
           ),
-          SizedBox(height: 16.0), // Space between the container and the column of cards
+          const SizedBox(height: 16.0), // Space between the container and the column of cards
           Expanded(
             child: ListView.builder(
               itemCount: notePodids.length, // Number of cards
@@ -333,7 +335,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                 },
                     child: Card(
                       color: Colors.white,
-                      margin: EdgeInsets.symmetric(vertical: 8.0), // Space between cards
+                      margin: const EdgeInsets.symmetric(vertical: 8.0), // Space between cards
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -344,22 +346,22 @@ class _PreviewBodyState extends State<PreviewBody>{
                           children: [
                             // Title at the top
                             Text(
-                              "# ${notePodids}", // Replace with your dynamic title
-                              style: TextStyle(
+                              "# $notePodids", // Replace with your dynamic title
+                              style: const TextStyle(
                                   fontSize: 12.0,
                                   color: Colors.black
                               ),
                             ),
-                            SizedBox(height: 8.0),
+                            const SizedBox(height: 8.0),
                             // Subtitle in the middle
                             Text(
                               noteDates, // Replace with your dynamic subtitle
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12.0,
                                 color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                             // Button at the bottom
                             Padding(
                               padding: const EdgeInsets.all(4.0),
@@ -375,8 +377,8 @@ class _PreviewBodyState extends State<PreviewBody>{
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
-                                      minimumSize: Size(60.0, 26.0),
-                                      side: BorderSide(
+                                      minimumSize: const Size(60.0, 26.0),
+                                      side: const BorderSide(
                                         color: Colors.grey, // Set the border color
                                         width: 0.7, // Set the border width (boldness)
                                       ),
@@ -389,26 +391,26 @@ class _PreviewBodyState extends State<PreviewBody>{
                                       children: [
                                         Icon(
                                           _isClickedPlay ? Icons.check : Icons.play_circle,
-                                          color: Color(0xFF1D1DD1),
+                                          color: const Color(0xFF1D1DD1),
                                           size: 10.0,
                                         ),
-                                        SizedBox(width: 8.0),
-                                        Text(
+                                        const SizedBox(width: 8.0),
+                                        const Text(
                                           'Play',
                                           style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 8.0), // Add spacing between buttons
+                                  const SizedBox(width: 8.0), // Add spacing between buttons
                                   ElevatedButton(
                                     onPressed: () {
                                       print('Add');
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
-                                      minimumSize: Size(100.0, 26.0),
-                                      side: BorderSide(
+                                      minimumSize: const Size(100.0, 26.0),
+                                      side: const BorderSide(
                                         color: Colors.grey, // Set the border color
                                         width: 0.7, // Set the border width (boldness)
                                       ),
@@ -416,7 +418,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                                         borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                       ),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
@@ -432,15 +434,15 @@ class _PreviewBodyState extends State<PreviewBody>{
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 8.0), // Add spacing between buttons
+                                  const SizedBox(width: 8.0), // Add spacing between buttons
                                   ElevatedButton(
                                     onPressed: () {
                                       print('Download');
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
-                                      minimumSize: Size(90.0, 26.0),
-                                      side: BorderSide(
+                                      minimumSize: const Size(90.0, 26.0),
+                                      side: const BorderSide(
                                         color: Colors.grey, // Set the border color
                                         width: 0.7, // Set the border width (boldness)
                                       ),
@@ -448,7 +450,7 @@ class _PreviewBodyState extends State<PreviewBody>{
                                         borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                       ),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(

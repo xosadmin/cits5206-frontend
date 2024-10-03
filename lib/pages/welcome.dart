@@ -59,7 +59,7 @@ class Welcome extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                  MaterialPageRoute(builder: (context) => const SignUpPage()),
                 );
               }, // button click event
               child: const Text(
@@ -80,7 +80,7 @@ class Welcome extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignInPage()),
+                  MaterialPageRoute(builder: (context) => const SignInPage()),
                 );
               }, // button click event
               child: const Text(

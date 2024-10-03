@@ -7,6 +7,8 @@ import 'library.dart';
 import 'setting.dart';
 
 class EpisodePage extends StatefulWidget  {
+  const EpisodePage({super.key});
+
   @override
   _EpisodePageState createState() => _EpisodePageState();
 }
@@ -15,12 +17,12 @@ class _EpisodePageState extends State<EpisodePage> {
 
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -40,9 +42,9 @@ class _EpisodePageState extends State<EpisodePage> {
     return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
+            backgroundColor: const Color(0xFFFCFCFF),
             leading: IconButton(
-              icon: Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
+              icon: const Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
               onPressed: () {
                 Navigator.pop(
                   context,
@@ -55,14 +57,14 @@ class _EpisodePageState extends State<EpisodePage> {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications),
                 onPressed: () {
                   print("Settings pressed");
                 },
               ),
             ],
           ),
-          backgroundColor: Color(0xFFFCFCFF),
+          backgroundColor: const Color(0xFFFCFCFF),
           body: EpisodeBody(
             listtitle: args['listtitle'],
             notepodid: args['notepodid'],
@@ -70,7 +72,7 @@ class _EpisodePageState extends State<EpisodePage> {
             notecontent: args['notecontent'],
           ),
           bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Color(0xFFFCFCFF),
+              backgroundColor: const Color(0xFFFCFCFF),
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -133,7 +135,7 @@ class EpisodeBody extends StatefulWidget {
   final String notedate;
   final String notecontent;
 
-  EpisodeBody({
+  const EpisodeBody({super.key, 
     required this.listtitle,
     required this.notepodid,
     required this.notedate,
@@ -148,10 +150,10 @@ class _EpisodeBodyState extends State<EpisodeBody>{
 
   String imageUrl = 'assets/images/note_exp.png';
   bool _isClickedPlay = false; // To track if the button is clicked
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _showPlayer = false;
-  String _audioUrl = 'assets/audio/testing.mp3';
+  final String _audioUrl = 'assets/audio/testing.mp3';
   double _currentPosition = 0.0;
   double _totalDuration = 0.0;
 
@@ -204,14 +206,14 @@ class _EpisodeBodyState extends State<EpisodeBody>{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             height: 170.0,
             child: ListView.builder(
               itemCount: 1,
               itemBuilder: (context, index) {
                 return Card(
                     color: Colors.white,
-                    margin: EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(16.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -236,7 +238,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                  SizedBox(width: 16.0),
+                                  const SizedBox(width: 16.0),
                                   // Title and Time
                                   Expanded(
                                     child: Column(
@@ -244,14 +246,14 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                       children: [
                                         Text(
                                           widget.listtitle,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 14.0,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         Text(
                                           widget.notedate,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 12.0,
                                             color: Colors.grey,
                                           ),
@@ -272,7 +274,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                             children: [
                               Text(
                                 "# ${widget.notepodid}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -296,8 +298,8 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
-                                  minimumSize: Size(67.0, 26.0),
-                                  side: BorderSide(
+                                  minimumSize: const Size(67.0, 26.0),
+                                  side: const BorderSide(
                                     color: Colors.grey, // Set the border color
                                     width: 0.7, // Set the border width (boldness)
                                   ),
@@ -310,11 +312,11 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                   children: [
                                     Icon(
                                       _isClickedPlay ? Icons.check : Icons.play_circle,
-                                      color: Color(0xFF1D1DD1),
+                                      color: const Color(0xFF1D1DD1),
                                       size: 10.0,
                                     ),
-                                    SizedBox(width: 8.0),
-                                    Text(
+                                    const SizedBox(width: 8.0),
+                                    const Text(
                                       'Play',
                                       style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                     )
@@ -327,8 +329,8 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
-                                  minimumSize: Size(111.0, 26.0),
-                                  side: BorderSide(
+                                  minimumSize: const Size(111.0, 26.0),
+                                  side: const BorderSide(
                                     color: Colors.grey, // Set the border color
                                     width: 0.7, // Set the border width (boldness)
                                   ),
@@ -336,7 +338,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                     borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                   ),
                                 ),
-                                child: Row(
+                                child: const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
@@ -358,8 +360,8 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
-                                  minimumSize: Size(104.0, 26.0),
-                                  side: BorderSide(
+                                  minimumSize: const Size(104.0, 26.0),
+                                  side: const BorderSide(
                                     color: Colors.grey, // Set the border color
                                     width: 0.7, // Set the border width (boldness)
                                   ),
@@ -367,7 +369,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                                     borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                   ),
                                 ),
-                                child: Row(
+                                child: const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
@@ -396,11 +398,11 @@ class _EpisodeBodyState extends State<EpisodeBody>{
             height: 400.0, // Set the height of the container to the screen height
             width: MediaQuery.of(context).size.width * 0.92,
             margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Color(0x1A282626), // Shadow color with transparency
                   offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -411,7 +413,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
             ),
               child: Text(
                 widget.notecontent, // Content to display inside the container
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14.0, // Text size
                   color: Colors.grey, // Text color
                 ),
@@ -439,7 +441,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                         ),
                       ),
 
-                      SizedBox(width: 16.0), // Space between image and text
+                      const SizedBox(width: 16.0), // Space between image and text
 
                       // Middle section with title and slider
                       Expanded(
@@ -452,7 +454,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                               padding: const EdgeInsets.only(left: 22.0), // Add 10.0 padding to the left
                               child: Text(
                                 widget.listtitle,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12.0,
                                   fontWeight: FontWeight.bold,
                                 ),

@@ -5,6 +5,8 @@ import '../services/audio_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PodcastPlayerPage extends StatelessWidget {
+  const PodcastPlayerPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final audioHandler = Provider.of<PodcastAudioHandler>(context);
@@ -31,11 +33,11 @@ class PodcastPlayerPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: Icon(Icons.keyboard_arrow_down),
+            icon: const Icon(Icons.keyboard_arrow_down),
             onPressed: () => Navigator.pop(context),
           ),
-          Text('Now Playing', style: TextStyle(fontWeight: FontWeight.bold)),
-          Row(
+          const Text('Now Playing', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Row(
             children: [
               Icon(Icons.nightlight_round),
               SizedBox(width: 16),
@@ -55,19 +57,19 @@ class PodcastPlayerPage extends StatelessWidget {
         return Container(
           width: 300,
           height: 300,
-          margin: EdgeInsets.symmetric(vertical: 20),
+          margin: const EdgeInsets.symmetric(vertical: 20),
           decoration: BoxDecoration(
-            color: Color(0xFF2C5364),
+            color: const Color(0xFF2C5364),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lightbulb_outline, color: Colors.yellow, size: 80),
-              SizedBox(height: 16),
+              const Icon(Icons.lightbulb_outline, color: Colors.yellow, size: 80),
+              const SizedBox(height: 16),
               Text(
                 mediaItem?.album ?? 'THE LAZY GENIUS',
-                style: TextStyle(color: Colors.yellow, fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Colors.yellow, fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -87,11 +89,11 @@ class PodcastPlayerPage extends StatelessWidget {
             children: [
               Text(
                 mediaItem?.title ?? 'Episode Title',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8),
-              Text(mediaItem?.artist ?? 'Podcast Name', style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 8),
+              Text(mediaItem?.artist ?? 'Podcast Name', style: const TextStyle(color: Colors.grey)),
             ],
           ),
         );
@@ -140,15 +142,15 @@ class PodcastPlayerPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: Icon(Icons.replay_10, size: 40),
+              icon: const Icon(Icons.replay_10, size: 40),
               onPressed: () => audioHandler.seek(
                   Duration(seconds: (playbackState?.position.inSeconds ?? 0) - 15)),
             ),
-            SizedBox(width: 32),
+            const SizedBox(width: 32),
             Container(
               width: 64,
               height: 64,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.orange,
               ),
@@ -157,9 +159,9 @@ class PodcastPlayerPage extends StatelessWidget {
                 onPressed: playing ? audioHandler.pause : audioHandler.play,
               ),
             ),
-            SizedBox(width: 32),
+            const SizedBox(width: 32),
             IconButton(
-              icon: Icon(Icons.forward_10, size: 40),
+              icon: const Icon(Icons.forward_10, size: 40),
               onPressed: () => audioHandler.seek(
                   Duration(seconds: (playbackState?.position.inSeconds ?? 0) + 15)),
             ),
@@ -174,8 +176,8 @@ class PodcastPlayerPage extends StatelessWidget {
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 16),
-          child: Row(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(

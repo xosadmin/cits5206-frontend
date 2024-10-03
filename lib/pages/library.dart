@@ -5,6 +5,8 @@ import 'setting.dart';
 import 'discover.dart';
 
 class LibraryPage extends StatefulWidget  {
+  const LibraryPage({super.key});
+
   @override
   _LibraryPageState createState() => _LibraryPageState();
 }
@@ -13,12 +15,12 @@ class _LibraryPageState extends State<LibraryPage> {
 
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -37,7 +39,7 @@ class _LibraryPageState extends State<LibraryPage> {
     return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
+            backgroundColor: const Color(0xFFFCFCFF),
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
@@ -48,13 +50,13 @@ class _LibraryPageState extends State<LibraryPage> {
                     MaterialPageRoute(builder: (context) => SettingPage()),
                   );
                 },
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   backgroundImage: AssetImage('assets/images/image1.jpg'),
                 ),
               ),
             ),
 
-            title: Text(
+            title: const Text(
               "Library",
               style: TextStyle(
                 fontFamily: 'EuclidCircularA',
@@ -64,17 +66,17 @@ class _LibraryPageState extends State<LibraryPage> {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications),
                 onPressed: () {
                   print("Settings pressed");
                 },
               ),
             ],
           ),
-          backgroundColor: Color(0xFFFCFCFF),
+          backgroundColor: const Color(0xFFFCFCFF),
           body: LibraryBody(),
           bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Color(0xFFFCFCFF),
+              backgroundColor: const Color(0xFFFCFCFF),
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -132,6 +134,8 @@ class _LibraryPageState extends State<LibraryPage> {
 }
 
 class LibraryBody extends StatefulWidget  {
+  const LibraryBody({super.key});
+
   @override
   _LibraryBodyState createState() => _LibraryBodyState();
 }
@@ -251,13 +255,13 @@ class _LibraryBodyState extends State<LibraryBody> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     side:BorderSide.none,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // Optional: Make the border rounded
                     ),
                   ),
                   child: Text(
                     cateText[index],
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 10.0,
                     ),
@@ -266,14 +270,14 @@ class _LibraryBodyState extends State<LibraryBody> {
               }
           ),
         ),
-        SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
           margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Color(0x1A282626), // Shadow color with transparency
                 offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -289,7 +293,7 @@ class _LibraryBodyState extends State<LibraryBody> {
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
-                margin: EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
@@ -305,7 +309,7 @@ class _LibraryBodyState extends State<LibraryBody> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               IconButton(
-                                icon: Icon(Icons.menu, size: 20),
+                                icon: const Icon(Icons.menu, size: 20),
                                 onPressed: () {
                                   // Handle menu press
                                   print('Menu pressed');
@@ -321,7 +325,7 @@ class _LibraryBodyState extends State<LibraryBody> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              SizedBox(width: 16.0),
+                              const SizedBox(width: 16.0),
                               // Title and Time
                               Expanded(
                                 child: Column(
@@ -329,14 +333,14 @@ class _LibraryBodyState extends State<LibraryBody> {
                                   children: [
                                     Text(
                                       listTitle[index],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       listTime[index],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
@@ -365,8 +369,8 @@ class _LibraryBodyState extends State<LibraryBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(67.0, 26.0),
-                              side: BorderSide(
+                              minimumSize: const Size(67.0, 26.0),
+                              side: const BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
@@ -379,11 +383,11 @@ class _LibraryBodyState extends State<LibraryBody> {
                               children: [
                                 Icon(
                                   _isClickedPlay ? Icons.check : Icons.play_circle,
-                                  color: Color(0xFF1D1DD1),
+                                  color: const Color(0xFF1D1DD1),
                                   size: 10.0,
                                 ),
-                                SizedBox(width: 8.0),
-                                Text(
+                                const SizedBox(width: 8.0),
+                                const Text(
                                   'Play',
                                   style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                 )
@@ -396,8 +400,8 @@ class _LibraryBodyState extends State<LibraryBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(111.0, 26.0),
-                              side: BorderSide(
+                              minimumSize: const Size(111.0, 26.0),
+                              side: const BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
@@ -405,7 +409,7 @@ class _LibraryBodyState extends State<LibraryBody> {
                                 borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
@@ -427,8 +431,8 @@ class _LibraryBodyState extends State<LibraryBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(104.0, 26.0),
-                              side: BorderSide(
+                              minimumSize: const Size(104.0, 26.0),
+                              side: const BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
@@ -436,7 +440,7 @@ class _LibraryBodyState extends State<LibraryBody> {
                                 borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
@@ -474,13 +478,13 @@ class _LibraryBodyState extends State<LibraryBody> {
               onPressed: () {
                 print('Floating Action Button pressed');
               },
+              backgroundColor: Colors.white,
+              elevation: 0,
               child: Image.network(
                 'assets/images/audio.png', // Replace with your image path
                 width: 50, // Adjust size as needed
                 height: 50,
-              ),
-              backgroundColor: Colors.white,
-              elevation: 0, // Optional: Remove shadow if needed
+              ), // Optional: Remove shadow if needed
             ),
           ),
         ),

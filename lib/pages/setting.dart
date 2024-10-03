@@ -4,6 +4,8 @@ import 'discover.dart';
 import 'library.dart';
 
 class SettingPage extends StatefulWidget  {
+  const SettingPage({super.key});
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -11,12 +13,12 @@ class SettingPage extends StatefulWidget  {
 class _SettingPageState extends State<SettingPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -35,8 +37,8 @@ class _SettingPageState extends State<SettingPage> {
     return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
-            title: Text(
+            backgroundColor: const Color(0xFFFCFCFF),
+            title: const Text(
               "Settings",
               style: TextStyle(
                 fontFamily: 'EuclidCircularA',
@@ -45,10 +47,10 @@ class _SettingPageState extends State<SettingPage> {
             ),
             centerTitle: true,
           ),
-          backgroundColor: Color(0xFFFCFCFF),
+          backgroundColor: const Color(0xFFFCFCFF),
           body: SettingBody(),
           bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Color(0xFFFCFCFF),
+              backgroundColor: const Color(0xFFFCFCFF),
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -106,6 +108,8 @@ class _SettingPageState extends State<SettingPage> {
 }
 
 class SettingBody extends StatefulWidget  {
+  const SettingBody({super.key});
+
   @override
   _SettingBodyState createState() => _SettingBodyState();
 }
@@ -209,7 +213,7 @@ class _SettingBodyState extends State<SettingBody> {
           borderRadius: BorderRadius.circular(4), // Button border radius 4px
         ),
         child: ListTile(
-          title: Text(title, style: TextStyle(fontSize: 16),),
+          title: Text(title, style: const TextStyle(fontSize: 16),),
           trailing: Icon(icon, size: 20,), // Icon positioned on the right
           onTap: onTap,
         ),

@@ -6,6 +6,8 @@ import 'setting.dart';
 import 'library.dart';
 
 class DiscoverPage extends StatefulWidget  {
+  const DiscoverPage({super.key});
+
   @override
   _DiscoverPageState createState() => _DiscoverPageState();
 }
@@ -14,12 +16,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -38,7 +40,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     return SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
+            backgroundColor: const Color(0xFFFCFCFF),
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
@@ -49,13 +51,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     MaterialPageRoute(builder: (context) => SettingPage()),
                   );
                 },
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   backgroundImage: AssetImage('assets/images/image1.jpg'),
                 ),
               ),
             ),
 
-            title: Text(
+            title: const Text(
               "Explore",
               style: TextStyle(
                 fontFamily: 'EuclidCircularA',
@@ -65,17 +67,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications),
                 onPressed: () {
                   print("Settings pressed");
                 },
               ),
             ],
           ),
-          backgroundColor: Color(0xFFFCFCFF),
+          backgroundColor: const Color(0xFFFCFCFF),
           body: DiscoverBody(),
           bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Color(0xFFFCFCFF),
+              backgroundColor: const Color(0xFFFCFCFF),
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -133,6 +135,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
 }
 
 class DiscoverBody extends StatefulWidget  {
+  const DiscoverBody({super.key});
+
   @override
   _DiscoverBodyState createState() => _DiscoverBodyState();
 }
@@ -161,7 +165,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   void loadDatas() async {
     List<List<String>> fetchedLists = await getNotes();
     setState(() {
-      noteIDs = fetchedLists[0];;
+      noteIDs = fetchedLists[0];
       notePodids = fetchedLists[1];
       noteDates = fetchedLists[2];
     });
@@ -262,8 +266,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
           height: 34.0,
           decoration: BoxDecoration(
             color: Colors.white, // Background color of the search bar
@@ -274,20 +278,20 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 2,
                 blurRadius: 5,
-                offset: Offset(0, 3), // Shadow position
+                offset: const Offset(0, 3), // Shadow position
               ),
             ],
           ),
           child: Row(
             children: [
-              Icon(Icons.search, color: Colors.grey, size: 14.0),
-              SizedBox(width: 8.0), // Space between the icon and the text
+              const Icon(Icons.search, color: Colors.grey, size: 14.0),
+              const SizedBox(width: 8.0), // Space between the icon and the text
               Expanded(
                 child: TextField(
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12.0, // Adjusted font size
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Search for podcasts", // Placeholder text
                     border: InputBorder.none, // Remove the default border
                     contentPadding: EdgeInsets.symmetric(vertical: 14.0), // Adjust vertical padding
@@ -318,9 +322,9 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                     print(index + 1);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isSelectedCate[index] ? Color(0xFF1D1DD1) : Colors.white,
+                    backgroundColor: _isSelectedCate[index] ? const Color(0xFF1D1DD1) : Colors.white,
                     side:BorderSide.none,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // Optional: Make the border rounded
                     ),
                   ),
@@ -335,14 +339,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
               }
           ),
         ),
-        SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
           margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Color(0x1A282626), // Shadow color with transparency
                 offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -356,8 +360,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     'Trending',
                     style: TextStyle(
@@ -367,7 +371,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   ),
                 ),
                 // Trending Cubes
-                Container(
+                SizedBox(
                   height: 140.0, // Height of the subscription cubes
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -379,7 +383,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           Container(
                             width: 64.0, // Width of each cube
                             height: 64.0, // Height of each cube
-                            margin: EdgeInsets.symmetric(horizontal: 8.0),
+                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
                             color: Colors.white,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(5.0),
@@ -389,8 +393,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 4.0),
-                          Container(
+                          const SizedBox(height: 4.0),
+                          SizedBox(
                             width: 64.0,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,14 +402,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 Text(
                                   imageText[index], // Existing text
                                   softWrap: true,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12.0,
                                   ),
                                 ),
-                                SizedBox(height: 4.0), // Adds space between the texts
+                                const SizedBox(height: 4.0), // Adds space between the texts
                                 Text(
                                   imageText2[index], // New small text
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 10.0, // Smaller font size for the new text
                                     color: Colors.black, // Optional: Adjust color if needed
                                   ),
@@ -418,19 +422,19 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                     },
                   ),
                 ),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
               ],
             ),
           ),
         ),
-        SizedBox(height: 15.0),
+        const SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
             itemCount: noteIDs.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
-                margin: EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
@@ -455,7 +459,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              SizedBox(width: 16.0),
+                              const SizedBox(width: 16.0),
                               // Title and Time
                               Expanded(
                                 child: Column(
@@ -463,14 +467,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   children: [
                                     Text(
                                       noteIDs[index],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       noteDates[index],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
@@ -483,7 +487,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 right: 0,
                                 top: 0,
                                 child: IconButton(
-                                  icon: Icon(Icons.more_vert),
+                                  icon: const Icon(Icons.more_vert),
                                   onPressed: () {
                                     showModalBottomSheet(
                                       context: context,
@@ -507,15 +511,15 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                         children: [
                           Text(
                             "# ${notePodids[index]}",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Text(
                             noteContent,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12.0,
                             ),
                           ),
@@ -537,8 +541,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(67.0, 26.0),
-                              side: BorderSide(
+                              minimumSize: const Size(67.0, 26.0),
+                              side: const BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
@@ -551,11 +555,11 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               children: [
                                 Icon(
                                   _isClickedPlay ? Icons.check : Icons.play_circle,
-                                  color: Color(0xFF1D1DD1),
+                                  color: const Color(0xFF1D1DD1),
                                   size: 10.0,
                                 ),
-                                SizedBox(width: 8.0),
-                                Text(
+                                const SizedBox(width: 8.0),
+                                const Text(
                                   'Play',
                                   style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                 )
@@ -568,8 +572,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(111.0, 26.0),
-                              side: BorderSide(
+                              minimumSize: const Size(111.0, 26.0),
+                              side: const BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
@@ -577,7 +581,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
@@ -599,8 +603,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: Size(104.0, 26.0),
-                              side: BorderSide(
+                              minimumSize: const Size(104.0, 26.0),
+                              side: const BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
@@ -608,7 +612,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
@@ -639,33 +643,35 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 }
 
 class BottomOptions extends StatelessWidget {
+  const BottomOptions({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min, // Makes the column take up the minimal vertical space
         children: <Widget>[
           ListTile(
-            leading: Icon(Icons.block),
-            title: Text('Block show from recommendation'),
+            leading: const Icon(Icons.block),
+            title: const Text('Block show from recommendation'),
             onTap: () {
               // Add your action here
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: Icon(Icons.thumb_up),
-            title: Text('Show more of shows like this'),
+            leading: const Icon(Icons.thumb_up),
+            title: const Text('Show more of shows like this'),
             onTap: () {
               // Add your action here
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: Icon(Icons.thumb_down),
-            title: Text('Show less of shows like this'),
+            leading: const Icon(Icons.thumb_down),
+            title: const Text('Show less of shows like this'),
             onTap: () {
               // Add your action here
               Navigator.pop(context);

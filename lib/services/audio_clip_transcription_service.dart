@@ -27,7 +27,7 @@ class AudioClipTranscriptionService {
   Future<void> _loadTFLiteModel() async {
     try {
       final modelFile = await _getModelFile();
-      _interpreter = await Interpreter.fromFile(modelFile);
+      _interpreter = Interpreter.fromFile(modelFile);
       print('TFLite model loaded successfully.');
     } catch (e) {
       print('Error loading TFLite model: $e');
@@ -51,7 +51,7 @@ class AudioClipTranscriptionService {
   Future<String> clipAndTranscribe(String url, Duration start, Duration end) async {
     try {
       final session = await AudioSession.instance;
-      await session.configure(AudioSessionConfiguration.music());
+      await session.configure(const AudioSessionConfiguration.music());
 
       await _audioPlayer.setUrl(url);
       await _audioPlayer.setClip(start: start, end: end);
