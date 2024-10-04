@@ -84,8 +84,6 @@ This command will check if all dependencies are correctly installed.
 | 23825634 | Yunwei Zhang | Frontend | Yunwei-Zhang |
 | 23876142 | Nishanth Arul | Frontend | NishanthArul |
 
-## User Manual
-
 ## References
 * [Flutter Official Documentation](https://docs.flutter.dev/)
 * [iOS Development Guide](https://docs.flutter.dev/get-started/install/macos/mobile-ios)
