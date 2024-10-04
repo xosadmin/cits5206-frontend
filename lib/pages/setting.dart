@@ -1,11 +1,12 @@
-import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'discover.dart';
 import 'library.dart';
 import 'pins.dart';
 
-class SettingPage extends StatefulWidget  {
+class SettingPage extends StatefulWidget {
+  const SettingPage({super.key});
+
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -13,12 +14,12 @@ class SettingPage extends StatefulWidget  {
 class _SettingPageState extends State<SettingPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _pages = <Widget>[
-    Center(child: Text('Feed Page')),
-    Center(child: Text('Pins Page')),
-    Center(child: Text('Discover Page')),
-    Center(child: Text('Library Page')),
-    Center(child: Text('Settings Page')),
+  static final List<Widget> _pages = <Widget>[
+    const Center(child: Text('Feed Page')),
+    const Center(child: Text('Pins Page')),
+    const Center(child: Text('Discover Page')),
+    const Center(child: Text('Library Page')),
+    const Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -36,14 +37,26 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xFFFCFCFF),
-            title: Text(
-              "Settings",
-              style: TextStyle(
-                fontFamily: 'EuclidCircularA',
-                fontSize: 20,
-              ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFCFCFF),
+        title: const Text(
+          "Settings",
+          style: TextStyle(
+            fontFamily: 'EuclidCircularA',
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      backgroundColor: const Color(0xFFFCFCFF),
+      body: const SettingBody(),
+      bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: const Color(0xFFFCFCFF),
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Feed',
             ),
             centerTitle: true,
           ),
@@ -112,14 +125,14 @@ class _SettingPageState extends State<SettingPage> {
   }
 }
 
-class SettingBody extends StatefulWidget  {
+class SettingBody extends StatefulWidget {
+  const SettingBody({super.key});
+
   @override
   _SettingBodyState createState() => _SettingBodyState();
 }
 
-
 class _SettingBodyState extends State<SettingBody> {
-
   String imageUrl = 'assets/images/image1.jpg';
 
   @override
@@ -154,7 +167,7 @@ class _SettingBodyState extends State<SettingBody> {
                   context,
                   'AudioPin Settings',
                   Icons.arrow_forward_ios, // Right-side icon
-                      () {
+                  () {
                     // Navigate to AudioPin Settings
                   },
                 ),
@@ -162,7 +175,7 @@ class _SettingBodyState extends State<SettingBody> {
                   context,
                   'Account Settings',
                   Icons.arrow_forward_ios, // Right-side icon
-                      () {
+                  () {
                     // Navigate to Account Settings
                   },
                 ),
@@ -170,7 +183,7 @@ class _SettingBodyState extends State<SettingBody> {
                   context,
                   'Personalisation',
                   Icons.arrow_forward_ios, // Right-side icon
-                      () {
+                  () {
                     // Navigate to Personalisation
                   },
                 ),
@@ -178,7 +191,7 @@ class _SettingBodyState extends State<SettingBody> {
                   context,
                   'App Info',
                   Icons.arrow_forward_ios, // Right-side icon
-                      () {
+                  () {
                     // Navigate to App Info
                   },
                 ),
@@ -186,7 +199,7 @@ class _SettingBodyState extends State<SettingBody> {
                   context,
                   'Support',
                   Icons.arrow_forward_ios, // Right-side icon
-                      () {
+                  () {
                     // Navigate to Support
                   },
                 ),
@@ -194,7 +207,7 @@ class _SettingBodyState extends State<SettingBody> {
                   context,
                   'Logout',
                   Icons.arrow_forward_ios, // Right-side icon
-                      () {
+                  () {
                     // Implement logout functionality
                   },
                 ),
@@ -217,8 +230,14 @@ class _SettingBodyState extends State<SettingBody> {
           borderRadius: BorderRadius.circular(4), // Button border radius 4px
         ),
         child: ListTile(
-          title: Text(title, style: TextStyle(fontSize: 16),),
-          trailing: Icon(icon, size: 20,), // Icon positioned on the right
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 16),
+          ),
+          trailing: Icon(
+            icon,
+            size: 20,
+          ), // Icon positioned on the right
           onTap: onTap,
         ),
       ),
@@ -226,7 +245,6 @@ class _SettingBodyState extends State<SettingBody> {
   }
 }
 
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(const MaterialApp(
       home: SettingPage(),
     ));

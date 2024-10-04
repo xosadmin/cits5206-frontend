@@ -1,13 +1,54 @@
 import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 import 'dart:convert';
 
+class UserService {
+  // store userID to hive
+  static Future<void> saveUserID(String userID) async {
+    var box = await Hive.openBox('userBox');
+    await box.put('userID', userID);
+    print('Stored userID: $userID');
+  }
+
+  // get userID from hive
+  static Future<String?> getUserID() async {
+    var box = await Hive.openBox('userBox');
+    String? userID = box.get('userID');
+    print('Retrieved userID: $userID');
+    return userID;
+  }
+
+  // store Token to hive
+  static Future<void> saveToken(String token) async {
+    var box = await Hive.openBox('authBox');
+    await box.put('token', token);
+    print('Stored token: $token');
+  }
+
+  // get Token from hive
+  static Future<String?> getToken() async {
+    var box = await Hive.openBox('authBox');
+    String? token = box.get('token');
+    print('Retrieved token: $token');
+    return token;
+  }
+
+  // clear token when user logs out
+  static Future<void> clearToken() async {
+    var box = await Hive.openBox('authBox');
+    await box.delete('token');
+    print('Token cleared');
+  }
+}
+
 class ApiService {
+  static http.Client client = http.Client();
   static const String baseUrl = "https://cits5206.7m7.moe";
 
   // Sign in function
   static Future<void> loginUser(String username, String password) async {
     final url = Uri.parse('$baseUrl/login');
-    final response = await http.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body:
@@ -17,10 +58,15 @@ class ApiService {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['Status'] == true) {
-        // Process sign in successful and save token
-        print("Sign in successful，Token: ${data['Token']}");
+        // get token from backend API requests
+        String token = data['token'];
+        print("Login successful, token: $token");
+        // store token to hive
+        await UserService.saveToken(token);
+        // Sign in successful, save token
+        print("Sign in successful, Token: $token");
+        // You need to store the token for future use
       } else {
-        // Process sign in failed
         print("Sign in failed");
       }
     } else {
@@ -28,27 +74,30 @@ class ApiService {
     }
   }
 
-  // Sign up function
+  // Registration function
   static Future<bool> registerUser(String username, String password) async {
     final url = Uri.parse('$baseUrl/register');
     try {
-      final response = await http.post(
+      final response = await client.post(
         url,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body:
             'username=${Uri.encodeComponent(username)}&password=${Uri.encodeComponent(password)}',
       );
 
-      // print status code
+      // Print status code
       print('Status Code: ${response.statusCode}');
-      // print response body
+      // Print response body
       print('Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = jsonDecode(response.body);
         if (data['Status'] == true) {
-          // process registration successful and save userID
+          // get userID from backend API requests
+          String userID = data['userID'];
           print("Registration successful, user ID: ${data['userID']}");
+          // store userID to hive
+          await UserService.saveUserID(userID);
           return true;
         } else {
           print("Registration failed");
@@ -64,54 +113,121 @@ class ApiService {
     }
   }
 
-  // Change password
+  // Change password function
   static Future<void> changePassword(String token, String newPassword) async {
     final url = Uri.parse('$baseUrl/changepass');
     final response = await http.post(
       url,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'password': newPassword}),
+      body: 'password=${Uri.encodeComponent(newPassword)}',
     );
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['Status'] == true) {
-        print("密码修改成功");
+        print("Password change successful");
       } else {
-        print("密码修改失败");
+        print("Password change failed");
       }
     } else {
-      print("服务器错误: ${response.statusCode}");
+      print("Server error: ${response.statusCode}");
     }
   }
 
-  // Interest mark
-  static Future<void> sendUserInterests(
-      String userId, List<String> interests) async {
+  // Update user information function
+  static Future<void> setUserInfo(
+      String userID, String firstname, String lastname, String dob) async {
+    final url = Uri.parse('$baseUrl/setuserinfo');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body:
+          'userID=${Uri.encodeComponent(userID)}&firstname=${Uri.encodeComponent(firstname)}&lastname=${Uri.encodeComponent(lastname)}&dob=${Uri.encodeComponent(dob)}',
+    );
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      if (data['Status'] == true) {
+        print("User information updated successfully");
+      } else {
+        print("Failed to update user information");
+      }
+    } else {
+      print("Server error: ${response.statusCode}");
+    }
+  }
+
+  // Update user interests function
+  static Future<void> setUserInterests(
+      String userID, List<String> interests) async {
     final url = Uri.parse('$baseUrl/setuserinterest');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body:
+          'userID=${Uri.encodeComponent(userID)}&interests=${Uri.encodeComponent(interests.join(","))}',
+    );
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      if (data['Status'] == true) {
+        print("User interests updated successfully");
+      } else {
+        print("Failed to update user interests");
+      }
+    } else {
+      print("Server error: ${response.statusCode}");
+    }
+  }
+
+  // upload and parse OPML file
+  static Future<List<Map<String, String>>> uploadAndParseOPML(
+      String opmlContent) async {
+    final url = Uri.parse('$baseUrl/uploadopml');
+    String? userID = await UserService.getUserID();
+    String? token = await UserService.getToken();
+
+    if (userID == null) {
+      throw Exception('User not authenticated');
+    }
 
     try {
       final response = await http.post(
         url,
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({
-          'userId': userId,
-          'interests': interests,
-        }),
+        body:
+            'userID=${Uri.encodeComponent(userID)}&opmlContent=${Uri.encodeComponent(opmlContent)}',
       );
 
       if (response.statusCode == 200) {
-        print('Interests sent successfully');
+        var data = jsonDecode(response.body);
+        if (data['Status'] == true) {
+          List<Map<String, String>> podcasts = (data['podcasts'] as List)
+              .map((podcast) => {
+                    'title': podcast['title'] as String,
+                    'xmlUrl': podcast['xmlurl'] as String,
+                  })
+              .toList();
+          return podcasts;
+        } else {
+          throw Exception(data['Message'] ?? 'Failed to upload and parse OPML');
+        }
       } else {
-        print('Failed to send interests: ${response.statusCode}');
+        throw Exception('Server error: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error sending interests: $e');
+      print("OPML upload and parse failed: $e");
+      rethrow;
     }
   }
 }

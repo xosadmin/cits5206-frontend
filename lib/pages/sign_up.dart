@@ -14,7 +14,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isFilled = false;
-  bool _isPasswordVisible = false; //通过此变量控制密码可见性
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
@@ -30,23 +30,38 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  // register function related
+  // Register user function
   Future<void> _registerUser() async {
     String email = emailController.text;
     String password = passwordController.text;
 
-    //调用API服务进行注册
-    bool success = await ApiService.registerUser(email, password);
+    try {
+      bool success = await ApiService.registerUser(email, password);
 
-    if (success) {
-      //注册成功后跳转到设置页
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SignUpSetting()));
-    } else {
-      //处理注册失败的情况
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Registration failed. Please try again.'),
-      ));
+      if (success) {
+        // 获取 userID 后保存到本地
+        String? userID = await UserService.getUserID();
+        if (userID != null) {
+          await UserService.saveUserID(userID); // 保存 userID
+        }
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SignUpSetting()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registration failed. Please try again.'),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
     }
   }
 
@@ -100,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     width: 327,
                     child: TextField(
                       controller: passwordController,
-                      obscureText: !_isPasswordVisible, //控制密码可见性
+                      obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
                         hintText: '**************',
                         border: const OutlineInputBorder(),
@@ -112,8 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           onPressed: () {
                             setState(() {
-                              _isPasswordVisible =
-                                  !_isPasswordVisible; // 切换可见性状态
+                              _isPasswordVisible = !_isPasswordVisible;
                             });
                           },
                         ),
@@ -129,13 +143,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: ElevatedButton(
                   onPressed: _isFilled
                       ? () async {
-                          await _registerUser(); //调用注册方法
+                          await _registerUser();
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isFilled
-                        ? const Color(0xFF00008B) // 默认颜色
-                        : const Color(0xFF6B7680), // 禁用状态
+                        ? const Color(0xFF00008B)
+                        : const Color(0xFF6B7680),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
@@ -151,7 +165,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Forgot Password 链接
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -160,7 +173,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SignInPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const SignInPage()),
                       );
                     },
                     child: const Text(
@@ -174,7 +188,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ],
               ),
               const SizedBox(height: 260),
-              // OR 和分割线
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -189,9 +202,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ],
               ),
               const SizedBox(height: 15),
-              // Google 按钮
               SizedBox(
-                width: 327, // 设置按钮的宽度为327
+                width: 327,
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle Google sign in action
@@ -210,9 +222,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Facebook 按钮
               SizedBox(
-                width: 327, // 设置按钮的宽度为327
+                width: 327,
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle Facebook sign in action
@@ -231,9 +242,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Apple 按钮
               SizedBox(
-                width: 327, // 设置按钮的宽度为327
+                width: 327,
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle Apple sign in action
