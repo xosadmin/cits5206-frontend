@@ -18,6 +18,10 @@ It provides a solution by allowing users to effortlessly record audio snippets a
    * Provides users with the ability to attach notes to audio snippets for contextual organization.
 7. Podcast Player
    * A full-featured podcast player for listening to and controlling podcast playback.
+8. Change settings
+   * Allow users to change general settings and profile settings. 
+9. Library functions
+   * Allow users to view and access notes and podcasts in library.
 ## Setup Preperation
 Before starting, please ensure your system meets the following requirements:
 * Operating System: macOS or Windows
