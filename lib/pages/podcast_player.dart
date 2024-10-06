@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/audio_handler.dart';
 import 'package:rxdart/rxdart.dart';
+import 'podcast_playback_speed_controller.dart';
+import 'queue_page.dart';
+import 'rich_text_editor_page.dart';
 
 class PodcastPlayerPage extends StatelessWidget {
   const PodcastPlayerPage({super.key});
@@ -19,7 +22,7 @@ class PodcastPlayerPage extends StatelessWidget {
             _buildEpisodeInfo(audioHandler),
             _buildProgressBar(audioHandler),
             _buildPlaybackControls(audioHandler),
-            _buildClippingButton(audioHandler), // New Clipping Button
+            _buildClippingButton(context,audioHandler), // New Clipping Button
             _buildBottomTabs(),
           ],
         ),
@@ -37,7 +40,8 @@ class PodcastPlayerPage extends StatelessWidget {
             icon: const Icon(Icons.keyboard_arrow_down),
             onPressed: () => Navigator.pop(context),
           ),
-          const Text('Now Playing', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('Now Playing',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           const Row(
             children: [
               Icon(Icons.nightlight_round),
@@ -66,11 +70,15 @@ class PodcastPlayerPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lightbulb_outline, color: Colors.yellow, size: 80),
+              const Icon(Icons.lightbulb_outline,
+                  color: Colors.yellow, size: 80),
               const SizedBox(height: 16),
               Text(
                 mediaItem?.album ?? 'THE LAZY GENIUS',
-                style: const TextStyle(color: Colors.yellow, fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.yellow,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -90,11 +98,13 @@ class PodcastPlayerPage extends StatelessWidget {
             children: [
               Text(
                 mediaItem?.title ?? 'Episode Title',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              Text(mediaItem?.artist ?? 'Podcast Name', style: const TextStyle(color: Colors.grey)),
+              Text(mediaItem?.artist ?? 'Podcast Name',
+                  style: const TextStyle(color: Colors.grey)),
             ],
           ),
         );
@@ -117,13 +127,16 @@ class PodcastPlayerPage extends StatelessWidget {
                   audioHandler.seek(Duration(milliseconds: value.round()));
                 },
                 min: 0.0,
-                max: mediaState?.mediaItem?.duration?.inMilliseconds.toDouble() ?? 1.0,
+                max: mediaState?.mediaItem?.duration?.inMilliseconds
+                        .toDouble() ??
+                    1.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(_formatDuration(mediaState?.position ?? Duration.zero)),
-                  Text(_formatDuration(mediaState?.mediaItem?.duration ?? Duration.zero)),
+                  Text(_formatDuration(
+                      mediaState?.mediaItem?.duration ?? Duration.zero)),
                 ],
               ),
             ],
@@ -139,32 +152,57 @@ class PodcastPlayerPage extends StatelessWidget {
       builder: (context, snapshot) {
         final playbackState = snapshot.data;
         final playing = playbackState?.playing ?? false;
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: const Icon(Icons.replay_10, size: 40),
-              onPressed: () => audioHandler.seek(
-                  Duration(seconds: (playbackState?.position.inSeconds ?? 0) - 15)),
-            ),
-            const SizedBox(width: 32),
-            Container(
-              width: 64,
-              height: 64,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.orange,
-              ),
-              child: IconButton(
-                icon: Icon(playing ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 40),
-                onPressed: playing ? audioHandler.pause : audioHandler.play,
-              ),
-            ),
-            const SizedBox(width: 32),
-            IconButton(
-              icon: const Icon(Icons.forward_10, size: 40),
-              onPressed: () => audioHandler.seek(
-                  Duration(seconds: (playbackState?.position.inSeconds ?? 0) + 15)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.queue_music, size: 30),
+                  onPressed: () => _openQueuePage(context, audioHandler),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.replay_10, size: 30),
+                  onPressed: () => audioHandler.seek(
+                    Duration(
+                        seconds: (playbackState?.position.inSeconds ?? 0) - 10),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.skip_previous, size: 30),
+                  onPressed: audioHandler.skipToPrevious,
+                ),
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.orange,
+                  ),
+                  child: IconButton(
+                    icon: Icon(playing ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white, size: 40),
+                    onPressed: playing ? audioHandler.pause : audioHandler.play,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.skip_next, size: 30),
+                  onPressed: audioHandler.skipToNext,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.forward_10, size: 30),
+                  onPressed: () => audioHandler.seek(
+                    Duration(
+                        seconds: (playbackState?.position.inSeconds ?? 0) + 10),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.speed, size: 30),
+                  onPressed: () =>
+                      _showPlaybackSpeedModal(context, audioHandler),
+                ),
+              ],
             ),
           ],
         );
@@ -172,64 +210,130 @@ class PodcastPlayerPage extends StatelessWidget {
     );
   }
 
-  Widget _buildClippingButton(PodcastAudioHandler audioHandler) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 16.0),
-    child: ElevatedButton(
-      onPressed: () async {
-       var transcription =  await _handleClipAudio(audioHandler);  // Call the clip handler
-       print(transcription + ": transcribed");
+  void _openQueuePage(BuildContext context, PodcastAudioHandler audioHandler) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => QueuePage(audioHandler: audioHandler),
+    ));
+  }
+
+  void _showPlaybackSpeedModal(
+      BuildContext context, PodcastAudioHandler audioHandler) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return PlaybackSpeedSelector(audioHandler: audioHandler);
       },
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    );
+  }
+
+  Widget _buildClippingButton(BuildContext context, PodcastAudioHandler audioHandler) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: ElevatedButton(
+        onPressed: () => _handleClipAudioAndNavigate(context, audioHandler),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+          child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
         ),
       ),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-        child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
-      ),
-    ),
-  );
-}
+    );
+  }
 
-Future<String> _handleClipAudio(PodcastAudioHandler audioHandler) async {
-  // Get current media item and playback position
-  final mediaItem = audioHandler.mediaItem.value;
-  final currentPosition = audioHandler.playbackState.value.position;
+  Future<void> _handleClipAudioAndNavigate(BuildContext context, PodcastAudioHandler audioHandler) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 20),
+              const Text(
+                'AI is transcribing the clip',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    colors: [Colors.blue, Colors.green],
+                    tileMode: TileMode.mirror,
+                  ).createShader(bounds);
+                },
+                child: const Text(
+                  'Please Wait...',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
 
-  // Ensure mediaItem is not null and has a valid duration
-  if (mediaItem == null || mediaItem.duration == null) {
-    print('No valid media item or media duration');
+    try {
+      var transcription = await _handleClipAudio(audioHandler);
+      Navigator.of(context).pop(); // Close the dialog
+
+      if (transcription.isNotEmpty) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => RichTextEditorPage(initialText: transcription),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to generate transcription')),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Close the dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  Future<String> _handleClipAudio(PodcastAudioHandler audioHandler) async {
+    final mediaItem = audioHandler.mediaItem.value;
+    final currentPosition = audioHandler.playbackState.value.position;
+
+    if (mediaItem == null || mediaItem.duration == null) {
+      print('No valid media item or media duration');
+      return "";
+    }
+
+    const clipDuration = Duration(seconds: 15);
+    final startPosition = currentPosition - clipDuration;
+    final endPosition = currentPosition + clipDuration;
+
+    final validStart = startPosition.isNegative ? Duration.zero : startPosition;
+    final validEnd =
+        (endPosition > mediaItem.duration!) ? mediaItem.duration! : endPosition;
+
+    final mediaUrl = mediaItem.extras?['url'] ?? mediaItem.id;
+
+    if (mediaUrl != null) {
+      return await audioHandler.customAction('transcribeClip', {
+        'url': mediaUrl,
+        'start': validStart,
+        'end': validEnd,
+      });
+    } else {
+      print("Media URL is not available, cannot clip");
+    }
     return "";
   }
-
-  // Define a clip duration around the current position (e.g., 30 seconds)
-  const clipDuration = Duration(seconds: 15);
-  final startPosition = currentPosition - clipDuration;
-  final endPosition = currentPosition + clipDuration;
-
-  // Validate positions to ensure they are within the bounds of the media item
-  final validStart = startPosition.isNegative ? Duration.zero : startPosition;
-  final validEnd = (endPosition > mediaItem.duration!)
-      ? mediaItem.duration!
-      : endPosition;
-
-  // Extract the media URL (if it's in the extras or use mediaItem id)
-  final mediaUrl = mediaItem.extras?['url'] ?? mediaItem.id;
-
-  // Trigger the clipping and transcription using customAction
-  if (mediaUrl != null) {
-    return await audioHandler.customAction('transcribeClip', {
-      'url': mediaUrl,
-      'start': validStart,
-      'end': validEnd,
-    });
-  } else {
-    print("Media URL is not available, cannot clip");
-  }
-  return "";
-}
 
 
   Widget _buildBottomTabs() {

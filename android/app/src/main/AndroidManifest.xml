@@ -1,28 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.audiopin_frontend">
+    xmlns:tools="http://schemas.android.com/tools" package="com.example.audiopin_frontend">
 
     <!-- ADD THESE TWO PERMISSIONS -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- ALSO ADD THIS PERMISSION IF TARGETING SDK 34 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 
-    <application
-        android:label="AudioPin"
-        android:icon="@mipmap/ic_launcher">
+    <application android:label="AudioPin" android:icon="@mipmap/ic_launcher">
 
-        <activity
-            android:name="com.ryanheise.audioservice.AudioServiceActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="flutterEmbedding"
-                android:value="2" />
+        <activity android:name="com.ryanheise.audioservice.AudioServiceActivity" android:exported="true" android:launchMode="singleTask" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
+            <meta-data android:name="flutterEmbedding" android:value="2" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,24 +23,23 @@
         </activity>
 
         <!-- ADD THIS "SERVICE" element -->
-        <service
-            android:name="com.ryanheise.audioservice.AudioService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="true"
-            tools:ignore="Instantiatable">
+        <service android:name="com.ryanheise.audioservice.AudioService" android:foregroundServiceType="mediaPlayback" android:exported="true" tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
         <!-- ADD THIS "RECEIVER" element -->
-        <receiver
-            android:name="com.ryanheise.audioservice.MediaButtonReceiver"
-            android:exported="true"
-            tools:ignore="Instantiatable">
+        <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver" android:exported="true" tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 </manifest>

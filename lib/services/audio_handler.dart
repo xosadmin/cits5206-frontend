@@ -200,7 +200,8 @@ class PodcastAudioHandler extends BaseAudioHandler
   }
 
   @override
-  Future<String> customAction(String name, [Map<String, dynamic>? extras]) async {
+  Future<String> customAction(String name,
+      [Map<String, dynamic>? extras]) async {
     switch (name) {
       case 'dispose':
         await _dispose();
@@ -253,5 +254,24 @@ class PodcastAudioHandler extends BaseAudioHandler
   Future<void> stop() async {
     await _player.stop();
     return super.stop();
+  }
+
+  Future<void> clearQueue() async {
+    await _playlist.clear();
+    queue.add([]);
+  }
+
+  Future<void> moveQueueItem(int oldIndex, int newIndex) async {
+    final newQueue = queue.value;
+    final item = newQueue.removeAt(oldIndex);
+    newQueue.insert(newIndex, item);
+
+    await _playlist.clear();
+    final audioSources = newQueue
+        .map((item) => AudioSource.uri(Uri.parse(item.id), tag: item))
+        .toList();
+    await _playlist.addAll(audioSources);
+
+    queue.add(newQueue);
   }
 }

@@ -52,6 +52,9 @@ dependencies:
   audio_session: ^0.1.21
   path_provider: ^2.1.4
   skeletonizer: ^1.4.2
+  markdown_editor_plus: ^0.2.15
+  flutter_tflite: ^1.0.1
+  flutter_deep_speech: ^0.0.3
 
 dev_dependencies:
   flutter_test:
