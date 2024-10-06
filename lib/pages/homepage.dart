@@ -319,9 +319,10 @@ class _HomeBodyState extends State<HomeBody>{
                 onTap: () {
                   Navigator.pushNamed(
                     context,
-                    '/noteedit',
+                    '/preview',
                     arguments: {
                       'listtitle': noteIDs[index],
+                      'listimageurls': imageUrl,
                     },
                   );
                 },
