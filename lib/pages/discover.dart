@@ -1,3 +1,4 @@
+import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
@@ -7,22 +8,21 @@ import 'library.dart';
 import 'setting.dart';
 import 'pins.dart';
 
-class DiscoverPage extends StatefulWidget {
-  const DiscoverPage({super.key});
-
+class DiscoverPage extends StatefulWidget  {
   @override
   _DiscoverPageState createState() => _DiscoverPageState();
 }
 
 class _DiscoverPageState extends State<DiscoverPage> {
+
   int _selectedIndex = 0;
 
-  static final List<Widget> _pages = <Widget>[
-    const Center(child: Text('Feed Page')),
-    const Center(child: Text('Pins Page')),
-    const Center(child: Text('Discover Page')),
-    const Center(child: Text('Library Page')),
-    const Center(child: Text('Settings Page')),
+  static List<Widget> _pages = <Widget>[
+    Center(child: Text('Feed Page')),
+    Center(child: Text('Pins Page')),
+    Center(child: Text('Discover Page')),
+    Center(child: Text('Library Page')),
+    Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -40,49 +40,30 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFCFCFF),
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              // Navigate to the settings page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingPage()),
-              );
-            },
-            child: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/image1.jpg'),
+          appBar: AppBar(
+            backgroundColor: Color(0xFFFCFCFF),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to the settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/image1.jpg'),
+                ),
+              ),
             ),
-          ),
-        ),
-        title: const Text(
-          "Explore",
-          style: TextStyle(
-            fontFamily: 'EuclidCircularA',
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              print("Settings pressed");
-            },
-          ),
-        ],
-      ),
-      backgroundColor: const Color(0xFFFCFCFF),
-      body: const DiscoverBody(),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFFCFCFF),
-          type: BottomNavigationBarType.fixed,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Feed',
+
+            title: Text(
+              "Explore",
+              style: TextStyle(
+                fontFamily: 'EuclidCircularA',
+                fontSize: 20,
+              ),
             ),
             centerTitle: true,
             actions: [
@@ -159,16 +140,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 }
 
-class DiscoverBody extends StatefulWidget {
-  const DiscoverBody({super.key});
-
+class DiscoverBody extends StatefulWidget  {
   @override
   _DiscoverBodyState createState() => _DiscoverBodyState();
 }
 
+
 class _DiscoverBodyState extends State<DiscoverBody> {
+
   bool _isClickedPlay = false; // To track if the button is clicked
-  List<bool> _isSelectedCate = [];
+  List<bool> _isSelectedCate  = [];
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
   List<String> subs = [];
@@ -188,7 +169,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   void loadDatas() async {
     List<List<String>> fetchedLists = await getNotes();
     setState(() {
-      noteIDs = fetchedLists[0];
+      noteIDs = fetchedLists[0];;
       notePodids = fetchedLists[1];
       noteDates = fetchedLists[2];
     });
@@ -282,14 +263,15 @@ class _DiscoverBodyState extends State<DiscoverBody> {
     'Just for testing...',
   ];
 
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
           height: 34.0,
           decoration: BoxDecoration(
             color: Colors.white, // Background color of the search bar
@@ -300,24 +282,23 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 2,
                 blurRadius: 5,
-                offset: const Offset(0, 3), // Shadow position
+                offset: Offset(0, 3), // Shadow position
               ),
             ],
           ),
           child: Row(
             children: [
-              const Icon(Icons.search, color: Colors.grey, size: 14.0),
-              const SizedBox(width: 8.0), // Space between the icon and the text
+              Icon(Icons.search, color: Colors.grey, size: 14.0),
+              SizedBox(width: 8.0), // Space between the icon and the text
               Expanded(
                 child: TextField(
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.0, // Adjusted font size
                   ),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Search for podcasts", // Placeholder text
                     border: InputBorder.none, // Remove the default border
-                    contentPadding: EdgeInsets.symmetric(
-                        vertical: 14.0), // Adjust vertical padding
+                    contentPadding: EdgeInsets.symmetric(vertical: 14.0), // Adjust vertical padding
                   ),
                   onChanged: (value) {
                     // Handle search input changes here
@@ -331,51 +312,45 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         Container(
           height: 20.0, // Increased height to accommodate text below the cubes
           width: MediaQuery.of(context).size.width * 0.9,
-          margin:
-              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, index){
                 return ElevatedButton(
                   onPressed: () {
                     setState(() {
                       // Update the selected state for the button
-                      _isSelectedCate =
-                          List.generate(imageUrls.length, (i) => i == index);
+                      _isSelectedCate = List.generate(imageUrls.length, (i) => i == index);
                     });
                     print(index + 1);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isSelectedCate[index]
-                        ? const Color(0xFF1D1DD1)
-                        : Colors.white,
-                    side: BorderSide.none,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius
-                          .zero, // Optional: Make the border rounded
+                    backgroundColor: _isSelectedCate[index] ? Color(0xFF1D1DD1) : Colors.white,
+                    side:BorderSide.none,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero, // Optional: Make the border rounded
                     ),
                   ),
                   child: Text(
                     cateText[index],
                     style: TextStyle(
-                      color:
-                          _isSelectedCate[index] ? Colors.white : Colors.black,
+                      color: _isSelectedCate[index] ? Colors.white : Colors.black,
                       fontSize: 10.0,
                     ),
                   ),
                 );
-              }),
+              }
+          ),
         ),
-        const SizedBox(height: 4.0),
+        SizedBox(height: 4.0),
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
-          margin:
-              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
                 color: Color(0x1A282626), // Shadow color with transparency
                 offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -389,8 +364,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Trending',
                     style: TextStyle(
@@ -400,20 +375,19 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   ),
                 ),
                 // Trending Cubes
-                SizedBox(
+                Container(
                   height: 140.0, // Height of the subscription cubes
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: imageUrls.length, // Number of subscription cubes
                     itemBuilder: (context, index) {
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment
-                            .center, // Center text and image horizontally
+                        crossAxisAlignment: CrossAxisAlignment.center, // Center text and image horizontally
                         children: [
                           Container(
                             width: 64.0, // Width of each cube
                             height: 64.0, // Height of each cube
-                            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                            margin: EdgeInsets.symmetric(horizontal: 8.0),
                             color: Colors.white,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(5.0),
@@ -423,8 +397,8 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4.0),
-                          SizedBox(
+                          SizedBox(height: 4.0),
+                          Container(
                             width: 64.0,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,43 +406,39 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 Text(
                                   imageText[index], // Existing text
                                   softWrap: true,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 12.0,
                                   ),
                                 ),
-                                const SizedBox(
-                                    height:
-                                        4.0), // Adds space between the texts
+                                SizedBox(height: 4.0), // Adds space between the texts
                                 Text(
                                   imageText2[index], // New small text
-                                  style: const TextStyle(
-                                    fontSize:
-                                        10.0, // Smaller font size for the new text
-                                    color: Colors
-                                        .black, // Optional: Adjust color if needed
+                                  style: TextStyle(
+                                    fontSize: 10.0, // Smaller font size for the new text
+                                    color: Colors.black, // Optional: Adjust color if needed
                                   ),
                                 ),
                               ],
                             ),
-                          ), // Add spacing between the cube and the text
+                          ),// Add spacing between the cube and the text
                         ],
                       );
                     },
                   ),
                 ),
-                const SizedBox(height: 10.0),
+                SizedBox(height: 10.0),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 15.0),
+        SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
             itemCount: noteIDs.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
-                margin: const EdgeInsets.all(16.0),
+                margin: EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
@@ -493,7 +463,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(width: 16.0),
+                              SizedBox(width: 16.0),
                               // Title and Time
                               Expanded(
                                 child: Column(
@@ -501,18 +471,19 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   children: [
                                     Text(
                                       noteIDs[index],
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       noteDates[index],
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12.0,
                                         color: Colors.grey,
                                       ),
                                     ),
+
                                   ],
                                 ),
                               ),
@@ -520,12 +491,12 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 right: 0,
                                 top: 0,
                                 child: IconButton(
-                                  icon: const Icon(Icons.more_vert),
+                                  icon: Icon(Icons.more_vert),
                                   onPressed: () {
                                     showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const BottomOptions();
+                                        return BottomOptions();
                                       },
                                     );
                                   },
@@ -544,15 +515,15 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                         children: [
                           Text(
                             "# ${notePodids[index]}",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4.0),
+                          SizedBox(height: 4.0),
                           Text(
                             noteContent,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12.0,
                             ),
                           ),
@@ -568,38 +539,33 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                _isClickedPlay =
-                                    !_isClickedPlay; // Toggle the state on press
+                                _isClickedPlay = !_isClickedPlay; // Toggle the state on press
                               });
                               print(listTitle[index]);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: const Size(67.0, 26.0),
-                              side: const BorderSide(
+                              minimumSize: Size(67.0, 26.0),
+                              side: BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    5.0), // Optional: Make the border rounded
+                                borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  _isClickedPlay
-                                      ? Icons.check
-                                      : Icons.play_circle,
-                                  color: const Color(0xFF1D1DD1),
+                                  _isClickedPlay ? Icons.check : Icons.play_circle,
+                                  color: Color(0xFF1D1DD1),
                                   size: 10.0,
                                 ),
-                                const SizedBox(width: 8.0),
-                                const Text(
+                                SizedBox(width: 8.0),
+                                Text(
                                   'Play',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 10.0),
+                                  style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                 )
                               ],
                             ),
@@ -610,17 +576,16 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: const Size(111.0, 26.0),
-                              side: const BorderSide(
+                              minimumSize: Size(111.0, 26.0),
+                              side: BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    5.0), // Optional: Make the border rounded
+                                borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
@@ -631,8 +596,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 SizedBox(width: 8.0),
                                 Text(
                                   'Add to queue',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 10.0),
+                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                 )
                               ],
                             ),
@@ -643,17 +607,16 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              minimumSize: const Size(104.0, 26.0),
-                              side: const BorderSide(
+                              minimumSize: Size(104.0, 26.0),
+                              side: BorderSide(
                                 color: Colors.grey, // Set the border color
                                 width: 0.7, // Set the border width (boldness)
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    5.0), // Optional: Make the border rounded
+                                borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                               ),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
@@ -664,8 +627,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                 SizedBox(width: 8.0),
                                 Text(
                                   'Download',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 10.0),
+                                  style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                 )
                               ],
                             ),
@@ -685,36 +647,33 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 }
 
 class BottomOptions extends StatelessWidget {
-  const BottomOptions({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
       child: Column(
-        mainAxisSize: MainAxisSize
-            .min, // Makes the column take up the minimal vertical space
+        mainAxisSize: MainAxisSize.min, // Makes the column take up the minimal vertical space
         children: <Widget>[
           ListTile(
-            leading: const Icon(Icons.block),
-            title: const Text('Block show from recommendation'),
+            leading: Icon(Icons.block),
+            title: Text('Block show from recommendation'),
             onTap: () {
               // Add your action here
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.thumb_up),
-            title: const Text('Show more of shows like this'),
+            leading: Icon(Icons.thumb_up),
+            title: Text('Show more of shows like this'),
             onTap: () {
               // Add your action here
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.thumb_down),
-            title: const Text('Show less of shows like this'),
+            leading: Icon(Icons.thumb_down),
+            title: Text('Show less of shows like this'),
             onTap: () {
               // Add your action here
               Navigator.pop(context);
@@ -750,13 +709,9 @@ Future<List<List<String>>> getNotes() async {
   if (response.statusCode == 200) {
     List<dynamic> notesList = jsonDecode(response.body);
     // Extract and return all NoteID values as a list of strings
-    List<String> id =
-        notesList.map<String>((note) => note['NoteID'].toString()).toList();
-    List<String> pod =
-        notesList.map<String>((note) => note['PodcastID'].toString()).toList();
-    List<String> date = notesList
-        .map<String>((note) => note['DateCreated'].toString())
-        .toList();
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
     //return getNotesDetails(res);
     return [id, pod, date];
   } else {
@@ -764,6 +719,7 @@ Future<List<List<String>>> getNotes() async {
   }
 }
 
-void main() => runApp(const MaterialApp(
+void main() =>
+    runApp(MaterialApp(
       home: DiscoverPage(),
     ));

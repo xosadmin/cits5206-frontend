@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audiopin_frontend/api_service.dart';
+import 'package:audiopin_frontend/pages/forgot_pwd.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -27,31 +28,6 @@ class _SignInPageState extends State<SignInPage> {
       _isFilled =
           emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
     });
-  }
-
-  // login and save token
-  Future<void> _loginUser() async {
-    String email = emailController.text;
-    String password = passwordController.text;
-
-    setState(() {
-      _isClicked = true;
-    });
-
-    try {
-      await ApiService.loginUser(emailController.text, passwordController.text);
-      Navigator.pushReplacementNamed(context, '/homepage');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-        ),
-      );
-    } finally {
-      setState(() {
-        _isClicked = false;
-      });
-    }
   }
 
   @override
@@ -116,7 +92,8 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                           onPressed: () {
                             setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
+                              _isPasswordVisible =
+                                  !_isPasswordVisible; // 切换可见性状态
                             });
                           },
                         ),
@@ -126,25 +103,28 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
               const SizedBox(height: 20),
+              // Sign In 按钮
               SizedBox(
                 width: 327,
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      _isClicked = true;
+                      _isClicked = true; // 点击后将按钮变灰
                     });
 
+                    // 延迟200毫秒后跳转页面
                     Future.delayed(const Duration(milliseconds: 120), () {
                       setState(() {
-                        _isClicked = false;
+                        _isClicked = false; // 恢复为深蓝色
                       });
+                      // 跳转homepage，先用forgot占位
                       Navigator.pushNamed(context, '/homepage');
                     });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isFilled
-                        ? const Color(0xFF00008B)
-                        : const Color(0xFF6B7680),
+                        ? const Color(0xFF00008B) // 默认颜色
+                        : const Color(0xFF6B7680), // 禁用状态
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
@@ -160,6 +140,7 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 10),
+              // Forgot Password 链接
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/forgot_pwd');
@@ -170,6 +151,7 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 260),
+              // OR 和分割线
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -184,8 +166,9 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
               const SizedBox(height: 15),
+              // Google 按钮
               SizedBox(
-                width: 327,
+                width: 327, // 设置按钮的宽度为327
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle Google sign in action
@@ -204,8 +187,9 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 10),
+              // Facebook 按钮
               SizedBox(
-                width: 327,
+                width: 327, // 设置按钮的宽度为327
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle Facebook sign in action
@@ -224,8 +208,9 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 10),
+              // Apple 按钮
               SizedBox(
-                width: 327,
+                width: 327, // 设置按钮的宽度为327
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Handle Apple sign in action

@@ -1,41 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:audiopin_frontend/api_service.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
+class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
-
-  @override
-  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
-}
-
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final TextEditingController emailController = TextEditingController();
-  bool _isClicked = false;
-
-  // Function to send reset password request via API
-  Future<void> _sendResetEmail() async {
-    String email = emailController.text;
-    if (email.isNotEmpty) {
-      setState(() {
-        _isClicked = true;
-      });
-
-      try {
-        await ApiService.changePassword("your_token_here", email);
-        Navigator.pushNamed(context, '/verify_mail');
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to send reset email. Please try again.'),
-          ),
-        );
-      } finally {
-        setState(() {
-          _isClicked = false;
-        });
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +22,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // 第一部分：图片和提示文字
               const SizedBox(height: 40),
               Image.asset(
                 'assets/images/Email_3_1.png',
@@ -72,19 +39,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
               ),
               const SizedBox(height: 40),
-              Column(
+
+              // 第二部分：Email和输入框
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Email Address',
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                   SizedBox(
-                    width: 327,
+                    width: 327, // 设置宽度为327像素
                     child: TextField(
-                      controller: emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'mena@gmail.com',
                         border: OutlineInputBorder(),
                       ),
@@ -93,23 +61,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ],
               ),
               const SizedBox(height: 40),
+
+              // 第三部分：Send按钮
               SizedBox(
                 width: 327,
-                height: 50,
+                height: 50, // 设置按钮高度为50
                 child: ElevatedButton(
-                  onPressed: _isClicked ? null : _sendResetEmail, // 调用API发送邮件
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, '/verify_mail'); // Handle send action
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00008B),
+                    backgroundColor: const Color(0xFF00008B), // 按钮背景色
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6), // 按钮圆角
                     ),
                   ),
-                  child: _isClicked
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Send',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                  child: const Text(
+                    'Send',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ),
             ],

@@ -1,71 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:audiopin_frontend/api_service.dart';
-import 'package:audiopin_frontend/pages/subscriptions.dart';
+import 'package:audiopin_frontend/pages/interests.dart';
 
-class ImportPage extends StatefulWidget {
+class ImportPage extends StatelessWidget {
   const ImportPage({super.key});
-
-  @override
-  _ImportPageState createState() => _ImportPageState();
-}
-
-class _ImportPageState extends State<ImportPage> {
-  String? userID;
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserID(); // Fetch userID on page initialization
-  }
-
-  Future<void> _getUserID() async {
-    String? id = await UserService.getUserID();
-    setState(() {
-      userID = id;
-      print(
-          'Retrieved userID: $userID'); // Confirm that userID is fetched correctly
-    });
-  }
-
-  Future<void> _importOPML(BuildContext context) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['xml', 'opml'], // Allow XML or OPML files
-      withData: true,
-    );
-
-    if (result != null) {
-      String opmlContent = String.fromCharCodes(result.files.single.bytes!);
-
-      // Ensure userID exists
-      if (userID == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('User not authenticated. Please log in.')),
-        );
-        return;
-      }
-
-      try {
-        // Call the API to upload and parse OPML
-        List<Map<String, String>> podcasts =
-            await ApiService.uploadAndParseOPML(opmlContent);
-
-        // Navigate to Subscriptions page with the parsed podcasts
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ImportSubscriptionsPage(podcasts: podcasts),
-          ),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to import OPML: $e')),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +24,6 @@ class _ImportPageState extends State<ImportPage> {
               backgroundColor: const Color(0xFFEAFEF1),
               borderColor: const Color(0xFF1ED660),
               icon: Image.asset('assets/icons/spotify.png'),
-              context: context,
             ),
             const SizedBox(height: 12),
             _buildImportButton(
@@ -95,7 +31,6 @@ class _ImportPageState extends State<ImportPage> {
               backgroundColor: const Color(0xFFF9F4FF),
               borderColor: const Color(0xFF986FC3),
               icon: Image.asset('assets/icons/applemusic.png'),
-              context: context,
             ),
             const SizedBox(height: 12),
             _buildImportButton(
@@ -103,7 +38,6 @@ class _ImportPageState extends State<ImportPage> {
               backgroundColor: const Color(0xFFFFE9E9),
               borderColor: const Color(0xFFFF0000),
               icon: Image.asset('assets/icons/youtube.png'),
-              context: context,
             ),
             const SizedBox(height: 450),
             SizedBox(
@@ -114,7 +48,7 @@ class _ImportPageState extends State<ImportPage> {
                   Navigator.pushNamed(context, '/interests');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00008B),
+                  backgroundColor: const Color(0xFF00008B), // 蓝色背景
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -139,14 +73,13 @@ class _ImportPageState extends State<ImportPage> {
     required Color backgroundColor,
     required Color borderColor,
     required Widget icon,
-    required BuildContext context,
   }) {
     return SizedBox(
       width: 327,
       height: 52,
       child: OutlinedButton.icon(
         onPressed: () {
-          _importOPML(context); // Trigger import operation on button click
+          // click logic
         },
         icon: icon,
         label: Text(

@@ -16,11 +16,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Scaffold(
       body: Stack(
         children: [
+          // 蓝色背景区域
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              color: const Color(0xFF00008B),
-              height: 170,
+              color: const Color(0xFF00008B), // 蓝色背景
+              height: 170, // 蓝色区域的高度
             ),
           ),
           Column(
@@ -70,14 +71,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         ),
                       ),
                     ),
+                    // 将分页指示器放在白色区域底部
                     Positioned(
                       bottom: 20,
                       left: 0,
                       right: 0,
                       child: Center(
                         child: SmoothPageIndicator(
-                          controller: _pageController,
-                          count: 4,
+                          controller: _pageController, // 连接 PageController
+                          count: 4, // 指示器的页数
                           effect: const JumpingDotEffect(
                             dotWidth: 10,
                             dotHeight: 10,
@@ -99,12 +101,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  backgroundColor: const Color(0xFF00008B),
+                  backgroundColor: const Color(0xFF00008B), // 按钮的深蓝色背景
                 ),
-                child: const Text('Get Started >>',
+                child: Text('Get Started >>',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 40), // 调整蓝色区域中的按钮位置
             ],
           ),
         ],
@@ -122,7 +124,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Image.asset(imagePath, height: 300),
+        Image.asset(imagePath, height: 300), // 更新图片高度
         const SizedBox(height: 20),
         RichText(
           textAlign: TextAlign.center,

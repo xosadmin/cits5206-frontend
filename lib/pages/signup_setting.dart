@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audiopin_frontend/pages/import.dart';
-import 'package:audiopin_frontend/api_service.dart'; // Import your API service
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpSetting extends StatefulWidget {
@@ -17,11 +16,8 @@ class _SignUpSettingState extends State<SignUpSetting> {
   final TextEditingController dobController = TextEditingController();
   bool _isFilled = false;
 
-  // Assume these are fetched from storage or passed in
-  String userID = "your_userID_here";
-
   final dateFormatter = MaskTextInputFormatter(
-      mask: '##/##/####', filter: {"#": RegExp(r'[0-9]')});
+      mask: '####/##/##', filter: {"#": RegExp(r'[0-9]')});
 
   @override
   void initState() {
@@ -39,15 +35,6 @@ class _SignUpSettingState extends State<SignUpSetting> {
     });
   }
 
-  // Update user information using API
-  Future<void> _updateUserInfo() async {
-    String firstName = firstNameController.text;
-    String lastName = lastNameController.text;
-    String dob = dobController.text;
-
-    await ApiService.setUserInfo(userID, firstName, lastName, dob);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +50,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center, // 确保整体内容居中
           children: [
             Center(
               child: Column(
@@ -83,14 +70,15 @@ class _SignUpSettingState extends State<SignUpSetting> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     label: 'Date of birth',
-                    hintText: 'DD/MM/YYYY',
+                    hintText: 'YYYY/MM/DD',
                     controller: dobController,
-                    TextInputFormatters: [dateFormatter],
+                    TextInputFormatters: [dateFormatter], // 添加生日的格式限制
                   ),
                 ],
               ),
             ),
             const Spacer(),
+            // 将蓝框整体内容向下移动30px
             const SizedBox(height: 30),
             Center(
               child: Column(
@@ -119,8 +107,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
                     height: 52,
                     child: ElevatedButton(
                       onPressed: _isFilled
-                          ? () async {
-                              await _updateUserInfo();
+                          ? () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -158,7 +145,7 @@ class _SignUpSettingState extends State<SignUpSetting> {
     required String label,
     required String hintText,
     required TextEditingController controller,
-    List<TextInputFormatter>? TextInputFormatters,
+    List<TextInputFormatter>? TextInputFormatters, //添加inputFormatters参数
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -59,8 +59,7 @@ class NewPasswordPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInPage()),
+                          MaterialPageRoute(builder: (context) => SignInPage()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -71,7 +70,7 @@ class NewPasswordPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      child: const Text('Create password',
+                      child: Text('Create password',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),

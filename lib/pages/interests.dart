@@ -1,32 +1,12 @@
-import 'package:audiopin_frontend/pages/homepage.dart';
-import 'package:audiopin_frontend/api_service.dart';
 import 'package:flutter/material.dart';
 
 class InterestsPage extends StatefulWidget {
-  const InterestsPage({super.key});
-
   @override
   _InterestsPageState createState() => _InterestsPageState();
 }
 
 class _InterestsPageState extends State<InterestsPage> {
   List<String> selectedInterests = [];
-
-  // Mapping interest names to their corresponding IDs
-  final Map<String, String> interestMap = {
-    'Art': '1',
-    'Music': '2',
-    'Comedy': '3',
-    'TV': '4',
-    'Government': '5',
-    'Sports': '6',
-    'Crypto': '7',
-    'Culture': '8',
-    'Society': '9',
-    'Business': '10',
-    'Health': '11',
-    'Education': '12',
-  };
 
   final List<String> interests = [
     'Art',
@@ -43,91 +23,53 @@ class _InterestsPageState extends State<InterestsPage> {
     'Education'
   ];
 
-  String? userID;
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserID(); // Get the userID when the widget is initialized
-  }
-
-  // Function to get userID from Hive storage
-  Future<void> _getUserID() async {
-    String? id = await UserService.getUserID();
-    setState(() {
-      userID = id;
-      print(
-          'Retrieved userID: $userID'); // check if the userID is read correctly
-    });
-  }
-
-  // Function to save interests using the setUserInterests API method
-  Future<void> _saveInterests() async {
-    if (userID != null && selectedInterests.isNotEmpty) {
-      try {
-        await ApiService.setUserInterests(userID!, selectedInterests);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      } catch (e) {
-        print('Failed to save interests: $e');
-      }
-    } else {
-      print('User ID is null or no interests selected.');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: Text(''),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            const Text(
+            // 第一部分：标题
+            SizedBox(height: 20),
+            Text(
               'Tell us what your',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const Text(
+            Text(
               'interests are',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
+            // 第二部分：兴趣标签
             Wrap(
               alignment: WrapAlignment.center,
               spacing: 10,
               runSpacing: 10,
               children: interests.map((interest) {
-                bool isSelected =
-                    selectedInterests.contains(interestMap[interest]);
+                bool isSelected = selectedInterests.contains(interest);
                 return GestureDetector(
                   onTap: () {
                     setState(() {
                       if (isSelected) {
-                        selectedInterests.remove(interestMap[interest]);
+                        selectedInterests.remove(interest);
                       } else {
-                        selectedInterests.add(interestMap[interest]!);
+                        selectedInterests.add(interest);
                       }
-                      // test to print selectedInterests list and interestMap[interest]
-                      print("Selected interests: $selectedInterests");
-                      print("Mapped interest ID: ${interestMap[interest]}");
                     });
                   },
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: Colors.black),
                       gradient: isSelected
-                          ? const LinearGradient(
+                          ? LinearGradient(
                               colors: [Color(0xFF00008B), Color(0xFF1D1DD1)],
                             )
                           : null,
@@ -143,56 +85,58 @@ class _InterestsPageState extends State<InterestsPage> {
                 );
               }).toList(),
             ),
-            const Spacer(),
+            Spacer(),
+            // 第三部分：按钮
             SizedBox(
               width: 327,
               height: 52,
               child: OutlinedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    side: const BorderSide(color: Color(0xFF6B7680)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    )),
-                child: const Text(
+                onPressed: selectedInterests.isNotEmpty
+                    ? () {
+                        // Continue button logic
+                      }
+                    : null,
+                child: Text(
                   "I'll rather not",
                   style: TextStyle(
                     color: Colors.grey,
                   ),
                 ),
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: Color(0xFF6B7680)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    )),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             SizedBox(
               width: 327,
               height: 52,
               child: ElevatedButton(
-                onPressed: selectedInterests.isNotEmpty ? _saveInterests : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedInterests.isNotEmpty
-                      ? const Color(0xFF00008B)
-                      : const Color(0xFF6B7680),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: const Text(
+                onPressed: selectedInterests.isNotEmpty
+                    ? () {
+                        // Navigate to next page
+                      }
+                    : null,
+                child: Text(
                   'Continue',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedInterests.isNotEmpty
+                      ? Color(0xFF00008B)
+                      : Color(0xFF6B7680),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
           ],
         ),
       ),

@@ -1,54 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:audiopin_frontend/api_service.dart';
+import 'package:audiopin_frontend/pages/new_pwd.dart';
 
 class VerifyEmailPage extends StatelessWidget {
   const VerifyEmailPage({super.key});
 
-  // Function to open the default email app (using a web URL for email client)
-  Future<void> _openEmailApp() async {
-    final Uri emailUrl = Uri.parse("https://mail.google.com/");
-    if (await canLaunchUrl(emailUrl)) {
-      await launchUrl(emailUrl,
-          mode: LaunchMode.externalApplication); // Opens in external browser
-    } else {
-      throw 'Could not launch email app'; // Handle error when URL cannot be launched
-    }
-  }
-
-  // Function to resend the password recovery email
-  Future<void> _resendEmail(BuildContext context, String email) async {
-    try {
-      // Calls the changePassword function, which is being repurposed for email resend
-      await ApiService.changePassword('', '');
-      // Show success message in the app when email is successfully resent
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email has been resent successfully.'),
-        ),
-      );
-    } catch (e) {
-      // Show failure message if email resend fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to resend email. Please try again.'),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    String email =
-        "user_email_here"; // Placeholder for user's email, should be passed dynamically
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Verify Email'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Return to the previous screen
+            Navigator.pop(context);
           },
         ),
       ),
@@ -59,51 +23,59 @@ class VerifyEmailPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // 第一部分：图片和提示文字
               const SizedBox(height: 40),
               Image.asset(
-                'assets/images/Email_13_1.png',
+                'assets/images/Email_13_1.png', // 替换为你的图片路径
                 width: 150,
-                height: 150, // Display email verification illustration
+                height: 150,
               ),
               const SizedBox(height: 20),
               const Text(
-                'We have sent password recovery\ninstructions to your email.',
+                'We have sent a password recover\ninstructions to your email.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,
-                ), // Inform the user about the sent email
+                ),
               ),
               const SizedBox(height: 40),
-              // Button to open the user's email app (opens Gmail in a browser in this case)
+
+              // 第二部分：按钮
               SizedBox(
                 width: 327,
-                height: 50,
+                height: 50, // 设置按钮高度为50
                 child: ElevatedButton(
-                  onPressed: _openEmailApp, // Trigger email app opening
+                  onPressed: () {
+                    // 打开邮件应用程序的逻辑
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xFF00008B), // Button background color
+                    backgroundColor: const Color(0xFF00008B), // 按钮背景色
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6), // Rounded corners
+                      borderRadius: BorderRadius.circular(6), // 按钮圆角
                     ),
                   ),
                   child: const Text(
-                    'Open email app', // Button text
+                    'Open email app',
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              // Resend email option (calls API to resend the reset email)
+
+              // 第三部分：Resend email 链接
               GestureDetector(
-                onTap: () =>
-                    _resendEmail(context, email), // Trigger email resend logic
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NewPasswordPage()),
+                  ); // 重发邮件逻辑，这里先关联创建新密码页来查看新密码页的布局
+                },
                 child: const Text(
-                  'Resend email', // Text for the resend option
+                  'Resend email',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF41414E),
+                    color: Color(0xFF41414E), // 链接颜色
                   ),
                 ),
               ),

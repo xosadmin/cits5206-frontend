@@ -1,15 +1,15 @@
+import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'discover.dart';
+import 'preview.dart';
 import 'setting.dart';
 import 'library.dart';
 import 'setting.dart';
 import 'pins.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+class HomePage extends StatefulWidget  {
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -17,12 +17,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _pages = <Widget>[
-    const Center(child: Text('Feed Page')),
-    const Center(child: Text('Pins Page')),
-    const Center(child: Text('Discover Page')),
-    const Center(child: Text('Library Page')),
-    const Center(child: Text('Settings Page')),
+  static List<Widget> _pages = <Widget>[
+    Center(child: Text('Feed Page')),
+    Center(child: Text('Pins Page')),
+    Center(child: Text('Discover Page')),
+    Center(child: Text('Library Page')),
+    Center(child: Text('Settings Page')),
   ];
 
   void _onItemTapped(int index) {
@@ -39,45 +39,45 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFCFCFF),
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              // Navigate to the settings page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingPage()),
-              );
-            },
-            child: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/image1.jpg'),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFFFCFCFF),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to the settings page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingPage()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/image1.jpg'),
+              ),
             ),
           ),
-        ),
-        title: const Text(
-          "My Feed",
-          style: TextStyle(
-            fontFamily: 'EuclidCircularA',
-            fontSize: 20,
+          title: Text(
+              "My Feed",
+            style: TextStyle(
+              fontFamily: 'EuclidCircularA',
+              fontSize: 20,
+            ),
           ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.notifications),
+              onPressed: () {
+                print("Settings pressed");
+              },
+            ),
+          ],
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              print("Settings pressed");
-            },
-          ),
-        ],
-      ),
-      backgroundColor: const Color(0xFFFCFCFF),
-      body: const HomeBody(),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFFCFCFF),
+        backgroundColor: Color(0xFFFCFCFF),
+        body: HomeBody(),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color(0xFFFCFCFF),
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -103,11 +103,11 @@ class _HomePageState extends State<HomePage> {
           ],
           currentIndex: _selectedIndex, // Current selected index
           selectedItemColor: Colors.blue, // Color of the selected item
-          onTap: (index) {
-            if (index == 0) {
+          onTap: (index){
+            if (index == 0){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(builder: (context) => HomePage()),
               );
             }else if (index == 1){
               Navigator.push(
@@ -117,34 +117,35 @@ class _HomePageState extends State<HomePage> {
             }else if (index == 2){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const DiscoverPage()),
+                MaterialPageRoute(builder: (context) => DiscoverPage()),
               );
-            } else if (index == 3) {
+            }else if (index == 3){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LibraryPage()),
+                MaterialPageRoute(builder: (context) => LibraryPage()),
               );
-            } else if (index == 4) {
+            }else if (index == 4){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingPage()),
+                MaterialPageRoute(builder: (context) => SettingPage()),
               );
-            } else {
+            }else{
               _onItemTapped(index);
             }
-          }),
-    ));
+          }
+        ),
+      )
+    );
   }
 }
 
 class HomeBody extends StatefulWidget {
-  const HomeBody({super.key});
-
   @override
   _HomeBodyState createState() => _HomeBodyState();
 }
 
-class _HomeBodyState extends State<HomeBody> {
+class _HomeBodyState extends State<HomeBody>{
+
   bool _isClickedPlay = false; // To track if the button is clicked
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
@@ -161,6 +162,7 @@ class _HomeBodyState extends State<HomeBody> {
     loadDatas();
   }
 
+
   void loadDatas() async {
     List<String> fetchedSubs = await getSubs();
     setState(() {
@@ -170,12 +172,14 @@ class _HomeBodyState extends State<HomeBody> {
 
     List<List<String>> fetchedLists = await getNotes();
     setState(() {
-      noteIDs = fetchedLists[0];
+      noteIDs = fetchedLists[0];;
       notePodids = fetchedLists[1];
       noteDates = fetchedLists[2];
     });
     print('$noteIDs $noteDates $notePodids');
   }
+
+
 
   final List<String> imageUrls = [
     'assets/images/note1.png',
@@ -238,6 +242,8 @@ class _HomeBodyState extends State<HomeBody> {
     'Just for testing...',
   ];
 
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -246,12 +252,11 @@ class _HomeBodyState extends State<HomeBody> {
         // Subscriptions section
         Container(
           width: MediaQuery.of(context).size.width * 0.92,
-          margin:
-              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
                 color: Color(0x1A282626), // Shadow color with transparency
                 offset: Offset(0, 1), // Horizontal and vertical offsets
@@ -265,8 +270,8 @@ class _HomeBodyState extends State<HomeBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Subscriptions',
                     style: TextStyle(
@@ -276,7 +281,7 @@ class _HomeBodyState extends State<HomeBody> {
                   ),
                 ),
                 // Subscription Cubes
-                SizedBox(
+                Container(
                   height: 64.0, // Height of the subscription cubes
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -284,11 +289,10 @@ class _HomeBodyState extends State<HomeBody> {
                     itemBuilder: (context, index) {
                       return Container(
                         width: 64.0, // Width of each cube
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        margin: EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(
-                              4.0), // Border radius for the container
+                          borderRadius: BorderRadius.circular(4.0), // Border radius for the container
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4.0),
@@ -301,12 +305,12 @@ class _HomeBodyState extends State<HomeBody> {
                     },
                   ),
                 ),
-                const SizedBox(height: 10.0),
+                SizedBox(height: 10.0),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 15.0),
+        SizedBox(height: 15.0),
         Expanded(
           child: ListView.builder(
             itemCount: noteIDs.length,
@@ -324,7 +328,7 @@ class _HomeBodyState extends State<HomeBody> {
                 },
                 child: Card(
                   color: Colors.white,
-                  margin: const EdgeInsets.all(16.0),
+                  margin: EdgeInsets.all(16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -349,23 +353,22 @@ class _HomeBodyState extends State<HomeBody> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                const SizedBox(width: 16.0),
+                                SizedBox(width: 16.0),
                                 // Title and Time
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         noteIDs[index],
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
                                         noteDates[index],
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 12.0,
                                           color: Colors.grey,
                                         ),
@@ -386,15 +389,15 @@ class _HomeBodyState extends State<HomeBody> {
                           children: [
                             Text(
                               "# ${notePodids[index]}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 4.0),
+                            SizedBox(height: 4.0),
                             Text(
                               noteContent,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12.0,
                               ),
                             ),
@@ -410,38 +413,33 @@ class _HomeBodyState extends State<HomeBody> {
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
-                                  _isClickedPlay =
-                                      !_isClickedPlay; // Toggle the state on press
+                                  _isClickedPlay = !_isClickedPlay; // Toggle the state on press
                                 });
                                 print(listTitle[index]);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                minimumSize: const Size(67.0, 26.0),
-                                side: const BorderSide(
+                                minimumSize: Size(67.0, 26.0),
+                                side: BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      5.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                 ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    _isClickedPlay
-                                        ? Icons.check
-                                        : Icons.play_circle,
-                                    color: const Color(0xFF1D1DD1),
+                                    _isClickedPlay ? Icons.check : Icons.play_circle,
+                                    color: Color(0xFF1D1DD1),
                                     size: 10.0,
                                   ),
-                                  const SizedBox(width: 8.0),
-                                  const Text(
+                                  SizedBox(width: 8.0),
+                                  Text(
                                     'Play',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 10.0),
+                                    style: TextStyle(color:Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -452,17 +450,16 @@ class _HomeBodyState extends State<HomeBody> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                minimumSize: const Size(111.0, 26.0),
-                                side: const BorderSide(
+                                minimumSize: Size(111.0, 26.0),
+                                side: BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      5.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                 ),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
@@ -473,8 +470,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Add to queue',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 10.0),
+                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -485,17 +481,16 @@ class _HomeBodyState extends State<HomeBody> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                minimumSize: const Size(104.0, 26.0),
-                                side: const BorderSide(
+                                minimumSize: Size(104.0, 26.0),
+                                side: BorderSide(
                                   color: Colors.grey, // Set the border color
                                   width: 0.7, // Set the border width (boldness)
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      5.0), // Optional: Make the border rounded
+                                  borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
                                 ),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
@@ -506,8 +501,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Download',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 10.0),
+                                    style: TextStyle(color: Colors.grey, fontSize: 10.0),
                                   )
                                 ],
                               ),
@@ -527,7 +521,8 @@ class _HomeBodyState extends State<HomeBody> {
   }
 }
 
-Future<List<String>> getSubs() async {
+
+Future<List<String>>getSubs() async {
   List<String> libs = [];
   final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
 
@@ -587,13 +582,9 @@ Future<List<List<String>>> getNotes() async {
   if (response.statusCode == 200) {
     List<dynamic> notesList = jsonDecode(response.body);
     // Extract and return all NoteID values as a list of strings
-    List<String> id =
-        notesList.map<String>((note) => note['NoteID'].toString()).toList();
-    List<String> pod =
-        notesList.map<String>((note) => note['PodcastID'].toString()).toList();
-    List<String> date = notesList
-        .map<String>((note) => note['DateCreated'].toString())
-        .toList();
+    List<String> id = notesList.map<String>((note) => note['NoteID'].toString()).toList();
+    List<String> pod = notesList.map<String>((note) => note['PodcastID'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['DateCreated'].toString()).toList();
     //return getNotesDetails(res);
     return [id, pod, date];
   } else {
@@ -647,6 +638,11 @@ Future<List<List<String>>> getNotes() async {
 //   return [noteids, contents, dates, podids];
 // }
 
-void main() => runApp(const MaterialApp(
+
+
+
+
+void main() =>
+    runApp(MaterialApp(
       home: HomePage(),
     ));
