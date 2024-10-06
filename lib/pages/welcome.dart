@@ -12,7 +12,6 @@ class Welcome extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // 添加了图标和文字的顶部装饰区域
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -47,7 +46,7 @@ class Welcome extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30), // padding
-            // 创建账户按钮
+
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF00008B),
@@ -59,7 +58,7 @@ class Welcome extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                  MaterialPageRoute(builder: (context) => const SignUpPage()),
                 );
               }, // button click event
               child: const Text(
@@ -80,7 +79,7 @@ class Welcome extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignInPage()),
+                  MaterialPageRoute(builder: (context) => const SignInPage()),
                 );
               }, // button click event
               child: const Text(
