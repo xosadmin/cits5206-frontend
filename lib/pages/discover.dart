@@ -1,5 +1,5 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:audiopin_frontend/pages/pins.dart';
+import 'package:audiopin_frontend/pages/pins_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
