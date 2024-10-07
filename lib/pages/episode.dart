@@ -1,12 +1,16 @@
 import 'package:audiopin_frontend/main.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For JSON decoding
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'homepage.dart';
 import 'discover.dart';
 import 'library.dart';
 import 'setting.dart';
+import 'pins.dart';
 
 class EpisodePage extends StatefulWidget  {
   @override
@@ -104,6 +108,11 @@ class _EpisodePageState extends State<EpisodePage> {
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
+                }else if (index == 1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinsPage()),
+                  );
                 }else if (index == 2){
                   Navigator.push(
                     context,
@@ -153,7 +162,7 @@ class _EpisodeBodyState extends State<EpisodeBody>{
   AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _showPlayer = false;
-  String _audioUrl = 'assets/audio/testing.mp3';
+  String _audioUrl = 'assets/audio/episode.mp3';
   double _currentPosition = 0.0;
   double _totalDuration = 0.0;
 
@@ -357,6 +366,8 @@ class _EpisodeBodyState extends State<EpisodeBody>{
                               ElevatedButton(
                                 onPressed: () {
                                   print('Download');
+                                  String url = 'assets/audio/episode.mp3'; // MP3 file URL
+                                  downloadFile(url, "podcast.mp3");
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
@@ -507,6 +518,24 @@ class _EpisodeBodyState extends State<EpisodeBody>{
         ],
       ),
     );
+  }
+}
+
+
+// Simple download function
+Future<void> downloadFile(String url, String fileName) async {
+  try {
+    Dio dio = Dio();
+
+    // Get the local storage directory
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String savePath = "${appDocDir.path}/$fileName";
+
+    // Download the file without progress or completion handling
+    await dio.download(url, savePath);
+    print("File downloaded to $savePath");
+  } catch (e) {
+    print("Download failed: $e");
   }
 }
 

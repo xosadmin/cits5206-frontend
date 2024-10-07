@@ -1,4 +1,5 @@
 import 'package:audiopin_frontend/main.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:audiopin_frontend/pages/pins.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'discover.dart';
 import 'episode.dart';
 import 'library.dart';
 import 'setting.dart';
+import 'QRCodePage.dart';
 
 class NoteEditPage extends StatefulWidget  {
   @override
@@ -222,6 +224,15 @@ class _NoteEditBodyState extends State<NoteEditBody>{
                         children: [
                           ElevatedButton.icon(
                             onPressed: () {
+                              print("show QR code");
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QRCodePage(data: 'assets/audio/episode.mp3'), // Passing the data to the QR code page
+                                ),
+                              );
+
                               // Handle share action
                             },
                             icon: Icon(Icons.share, size: 12.0),
@@ -340,6 +351,7 @@ class _NoteEditBodyState extends State<NoteEditBody>{
                   ElevatedButton(
                     onPressed: () {
                       // Handle the delete action here
+                      deleteNote(widget.listtitle);
                       Navigator.of(context).pop(); // Close the dialog
                     },
                     style: ElevatedButton.styleFrom(
@@ -369,13 +381,44 @@ class _NoteEditBodyState extends State<NoteEditBody>{
 
 }
 
+Future <String> getTokenId() async{
+  final url = Uri.parse('https://cits5206.7m7.moe/login');
+
+  // Define the payload for the POST request
+  final payload = {
+    'username': "admin",
+    'password': "admin"
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  // Encode the payload as x-www-form-urlencoded
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  // Send the POST request
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+  return json.decode(response.body)['Token'];
+}
+
+
 Future<List<String>> getNotesDetails(String noteID) async {
+  String tokenid = await getTokenId();
+
   final url = Uri.parse('https://cits5206.7m7.moe/notedetails');
   List<String> res = [];
 
   // Define the payload for the POST request
   final payload = {
-    'tokenID': "df09ecde-ca2e-47e5-b660-54d60ac35276",
+    'tokenID': tokenid,
     'noteID': noteID,
   };
 
@@ -408,6 +451,68 @@ Future<List<String>> getNotesDetails(String noteID) async {
 
   return res;
 }
+
+Future <void> deleteNote(String noteID) async{
+  String tokenid = await getTokenId();
+
+  final url = Uri.parse('https://cits5206.7m7.moe/deletenote');
+
+  // Define the payload for the POST request
+  final payload = {
+    'tokenID': tokenid,
+    'noteID': noteID,
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+}
+
+
+// Function to show QR code in a pop-up dialog
+// void showQRCodeDialog(BuildContext context, String data) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return StatefulBuilder(
+//         builder: (context, setState) {
+//           return AlertDialog(
+//             title: Text("Share QR Code"),
+//             content: SingleChildScrollView(
+//               child: Column(
+//                 mainAxisSize: MainAxisSize.min, // Ensure proper sizing
+//                 children: [
+//                   QrImageView(
+//                     data: data, // The data to encode as a QR code
+//                     version: QrVersions.auto, // Automatically choose the best version
+//                     size: MediaQuery.of(context).size.width * 0.6, // Dynamically set size
+//                   ),
+//                   SizedBox(height: 20),
+//                   Text(
+//                     "Scan the QR code to download the file",
+//                     style: TextStyle(fontSize: 16),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             actions: <Widget>[
+//               TextButton(
+//                 onPressed: () {
+//                   Navigator.of(context).pop(); // Close the dialog
+//                 },
+//                 child: Text("Close"),
+//               ),
+//             ],
+//           );
+//         },
+//       );
+//     },
+//   );
+// }
+
+
+
 
 void main() =>
     runApp(MaterialApp(

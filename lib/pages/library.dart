@@ -153,6 +153,29 @@ class _LibraryBodyState extends State<LibraryBody> {
   String imageUrl = 'assets/images/note_exp.png';
   String noteContent = "Click to view details";
 
+  List<String> libTits = [];
+  List<String> libRsss = [];
+  List<String> libDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getLibrary();
+    loadDatas();
+  }
+
+
+  void loadDatas() async {
+    List<List<String>> fetchedLists = await getLibrary();
+    setState(() {
+      libTits = fetchedLists[0];;
+      libRsss = fetchedLists[1];
+      libDates = fetchedLists[2];
+    });
+    print('$libTits $libRsss $libDates');
+  }
+
+
   final List<String> imageUrls = [
     'assets/images/note1.png',
     'assets/images/note2.png',
@@ -296,7 +319,7 @@ class _LibraryBodyState extends State<LibraryBody> {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: listImageUrls.length,
+            itemCount: libTits.length,
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.white,
@@ -339,17 +362,25 @@ class _LibraryBodyState extends State<LibraryBody> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      listTitle[index],
+                                      libTits[index],
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      listTime[index],
+                                      libDates[index],
+                                      style: TextStyle(
+                                        fontSize: 10.0,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10.0),
+                                    Text(
+                                      libRsss[index],
                                       style: TextStyle(
                                         fontSize: 12.0,
-                                        color: Colors.grey,
+                                        color: Colors.black,
                                       ),
                                     ),
 
@@ -500,6 +531,72 @@ class _LibraryBodyState extends State<LibraryBody> {
     );
   }
 }
+
+Future <String> getTokenId() async{
+  final url = Uri.parse('https://cits5206.7m7.moe/login');
+
+  // Define the payload for the POST request
+  final payload = {
+    'username': "admin",
+    'password': "admin"
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  // Encode the payload as x-www-form-urlencoded
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  // Send the POST request
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+  return json.decode(response.body)['Token'];
+}
+
+
+Future<List<List<String>>> getLibrary() async {
+  String tokenid = await getTokenId();
+
+  final url = Uri.parse('https://cits5206.7m7.moe/listsubscription');
+
+  final payload = {
+    'tokenID': tokenid,
+  };
+
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> notesList = jsonDecode(response.body);
+    // Extract and return all NoteID values as a list of strings
+    List<String> tit = notesList.map<String>((note) => note['Title'].toString()).toList();
+    List<String> rss = notesList.map<String>((note) => note['rssUrl'].toString()).toList();
+    List<String> date = notesList.map<String>((note) => note['Date'].toString()).toList();
+    //return getNotesDetails(res);
+    return [tit, rss, date];
+  } else {
+    return [];
+  }
+}
+
 
 void main() =>
     runApp(MaterialApp(

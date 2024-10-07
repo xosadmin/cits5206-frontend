@@ -7,6 +7,7 @@ import 'discover.dart';
 import 'episode.dart';
 import 'library.dart';
 import 'setting.dart';
+import 'pins.dart';
 
 class PreviewPage extends StatefulWidget  {
   @override
@@ -101,6 +102,11 @@ class _PreviewPageState extends State<PreviewPage> {
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
+                }else if (index == 1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinsPage()),
+                  );
                 }else if (index == 2){
                   Navigator.push(
                     context,
@@ -142,7 +148,7 @@ class PreviewBody extends StatefulWidget {
 class _PreviewBodyState extends State<PreviewBody>{
 
   bool _isClickedPlay = false;
-  String noteSubtitle = "testingSubtitle";
+  String noteSubtitle = "podcast info";
   String noteIDs = '';
   String noteDates = '';
   String notePodids = '';
@@ -484,13 +490,45 @@ class _PreviewBodyState extends State<PreviewBody>{
   }
 }
 
+Future <String> getTokenId() async{
+  final url = Uri.parse('https://cits5206.7m7.moe/login');
+
+  // Define the payload for the POST request
+  final payload = {
+    'username': "admin",
+    'password': "admin"
+  };
+
+  // Set the headers to specify that the data is x-www-form-urlencoded
+  final headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  // Encode the payload as x-www-form-urlencoded
+  final encodedPayload = payload.entries.map((entry) {
+    return '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value)}';
+  }).join('&');
+
+  // Send the POST request
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: encodedPayload,
+  );
+  return json.decode(response.body)['Token'];
+}
+
+
 Future<List<String>> getNotesDetails(String noteID) async {
+
+  String tokenid  = await getTokenId();
+
   final url = Uri.parse('https://cits5206.7m7.moe/notedetails');
   List<String> res = [];
 
   // Define the payload for the POST request
   final payload = {
-    'tokenID': "df09ecde-ca2e-47e5-b660-54d60ac35276",
+    'tokenID': tokenid,
     'noteID': noteID,
   };
 
