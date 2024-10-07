@@ -48,13 +48,13 @@ dependencies:
   provider: ^6.1.2
   rxdart: ^0.28.0
   crypto: ^3.0.5
-  flutter_dotenv: ^5.1.0
   audio_session: ^0.1.21
   path_provider: ^2.1.4
   skeletonizer: ^1.4.2
   markdown_editor_plus: ^0.2.15
   flutter_tflite: ^1.0.1
-  flutter_deep_speech: ^0.0.3
+  typed_data: ^1.3.2
+  googleapis_auth: ^1.6.0
 
 dev_dependencies:
   flutter_test:
@@ -79,7 +79,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
-    - assets/models/conformer_model.tflite
+    - assets/credentials/astral-genre-437819-k4-37c42fdaad5d.json
     - .env
   # To add assets to your application, add an assets section, like this:
   # assets:

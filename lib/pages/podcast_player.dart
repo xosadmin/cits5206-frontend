@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import '../services/audio_handler.dart';
 import 'package:rxdart/rxdart.dart';
@@ -22,7 +23,7 @@ class PodcastPlayerPage extends StatelessWidget {
             _buildEpisodeInfo(audioHandler),
             _buildProgressBar(audioHandler),
             _buildPlaybackControls(audioHandler),
-            _buildClippingButton(context,audioHandler), // New Clipping Button
+            _buildClippingButton(context, audioHandler), // New Clipping Button
             _buildBottomTabs(),
           ],
         ),
@@ -226,83 +227,113 @@ class PodcastPlayerPage extends StatelessWidget {
     );
   }
 
-  Widget _buildClippingButton(BuildContext context, PodcastAudioHandler audioHandler) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
-        onPressed: () => _handleClipAudioAndNavigate(context, audioHandler),
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-          child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
-        ),
-      ),
-    );
-  }
+Widget _buildClippingButton(
+    BuildContext context, PodcastAudioHandler audioHandler) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16.0),
+    child: ElevatedButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return FutureBuilder<String>(
+              future: _handleClipAudio(audioHandler),  // Use the future here
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Show loading dialog while the future is being processed
+                  return AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'AI is transcribing the clip',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              colors: [Colors.blue, Colors.green],
+                              tileMode: TileMode.mirror,
+                            ).createShader(bounds);
+                          },
+                          child: const Text(
+                            'Please Wait...',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                            'Powered by Google Cloud',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  // Close the dialog and show error if any
+                  Navigator.of(context).pop();
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: ${snapshot.error}')),
+                    );
+                  });
+                  return const SizedBox();  // Return an empty widget
+                } else if (snapshot.hasData) {
+                  // Close the dialog and navigate if transcription is successful
+                  Navigator.of(context).pop(); // Close loading dialog
+                  String transcription = snapshot.data!;
 
-  Future<void> _handleClipAudioAndNavigate(BuildContext context, PodcastAudioHandler audioHandler) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 20),
-              const Text(
-                'AI is transcribing the clip',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return const LinearGradient(
-                    colors: [Colors.blue, Colors.green],
-                    tileMode: TileMode.mirror,
-                  ).createShader(bounds);
-                },
-                child: const Text(
-                  'Please Wait...',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    if (transcription.isNotEmpty) {
+                      // Navigate to RichTextEditorPage
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RichTextEditorPage(initialText: transcription),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to generate transcription'),
+                        ),
+                      );
+                    }
+                  });
+
+                  return const SizedBox();  // Return an empty widget
+                } else {
+                  // If no data was returned, simply return an empty container
+                  return const SizedBox();
+                }
+              },
+            );
+          },
         );
       },
-    );
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+        child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
+      ),
+    ),
+  );
+}
 
-    try {
-      var transcription = await _handleClipAudio(audioHandler);
-      Navigator.of(context).pop(); // Close the dialog
 
-      if (transcription.isNotEmpty) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => RichTextEditorPage(initialText: transcription),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to generate transcription')),
-        );
-      }
-    } catch (e) {
-      Navigator.of(context).pop(); // Close the dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
 
   Future<String> _handleClipAudio(PodcastAudioHandler audioHandler) async {
     final mediaItem = audioHandler.mediaItem.value;
@@ -324,17 +355,24 @@ class PodcastPlayerPage extends StatelessWidget {
     final mediaUrl = mediaItem.extras?['url'] ?? mediaItem.id;
 
     if (mediaUrl != null) {
-      return await audioHandler.customAction('transcribeClip', {
-        'url': mediaUrl,
-        'start': validStart,
-        'end': validEnd,
-      });
+      try {
+        String transcription =
+            await audioHandler.customAction('transcribeClip', {
+          'url': mediaUrl,
+          'start': validStart,
+          'end': validEnd,
+        });
+        print("Transcription - podplayer: $transcription");
+        return transcription;
+      } catch (e) {
+        print("Error during transcription - podplayer: $e");
+        return "";
+      }
     } else {
       print("Media URL is not available, cannot clip");
     }
     return "";
   }
-
 
   Widget _buildBottomTabs() {
     return Expanded(

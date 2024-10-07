@@ -95,27 +95,37 @@ class _RichTextEditorPageState extends State<RichTextEditorPage> {
           ),
         ],
       ),
-      body: _isAutoPreview
-          ? MarkdownAutoPreview(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: 'Start typing your markdown here...',
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(16),
-              ),
-              emojiConvert: true,
-              maxLines: null,
-              expands: true,
-            )
-          : SplittedMarkdownFormField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: 'Start typing your markdown here...',
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(16),
-              ),
-              emojiConvert: true,
+      body: SingleChildScrollView( // Make the body scrollable
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Add padding for better spacing
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - kToolbarHeight, // Ensure the editor takes full screen height
             ),
+            child: _isAutoPreview
+                ? MarkdownAutoPreview(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'Start typing your markdown here...',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(16),
+                    ),
+                    emojiConvert: true,
+                    maxLines: null,
+                    expands: true,
+                  )
+                : SplittedMarkdownFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'Start typing your markdown here...',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(16),
+                    ),
+                    emojiConvert: true,
+                  ),
+          ),
+        ),
+      ),
     );
   }
 }

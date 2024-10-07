@@ -30,7 +30,7 @@ class PodcastAudioHandler extends BaseAudioHandler
   void _initializeHandler() {
     _loadEmptyPlaylist();
     _setupEventListeners();
-    _transcriptionService.preload();
+    _transcriptionService.initialize();
   }
 
   Future<void> _loadEmptyPlaylist() async {
@@ -207,8 +207,7 @@ class PodcastAudioHandler extends BaseAudioHandler
         await _dispose();
         break;
       case 'transcribeClip':
-        await _transcribeClip(extras);
-        break;
+        return await _transcribeClip(extras);
       case 'setSleepTimer':
         _setSleepTimer(extras?['duration'] as Duration?);
         break;
@@ -232,7 +231,7 @@ class PodcastAudioHandler extends BaseAudioHandler
     final start = extras?['start'] as Duration?;
     final end = extras?['end'] as Duration?;
     if (url != null && start != null && end != null) {
-      await _transcriptionService.clipAndTranscribe(url, start, end);
+      return await _transcriptionService.clipAndTranscribe(url, start, end);
     }
     return "";
   }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PodcastIndexApiService {
   final String _baseUrl = 'https://api.podcastindex.org/api/1.0';
