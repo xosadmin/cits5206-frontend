@@ -10,9 +10,7 @@ import 'dart:convert'; // For JSON decoding
 import 'homepage.dart';
 import 'setting.dart';
 import 'library.dart';
-
-class DiscoverPage extends StatefulWidget {
-  const DiscoverPage({super.key});
+import 'setting.dart';
 
   @override
   _DiscoverPageState createState() => _DiscoverPageState();
@@ -44,100 +42,98 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFCFCFF),
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              // Navigate to the settings page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingPage()),
-              );
-            },
-            child: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/image1.jpg'),
+          appBar: AppBar(
+            backgroundColor: Color(0xFFFCFCFF),
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  // Navigate to the settings page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/image1.jpg'),
+                ),
+              ),
             ),
+
+            title: Text(
+              "Explore",
+              style: TextStyle(
+                fontFamily: 'EuclidCircularA',
+                fontSize: 20,
+              ),
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () {
+                  print("Settings pressed");
+                },
+              ),
+            ],
           ),
-        ),
-        title: const Text(
-          "Explore",
-          style: TextStyle(
-            fontFamily: 'EuclidCircularA',
-            fontSize: 20,
+          backgroundColor: Color(0xFFFCFCFF),
+          body: DiscoverBody(),
+          bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Color(0xFFFCFCFF),
+              type: BottomNavigationBarType.fixed,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Feed',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.note),
+                  label: 'Pins',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  label: 'Discover',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.collections),
+                  label: 'Library',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Settings',
+                ),
+              ],
+              currentIndex: _selectedIndex, // Current selected index
+              selectedItemColor: Colors.blue, // Color of the selected item
+              onTap: (index){
+                if (index == 0){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }else if (index == 2){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                }else{
+                  _onItemTapped(index);
+                }
+              }
           ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              print("Settings pressed");
-            },
-          ),
-        ],
-      ),
-      backgroundColor: const Color(0xFFFCFCFF),
-      body: DiscoverBody(),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFFCFCFF),
-          type: BottomNavigationBarType.fixed,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Feed',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.note),
-              label: 'Pins',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Discover',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.collections),
-              label: 'Library',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-          currentIndex: _selectedIndex, // Current selected index
-          selectedItemColor: Colors.blue, // Color of the selected item
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            } else if (index == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PinsPage()),
-              );
-            }else if (index == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DiscoverPage()),
-              );
-            } else if (index == 3) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LibraryPage()),
-              );
-            } else if (index == 4) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingPage()),
-              );
-            } else {
-              _onItemTapped(index);
-            }
-          }),
-    ));
+        )
+    );
   }
 }
 
@@ -797,7 +793,7 @@ Future<List<List<String>>> getNotes() async {
   final url = Uri.parse('https://cits5206.7m7.moe/listnotes');
 
   final payload = {
-    'tokenID': "aab4f122-4dff-4eb3-ba24-d366619a63b5",
+    'tokenID': "df09ecde-ca2e-47e5-b660-54d60ac35276",
   };
 
   final headers = {

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 // For JSON decoding
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'homepage.dart';
 import 'discover.dart';
 import 'library.dart';
 import 'setting.dart';
+import 'pins.dart';
 
 class EpisodePage extends StatefulWidget {
   const EpisodePage({super.key});
 
-  @override
+@override
   _EpisodePageState createState() => _EpisodePageState();
 }
 
@@ -41,90 +45,91 @@ class _EpisodePageState extends State<EpisodePage> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFCFCFF),
-        leading: IconButton(
-          icon: const Icon(Icons
-              .arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
-          onPressed: () {
-            Navigator.pop(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeBody(),
+          appBar: AppBar(
+            backgroundColor: Color(0xFFFCFCFF),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back), // Use Icons.arrow_back_ios for an iOS-style back button
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeBody(),
+                  ),
+                ); // Navigate back to the previous screen
+              },
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () {
+                  print("Settings pressed");
+                },
               ),
-            ); // Navigate back to the previous screen
-          },
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              print("Settings pressed");
-            },
+            ],
           ),
-        ],
-      ),
-      backgroundColor: const Color(0xFFFCFCFF),
-      body: EpisodeBody(
-        listtitle: args['listtitle'],
-        notepodid: args['notepodid'],
-        notedate: args['notedate'],
-        notecontent: args['notecontent'],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFFCFCFF),
-          type: BottomNavigationBarType.fixed,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Feed',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.note),
-              label: 'Pins',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Discover',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.collections),
-              label: 'Library',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-          currentIndex: _selectedIndex, // Current selected index
-          selectedItemColor: Colors.blue, // Color of the selected item
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            } else if (index == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DiscoverPage()),
-              );
-            } else if (index == 3) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LibraryPage()),
-              );
-            } else if (index == 4) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingPage()),
-              );
-            } else {
-              _onItemTapped(index);
-            }
-          }),
-    ));
+          backgroundColor: Color(0xFFFCFCFF),
+          body: EpisodeBody(
+            listtitle: args['listtitle'],
+            notepodid: args['notepodid'],
+            notedate: args['notedate'],
+            notecontent: args['notecontent'],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Color(0xFFFCFCFF),
+              type: BottomNavigationBarType.fixed,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Feed',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.note),
+                  label: 'Pins',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  label: 'Discover',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.collections),
+                  label: 'Library',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Settings',
+                ),
+              ],
+              currentIndex: _selectedIndex, // Current selected index
+              selectedItemColor: Colors.blue, // Color of the selected item
+              onTap: (index){
+                if (index == 0){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }else if (index == 2){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DiscoverPage()),
+                  );
+                }else if (index == 3){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LibraryPage()),
+                  );
+                }else if (index == 4){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingPage()),
+                  );
+                }else{
+                  _onItemTapped(index);
+                }
+              }
+          ),
+        )
+    );
   }
 }
 
@@ -152,7 +157,7 @@ class _EpisodeBodyState extends State<EpisodeBody> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   bool _showPlayer = false;
-  final String _audioUrl = 'assets/audio/testing.mp3';
+  final String _audioUrl = 'assets/audio/episode.mp3';
   double _currentPosition = 0.0;
   double _totalDuration = 0.0;
 
@@ -346,38 +351,36 @@ class _EpisodeBodyState extends State<EpisodeBody> {
                                   borderRadius: BorderRadius.circular(
                                       5.0), // Optional: Make the border rounded
                                 ),
-                              ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    color: Color(0xFF1D1DD1),
-                                    size: 10.0,
-                                  ),
-                                  SizedBox(width: 8.0),
-                                  Text(
-                                    'Add to queue',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 10.0),
-                                  )
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                print('Download');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                minimumSize: const Size(104.0, 26.0),
-                                side: const BorderSide(
-                                  color: Colors.grey, // Set the border color
-                                  width: 0.7, // Set the border width (boldness)
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.add,
+                                      color: Color(0xFF1D1DD1),
+                                      size: 10.0,
+                                    ),
+                                    SizedBox(width: 8.0),
+                                    Text(
+                                      'Add to queue',
+                                      style: TextStyle(color: Colors.grey, fontSize: 10.0),
+                                    )
+                                  ],
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      5.0), // Optional: Make the border rounded
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  print('Download');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  minimumSize: Size(104.0, 26.0),
+                                  side: BorderSide(
+                                    color: Colors.grey, // Set the border color
+                                    width: 0.7, // Set the border width (boldness)
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0), // Optional: Make the border rounded
+                                  ),
                                 ),
                               ),
                               child: const Row(
@@ -527,6 +530,43 @@ class _EpisodeBodyState extends State<EpisodeBody> {
         ],
       ),
     );
+  }
+}
+
+
+
+// Simple download function
+Future<void> downloadFile(String url, String fileName) async {
+  try {
+    Dio dio = Dio();
+
+    // Get the local storage directory
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String savePath = "${appDocDir.path}/$fileName";
+
+    // Download the file without progress or completion handling
+    await dio.download(url, savePath);
+    print("File downloaded to $savePath");
+  } catch (e) {
+    print("Download failed: $e");
+  }
+}
+
+
+// Simple download function
+Future<void> downloadFile(String url, String fileName) async {
+  try {
+    Dio dio = Dio();
+
+    // Get the local storage directory
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String savePath = "${appDocDir.path}/$fileName";
+
+    // Download the file without progress or completion handling
+    await dio.download(url, savePath);
+    print("File downloaded to $savePath");
+  } catch (e) {
+    print("Download failed: $e");
   }
 }
 

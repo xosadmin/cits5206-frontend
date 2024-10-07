@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'homepage.dart';
 import 'discover.dart';
 import 'library.dart';
+import 'pins.dart';
 
 class SettingPage extends StatefulWidget  {
   const SettingPage({super.key});
@@ -82,6 +83,11 @@ class _SettingPageState extends State<SettingPage> {
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
+                }else if (index == 1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinsPage()),
+                  );
                 }else if (index == 2){
                   Navigator.push(
                     context,
@@ -143,6 +149,7 @@ class _SettingBodyState extends State<SettingBody> {
                   'Profile Setting',
                   Icons.arrow_forward_ios, // Right-side icon
                       () {
+                    Navigator.pushNamed(context, '/profile_setting');
                     // Navigate to Profile Setting
                   },
                 ),

@@ -18,6 +18,9 @@ import 'pages/library.dart';
 import 'pages/import.dart';
 import 'pages/interests.dart' as interestsPage;
 import 'pages/subscriptions.dart';
+import 'pages/pins.dart';
+import 'pages/noteedit.dart';
+import 'pages/profile_setting.dart';
 import 'services/audio_handler.dart';
 import 'services/audio_clip_transcription_service.dart';
 
@@ -76,6 +79,9 @@ class MyApp extends StatelessWidget {
         '/import': (context) => const ImportPage(),
         '/interests': (context) => interestsPage.InterestsPage(),
         '/subscriptions': (context) => const SubscriptionsPage(),
+        '/pins':(context) => PinsPage(),
+        '/noteedit':(context) => NoteEditPage(),
+        '/profile_setting':(context) => ProfileSettingPage(),
         '/podcastplayer': (context)=> PodcastPlayerPage()
       }, // set Welcome as the first page of app
     );
