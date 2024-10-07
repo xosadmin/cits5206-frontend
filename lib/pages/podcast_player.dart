@@ -7,6 +7,8 @@ import 'package:rxdart/rxdart.dart';
 import 'podcast_playback_speed_controller.dart';
 import 'queue_page.dart';
 import 'rich_text_editor_page.dart';
+import '../models/pin.dart';
+import 'package:uuid/uuid.dart';
 
 class PodcastPlayerPage extends StatelessWidget {
   const PodcastPlayerPage({super.key});
@@ -228,114 +230,102 @@ class PodcastPlayerPage extends StatelessWidget {
   }
 
 Widget _buildClippingButton(
-    BuildContext context, PodcastAudioHandler audioHandler) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 16.0),
-    child: ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return FutureBuilder<String>(
-              future: _handleClipAudio(audioHandler),  // Use the future here
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // Show loading dialog while the future is being processed
-                  return AlertDialog(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'AI is transcribing the clip',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        ShaderMask(
-                          shaderCallback: (Rect bounds) {
-                            return const LinearGradient(
-                              colors: [Colors.blue, Colors.green],
-                              tileMode: TileMode.mirror,
-                            ).createShader(bounds);
-                          },
-                          child: const Text(
-                            'Please Wait...',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                            'Powered by Google Cloud',
-                            style: TextStyle(
-                              fontSize: 10,
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  // Close the dialog and show error if any
-                  Navigator.of(context).pop();
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: ${snapshot.error}')),
-                    );
-                  });
-                  return const SizedBox();  // Return an empty widget
-                } else if (snapshot.hasData) {
-                  // Close the dialog and navigate if transcription is successful
-                  Navigator.of(context).pop(); // Close loading dialog
-                  String transcription = snapshot.data!;
-
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    if (transcription.isNotEmpty) {
-                      // Navigate to RichTextEditorPage
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              RichTextEditorPage(initialText: transcription),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Failed to generate transcription'),
-                        ),
-                      );
-                    }
-                  });
-
-                  return const SizedBox();  // Return an empty widget
-                } else {
-                  // If no data was returned, simply return an empty container
-                  return const SizedBox();
-                }
-              },
-            );
-          },
-        );
-      },
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+      BuildContext context, PodcastAudioHandler audioHandler) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: ElevatedButton(
+        onPressed: () {
+          _handleClipAudio(context, audioHandler);
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+          child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
         ),
       ),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-        child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
+    );
+  }
+
+  void _handleClipAudio(BuildContext context, PodcastAudioHandler audioHandler) {
+    // Create a GlobalKey for the SnackBar
+    final snackBarKey = GlobalKey<ScaffoldMessengerState>();
+
+    // Create the SnackBar
+    final snackBar = SnackBar(
+      content: Row(
+        children: [
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text('AI is transcribing the clip',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                SizedBox(height: 4),
+                LinearProgressIndicator(),
+                SizedBox(height: 4),
+                Text('Powered by Google Cloud',
+                    style: TextStyle(fontSize: 10)),
+              ],
+            ),
+          ),
+        ],
       ),
-    ),
-  );
-}
+      duration: const Duration(days: 365), // Set a very long duration
+      backgroundColor: Colors.blue.shade900,
+    );
+
+    // Show the SnackBar
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(snackBar);
+
+    // Start the transcription process
+    _transcribeClip(audioHandler).then((transcription) {
+      // Dismiss the SnackBar
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+      if (transcription.isNotEmpty) {
+        // Navigate to RichTextEditorPage
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => RichTextEditorPage(
+                pin: Pin(
+                    id: const Uuid().v4(),
+                    title: "",
+                    content: transcription,
+                    tags: [""])),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to generate transcription'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }).catchError((error) {
+      // Dismiss the SnackBar
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $error'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    });
+  }
 
 
-
-  Future<String> _handleClipAudio(PodcastAudioHandler audioHandler) async {
+  Future<String> _transcribeClip(PodcastAudioHandler audioHandler) async {
     final mediaItem = audioHandler.mediaItem.value;
     final currentPosition = audioHandler.playbackState.value.position;
 
@@ -366,12 +356,12 @@ Widget _buildClippingButton(
         return transcription;
       } catch (e) {
         print("Error during transcription - podplayer: $e");
-        return "";
+        throw e;
       }
     } else {
       print("Media URL is not available, cannot clip");
+      throw Exception("Media URL is not available");
     }
-    return "";
   }
 
   Widget _buildBottomTabs() {

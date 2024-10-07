@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:audiopin_frontend/pages/pins.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -112,7 +113,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),
               );
-            } else if (index == 2) {
+            } else if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PinsPage()),
+              );
+            }else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => DiscoverPage()),
