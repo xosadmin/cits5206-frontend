@@ -41,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (success) {
       //注册成功后跳转到设置页
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SignUpSetting()));
+          context, MaterialPageRoute(builder: (context) => const SignUpSetting()));
     } else {
       //处理注册失败的情况
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -160,7 +160,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SignInPage()),
+                        MaterialPageRoute(builder: (context) => const SignInPage()),
                       );
                     },
                     child: const Text(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class InterestsPage extends StatefulWidget {
+  const InterestsPage({super.key});
+
   @override
   _InterestsPageState createState() => _InterestsPageState();
 }
@@ -27,25 +29,25 @@ class _InterestsPageState extends State<InterestsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: const Text(''),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
             // 第一部分：标题
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Tell us what your',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            Text(
+            const Text(
               'interests are',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             // 第二部分：兴趣标签
             Wrap(
               alignment: WrapAlignment.center,
@@ -64,12 +66,13 @@ class _InterestsPageState extends State<InterestsPage> {
                     });
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: Colors.black),
                       gradient: isSelected
-                          ? LinearGradient(
+                          ? const LinearGradient(
                               colors: [Color(0xFF00008B), Color(0xFF1D1DD1)],
                             )
                           : null,
@@ -85,7 +88,7 @@ class _InterestsPageState extends State<InterestsPage> {
                 );
               }).toList(),
             ),
-            Spacer(),
+            const Spacer(),
             // 第三部分：按钮
             SizedBox(
               width: 327,
@@ -96,47 +99,48 @@ class _InterestsPageState extends State<InterestsPage> {
                         // Continue button logic
                       }
                     : null,
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: Color(0xFF6B7680)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    )),
                 child: Text(
                   "I'll rather not",
                   style: TextStyle(
                     color: Colors.grey,
                   ),
                 ),
-                style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    side: BorderSide(color: Color(0xFF6B7680)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    )),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SizedBox(
               width: 327,
               height: 52,
               child: ElevatedButton(
-                onPressed: selectedInterests.isNotEmpty
-                    ? () {
-                        // Navigate to next page
-                      }
-                    : null,
+                onPressed: () {
+                  print('Selected Interests: ${selectedInterests.length}');
+                  if (selectedInterests.isNotEmpty) {
+                    Navigator.pushNamed(context, '/homepage');
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedInterests.isNotEmpty
+                      ? const Color(0xFF00008B)
+                      : const Color(0xFF6B7680),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
                 child: Text(
                   'Continue',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedInterests.isNotEmpty
-                      ? Color(0xFF00008B)
-                      : Color(0xFF6B7680),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
           ],
         ),
       ),

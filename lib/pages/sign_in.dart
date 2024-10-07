@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:audiopin_frontend/api_service.dart';
-import 'package:audiopin_frontend/pages/forgot_pwd.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,7 +12,6 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController passwordController = TextEditingController();
   bool _isFilled = false;
   bool _isPasswordVisible = false;
-  bool _isClicked = false;
 
   @override
   void initState() {
@@ -109,13 +106,13 @@ class _SignInPageState extends State<SignInPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      _isClicked = true; // 点击后将按钮变灰
+// 点击后将按钮变灰
                     });
 
                     // 延迟200毫秒后跳转页面
                     Future.delayed(const Duration(milliseconds: 120), () {
                       setState(() {
-                        _isClicked = false; // 恢复为深蓝色
+// 恢复为深蓝色
                       });
                       // 跳转homepage，先用forgot占位
                       Navigator.pushNamed(context, '/homepage');

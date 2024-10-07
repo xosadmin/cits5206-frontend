@@ -1,0 +1,22 @@
+[{"stream_name":"stderr","time":0.050042701,"data":"/bin/bash: /opt/conda/lib/libtinfo.so.6: no version information available (required by /bin/bash)\n"}
+,{"stream_name":"stdout","time":19.944368338,"data":"/bin/bash: /opt/conda/lib/libtinfo.so.6: no version information available (required by /bin/bash)\r\n"}
+,{"stream_name":"stdout","time":19.944438004,"data":"total 19M\r\n"}
+,{"stream_name":"stdout","time":19.944448666,"data":"-rw-r--r-- 1 nobody nogroup 19M Feb 25 04:10 1.tflite\r\n"}
+,{"stream_name":"stderr","time":23.404403067,"data":"INFO: Created TensorFlow Lite delegate for select TF ops.\n"}
+,{"stream_name":"stderr","time":23.405333929,"data":"INFO: TfLiteFlexDelegate delegate: 212 nodes delegated out of 2679 nodes with 130 partitions.\n"}
+,{"stream_name":"stderr","time":23.405355864,"data":"\n"}
+,{"stream_name":"stderr","time":23.410303541,"data":"INFO: Created TensorFlow Lite XNNPACK delegate for CPU.\n"}
+,{"stream_name":"stderr","time":23.60994493,"data":"INFO: Created TensorFlow Lite delegate for select TF ops.\n"}
+,{"stream_name":"stderr","time":23.609969994,"data":"INFO: TfLiteFlexDelegate delegate: 212 nodes delegated out of 2679 nodes with 130 partitions.\n"}
+,{"stream_name":"stderr","time":23.6099774,"data":"\n"}
+,{"stream_name":"stderr","time":23.609989746,"data":"INFO: Created TensorFlow Lite XNNPACK delegate for CPU.\n"}
+,{"stream_name":"stdout","time":23.99025057,"data":"\u0000\u0000\u0000\u0000he \u0000could \u0000\u0000wa\u0000\u0000it \u0000no \u0000longer\u0000\u0000\n"}
+,{"stream_name":"stderr","time":29.69026152,"data":"/opt/conda/lib/python3.7/site-packages/traitlets/traitlets.py:2778: FutureWarning: --Exporter.preprocessors=[\"remove_papermill_header.RemovePapermillHeader\"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.\n"}
+,{"stream_name":"stderr","time":29.690354973,"data":"  FutureWarning,\n"}
+,{"stream_name":"stderr","time":29.690367254999998,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":30.023927845,"data":"[NbConvertApp] Writing 6625 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":32.099440432,"data":"/opt/conda/lib/python3.7/site-packages/traitlets/traitlets.py:2778: FutureWarning: --Exporter.preprocessors=[\"nbconvert.preprocessors.ExtractOutputPreprocessor\"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.\n"}
+,{"stream_name":"stderr","time":32.099486865,"data":"  FutureWarning,\n"}
+,{"stream_name":"stderr","time":32.099499362,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":32.804124231,"data":"[NbConvertApp] Writing 280684 bytes to __results__.html\n"}
+]

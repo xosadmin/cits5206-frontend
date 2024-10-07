@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:audiopin_frontend/pages/interests.dart';
 
 class ImportPage extends StatelessWidget {
   const ImportPage({super.key});

@@ -132,7 +132,7 @@ class _SubscriptionsPageState extends State<SubscriptionsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => InterestsPage()), // 跳转到兴趣页面
+                        builder: (context) => const InterestsPage()), // 跳转到兴趣页面
                   );
                 },
                 style: ElevatedButton.styleFrom(
