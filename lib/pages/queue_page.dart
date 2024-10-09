@@ -70,6 +70,9 @@ class _QueuePageState extends State<QueuePage> {
                 index: index,
                 child: Icon(Icons.drag_handle),
               ),
+              onTap: ()async{
+                await widget.audioHandler.playMediaItem(item);
+              },
             ),
           );
         },

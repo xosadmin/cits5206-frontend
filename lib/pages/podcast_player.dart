@@ -73,16 +73,11 @@ class PodcastPlayerPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lightbulb_outline,
-                  color: Colors.yellow, size: 80),
-              const SizedBox(height: 16),
-              Text(
-                mediaItem?.album ?? 'THE LAZY GENIUS',
-                style: const TextStyle(
-                    color: Colors.yellow,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
+              (mediaItem?.artUri != null)
+                  ? Image.network(mediaItem?.artUri?.toString() ?? "",
+                      width: 300, height: 300)
+                  : Image.asset(
+                      'assets/images/Podcast_doodle_illustration_1.png')
             ],
           ),
         );
@@ -229,7 +224,7 @@ class PodcastPlayerPage extends StatelessWidget {
     );
   }
 
-Widget _buildClippingButton(
+  Widget _buildClippingButton(
       BuildContext context, PodcastAudioHandler audioHandler) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -250,7 +245,8 @@ Widget _buildClippingButton(
     );
   }
 
-  void _handleClipAudio(BuildContext context, PodcastAudioHandler audioHandler) {
+  void _handleClipAudio(
+      BuildContext context, PodcastAudioHandler audioHandler) {
     // Create a GlobalKey for the SnackBar
     final snackBarKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -269,8 +265,7 @@ Widget _buildClippingButton(
                 SizedBox(height: 4),
                 LinearProgressIndicator(),
                 SizedBox(height: 4),
-                Text('Powered by Google Cloud',
-                    style: TextStyle(fontSize: 10)),
+                Text('Powered by Google Cloud', style: TextStyle(fontSize: 10)),
               ],
             ),
           ),
@@ -323,7 +318,6 @@ Widget _buildClippingButton(
       );
     });
   }
-
 
   Future<String> _transcribeClip(PodcastAudioHandler audioHandler) async {
     final mediaItem = audioHandler.mediaItem.value;
