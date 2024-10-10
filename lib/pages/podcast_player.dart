@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/audio_handler.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,7 +21,7 @@ class PodcastPlayerPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context),
+            _buildHeader(context, audioHandler),
             _buildNowPlaying(audioHandler),
             _buildEpisodeInfo(audioHandler),
             _buildProgressBar(audioHandler),
@@ -33,7 +34,7 @@ class PodcastPlayerPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, PodcastAudioHandler audioHandler) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -45,16 +46,159 @@ class PodcastPlayerPage extends StatelessWidget {
           ),
           const Text('Now Playing',
               style: TextStyle(fontWeight: FontWeight.bold)),
-          const Row(
+          Row(
             children: [
-              Icon(Icons.nightlight_round),
-              SizedBox(width: 16),
-              Icon(Icons.more_horiz),
+              IconButton(
+                icon: const Icon(Icons.nightlight_round),
+                onPressed: () => _showSleepTimerModal(context, audioHandler),
+              ),
+              const SizedBox(width: 16),
+              const Icon(Icons.more_horiz),
             ],
           ),
         ],
       ),
     );
+  }
+
+  void _showSleepTimerModal(
+      BuildContext context, PodcastAudioHandler audioHandler) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: const Text('10 minutes'),
+              onTap: () =>
+                  _setSleepTimer(context, audioHandler, Duration(minutes: 10)),
+            ),
+            ListTile(
+              title: const Text('15 minutes'),
+              onTap: () =>
+                  _setSleepTimer(context, audioHandler, Duration(minutes: 15)),
+            ),
+            ListTile(
+              title: const Text('30 minutes'),
+              onTap: () =>
+                  _setSleepTimer(context, audioHandler, Duration(minutes: 30)),
+            ),
+            ListTile(
+              title: const Text('45 minutes'),
+              onTap: () =>
+                  _setSleepTimer(context, audioHandler, Duration(minutes: 45)),
+            ),
+            ListTile(
+              title: const Text('1 hour'),
+              onTap: () =>
+                  _setSleepTimer(context, audioHandler, Duration(hours: 1)),
+            ),
+            ListTile(
+              title: const Text('Custom time'),
+              onTap: () {
+                Navigator.pop(context);
+                _showCustomTimeModal(context, audioHandler);
+              },
+            ),
+            ListTile(
+              title: const Text('Cancel sleep timer'),
+              onTap: () => _cancelSleepTimer(context, audioHandler),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCustomTimeModal(
+      BuildContext context, PodcastAudioHandler audioHandler) {
+    int hours = 0;
+    int minutes = 0;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Set Custom Sleep Timer',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Hours'),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) => hours = int.tryParse(value) ?? 0,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Minutes'),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) => minutes = int.tryParse(value) ?? 0,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  child: const Text('Set Timer'),
+                  onPressed: () {
+                    Duration customDuration =
+                        Duration(hours: hours, minutes: minutes);
+                    _setSleepTimer(context, audioHandler, customDuration);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _setSleepTimer(BuildContext context, PodcastAudioHandler audioHandler,
+      Duration duration) {
+    audioHandler.customAction('setSleepTimer', {'duration': duration});
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text('Sleep timer set for ${_formatDuration(duration)}')),
+    );
+  }
+
+  void _cancelSleepTimer(
+      BuildContext context, PodcastAudioHandler audioHandler) {
+    audioHandler.customAction('cancelSleepTimer');
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Sleep timer cancelled')),
+    );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
   Widget _buildNowPlaying(PodcastAudioHandler audioHandler) {
@@ -67,12 +211,11 @@ class PodcastPlayerPage extends StatelessWidget {
           height: 300,
           margin: const EdgeInsets.symmetric(vertical: 20),
           decoration: BoxDecoration(
-            color: const Color(0xFF2C5364),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: [ 
               (mediaItem?.artUri != null)
                   ? Image.network(mediaItem?.artUri?.toString() ?? "",
                       width: 300, height: 300)
@@ -227,19 +370,15 @@ class PodcastPlayerPage extends StatelessWidget {
   Widget _buildClippingButton(
       BuildContext context, PodcastAudioHandler audioHandler) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
+      padding: const EdgeInsets.all(16.0),
+      child: IconButton(
         onPressed: () {
           _handleClipAudio(context, audioHandler);
         },
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-          child: Text('Clip Audio', style: TextStyle(fontSize: 18)),
+        icon: Image.asset(
+          'assets/icons/pin.png',
+          width: 72,
+          height: 72,
         ),
       ),
     );
@@ -393,13 +532,6 @@ class PodcastPlayerPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }
 

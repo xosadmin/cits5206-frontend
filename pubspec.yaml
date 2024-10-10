@@ -59,6 +59,8 @@ dependencies:
   file_picker: ^8.1.2
   uuid: ^4.5.1
   qr_flutter: ^4.1.0
+  just_audio_background: ^0.0.1-beta.13
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:
