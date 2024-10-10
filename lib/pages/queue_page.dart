@@ -48,23 +48,29 @@ class _QueuePageState extends State<QueuePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<MediaItem> previousItems = _queue.sublist(0, _currentIndex);
     MediaItem? nowPlaying = _currentIndex >= 0 && _currentIndex < _queue.length
         ? _queue[_currentIndex]
         : null;
-    List<MediaItem> nextItems = _currentIndex < _queue.length - 1
+    List<MediaItem> upNext = _currentIndex < _queue.length - 1
         ? _queue.sublist(_currentIndex + 1)
         : [];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Queue'),
+        title: Text('Queue', style: TextStyle(fontSize: 18, color: Colors.black)),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.close, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.clear_all),
+            icon: Icon(Icons.clear_all, color: Colors.black),
             onPressed: () => _showClearAllDialog(context),
           ),
         ],
+        elevation: 0,
+        backgroundColor: Colors.white,
       ),
       body: ListView(
         children: [
@@ -72,21 +78,12 @@ class _QueuePageState extends State<QueuePage> {
             _buildSectionHeader('Now Playing'),
             _buildMediaItemTile(nowPlaying, _currentIndex),
           ],
-          if (previousItems.isNotEmpty) ...[
-            _buildSectionHeader('Previous in Queue'),
-            ...previousItems
-                .asMap()
-                .entries
-                .map((entry) => _buildMediaItemTile(entry.value, entry.key))
-                .toList()
-                .reversed,
-          ],
-          if (nextItems.isNotEmpty) ...[
-            _buildSectionHeader('Next in Queue'),
+          if (upNext.isNotEmpty) ...[
+            _buildSectionHeader('Up Next'),
             ReorderableListView(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              children: nextItems
+              children: upNext
                   .asMap()
                   .entries
                   .map((entry) => _buildReorderableMediaItemTile(
@@ -95,8 +92,8 @@ class _QueuePageState extends State<QueuePage> {
               onReorder: (oldIndex, newIndex) {
                 setState(() {
                   if (newIndex > oldIndex) newIndex--;
-                  final item = nextItems.removeAt(oldIndex);
-                  nextItems.insert(newIndex, item);
+                  final item = upNext.removeAt(oldIndex);
+                  upNext.insert(newIndex, item);
 
                   // Update the main queue
                   final actualOldIndex = _currentIndex + 1 + oldIndex;
@@ -119,7 +116,7 @@ class _QueuePageState extends State<QueuePage> {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[600]),
       ),
     );
   }
@@ -141,9 +138,16 @@ class _QueuePageState extends State<QueuePage> {
         widget.audioHandler.removeQueueItemAt(index);
       },
       child: ListTile(
-        leading: Image.network(item.artUri.toString(), width: 56, height: 56),
-        title: Text(item.title),
-        subtitle: Text(item.artist ?? ''),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Image.network(item.artUri.toString(), width: 56, height: 56),
+        ),
+        title: Text(item.title, style: TextStyle(fontWeight: FontWeight.w500)),
+        subtitle: Text(
+          '${item.artist ?? ''} • ${_formatDuration(item.duration)}',
+          style: TextStyle(color: Colors.grey[600]),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         onTap: () async {
           await widget.audioHandler.skipToQueueItem(index);
           await widget.audioHandler.play();
@@ -170,19 +174,40 @@ class _QueuePageState extends State<QueuePage> {
       },
       child: ListTile(
         key: ValueKey('tile-${item.id}-$index'),
-        leading: Image.network(item.artUri.toString(), width: 56, height: 56),
-        title: Text(item.title),
-        subtitle: Text(item.artist ?? ''),
-        trailing: ReorderableDragStartListener(
-          index: index - (_currentIndex + 1),
-          child: Icon(Icons.drag_handle),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ReorderableDragStartListener(
+              index: index - (_currentIndex + 1),
+              child: Icon(Icons.drag_handle, color: Colors.grey),
+            ),
+            SizedBox(width: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(item.artUri.toString(), width: 56, height: 56),
+            ),
+          ],
         ),
+        title: Text(item.title, style: TextStyle(fontWeight: FontWeight.w500)),
+        subtitle: Text(
+          '${item.artist ?? ''} • ${_formatDuration(item.duration)}',
+          style: TextStyle(color: Colors.grey[600]),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         onTap: () async {
           await widget.audioHandler.skipToQueueItem(index);
           await widget.audioHandler.play();
         },
       ),
     );
+  }
+
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return '';
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${duration.inHours > 0 ? '${duration.inHours}:' : ''}$twoDigitMinutes:$twoDigitSeconds";
   }
 
   void _showClearAllDialog(BuildContext context) {

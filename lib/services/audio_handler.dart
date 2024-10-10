@@ -236,6 +236,11 @@ class PodcastAudioHandler extends BaseAudioHandler
     return "";
   }
 
+  Future<void> addQueueItemsAtTop(List<MediaItem> items) async {
+    final newQueue = [...items, ...queue.value];
+    await updateQueue(newQueue);
+  }
+
   String _setSleepTimer(Duration? duration) {
     if (duration == null) return "";
     _cancelSleepTimer();

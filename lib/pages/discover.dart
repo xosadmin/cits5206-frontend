@@ -118,7 +118,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 context,
                 MaterialPageRoute(builder: (context) => PinsPage()),
               );
-            }else if (index == 2) {
+            } else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => DiscoverPage()),
@@ -162,6 +162,11 @@ class _DiscoverBodyState extends State<DiscoverBody> {
   List<Map<String, dynamic>> _trendingPodcasts = [];
   bool _isLoading = true;
 
+  String removeHtmlTags(String htmlString) {
+    final RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+    return htmlString.replaceAll(exp, '');
+  }
+
   Widget _buildCategoryTags() {
     if (_cachedCategories == null) {
       return _buildSkeletonLoader();
@@ -182,8 +187,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                     List.generate(_cachedCategories!.length, (i) => i == index);
                 selectedCategory = index + 1;
               });
-              print(index + 1);
-              // Add any additional logic you need when a category is selected
+              _fetchPodcastsByCategory(index + 1);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: _isSelectedCate[index]
@@ -205,6 +209,26 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         },
       ),
     );
+  }
+
+  Future<void> _fetchPodcastsByCategory(int categoryId) async {
+    setState(() => _isLoading = true);
+    try {
+      final response = await PodcastIndexApiService()
+          .podcastsTrending(max: 10, cat: categoryId.toString());
+      if (response['status'] == "true") {
+        setState(() {
+          _trendingPodcasts =
+              List<Map<String, dynamic>>.from(response['feeds']);
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load podcasts');
+      }
+    } catch (e) {
+      print('Error fetching podcasts: $e');
+      setState(() => _isLoading = false);
+    }
   }
 
   Widget _buildSkeletonLoader() {
@@ -497,245 +521,290 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-          height: 34.0,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(3.0),
-            border: Border.all(color: Colors.grey),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.search, color: Colors.grey, size: 14.0),
-              const SizedBox(width: 8.0),
-              Expanded(
-                child: TextField(
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                  ),
-                  decoration: const InputDecoration(
-                    hintText: "Search for podcasts",
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 14.0),
-                  ),
-                  onChanged: (value) {
-                    print("Search query: $value");
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        _buildCategoryTags(),
-        const SizedBox(height: 4.0),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.92,
-          margin:
-              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x1A282626),
-                offset: Offset(0, 1),
-                blurRadius: 4.0,
-                spreadRadius: 0.0,
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Trending',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(
-                  height: 140.0,
-                  child: _isLoading
-                      ? _buildSkeletonListLoader()
-                      : _buildPodcastList()),
-              const SizedBox(height: 10.0),
-            ],
-          ),
-        ),
-        const SizedBox(height: 15.0),
-        Expanded(
-          child: ListView.builder(
-            itemCount: noteIDs.length,
-            itemBuilder: (context, index) {
-              return Card(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              margin:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              height: 34.0,
+              decoration: BoxDecoration(
                 color: Colors.white,
-                margin: const EdgeInsets.all(16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image.asset(
-                                  imageUrl,
-                                  width: 35,
-                                  height: 35,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(width: 16.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      noteIDs[index],
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      noteDates[index],
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: IconButton(
-                                  icon: const Icon(Icons.more_vert),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return BottomOptions();
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                borderRadius: BorderRadius.circular(3.0),
+                border: Border.all(color: Colors.grey),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.search, color: Colors.grey, size: 14.0),
+                  const SizedBox(width: 8.0),
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: "Search for podcasts",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 14.0),
+                      ),
+                      onChanged: (value) {
+                        print("Search query: $value");
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _buildCategoryTags(),
+            const SizedBox(height: 4.0),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.92,
+              margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.04),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x1A282626),
+                    offset: Offset(0, 1),
+                    blurRadius: 4.0,
+                    spreadRadius: 0.0,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Featured',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "# ${notePodids[index]}",
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            noteContent,
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: OverflowBar(
-                        alignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _isClickedPlay = !_isClickedPlay;
-                              });
-                              print(listTitle[index]);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              minimumSize: const Size(50, 30),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _isClickedPlay
-                                      ? Icons.pause
-                                      : Icons.play_arrow,
-                                  size: 15.0,
-                                  color: _isClickedPlay
-                                      ? Colors.blue
-                                      : Colors.grey,
-                                ),
-                                const SizedBox(width: 4.0),
-                                Text(
-                                  _isClickedPlay ? "Pause" : "Play",
-                                  style: const TextStyle(
-                                    fontSize: 12.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              minimumSize: const Size(50, 30),
-                            ),
-                            child: const Text(
-                              "Listen",
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                  SizedBox(
+                    height: 140.0,
+                    child: _isLoading
+                        ? _buildSkeletonListLoader()
+                        : _buildPodcastList(),
+                  ),
+                  const SizedBox(height: 10.0),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15.0),
+          ],
         ),
+        // New section to display trending content as a list
+        ..._buildTrendingContentList(),
       ],
     );
+  }
+
+  List<Widget> _buildTrendingContentList() {
+    return _trendingPodcasts.map((podcast) {
+      return Card(
+        color: Colors.white,
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Image.network(
+                  podcast['artwork'] ?? podcast['image'] ?? '',
+                  width: 56,
+                  height: 56,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Icon(Icons.error),
+                ),
+              ),
+              title: Text(
+                podcast['title'] ?? '',
+                style: const TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                podcast['author'] ?? '',
+                style: const TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.grey,
+                ),
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return BottomOptions();
+                    },
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              child: Text(
+                removeHtmlTags(
+                    podcast['description'] ?? 'No description available.'),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12.0),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await _handlePlayButton(podcast);
+                    },
+                    icon: const Icon(Icons.play_arrow, size: 18),
+                    label: const Text('Play'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await _handleAddToQueueButton(podcast);
+                    },
+                    icon: const Icon(Icons.add, size: 18),
+                    label: const Text('Add to queue'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // Implement download functionality
+                    },
+                    icon: const Icon(Icons.download, size: 18),
+                    label: const Text('Download'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList();
+  }
+
+  Future<void> _handlePlayButton(Map<String, dynamic> podcast) async {
+    final handler = Provider.of<PodcastAudioHandler>(context, listen: false);
+
+    try {
+      var episodeResponse =
+          await PodcastIndexApiService().episodesByFeedId(podcast['id']);
+      var items = episodeResponse['items'];
+
+      if (items is List) {
+        var episodes = items.whereType<Map<String, dynamic>>().toList();
+        List<MediaItem> mediaItems = _convertEpisodesToMediaItems(episodes);
+
+        // Add the new episodes to the top of the queue
+        await handler.addQueueItemsAtTop(mediaItems);
+
+        // Start playing the first new episode (which is now at the top of the queue)
+        await handler.skipToQueueItem(0);
+        await handler.play();
+
+        Navigator.pushNamed(context, '/podcastplayer');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('Episodes added to the top of the queue and playing')),
+        );
+      } else {
+        throw Exception(
+            "Expected a list of episodes but got ${items.runtimeType}");
+      }
+    } catch (e) {
+      print("Error handling play button: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to play podcast. Please try again.')),
+      );
+    }
+  }
+
+  Future<void> _handleAddToQueueButton(Map<String, dynamic> podcast) async {
+    final handler = Provider.of<PodcastAudioHandler>(context, listen: false);
+
+    try {
+      var episodeResponse =
+          await PodcastIndexApiService().episodesByFeedId(podcast['id']);
+      var items = episodeResponse['items'];
+
+      if (items is List) {
+        var episodes = items.whereType<Map<String, dynamic>>().toList();
+        List<MediaItem> mediaItems = _convertEpisodesToMediaItems(episodes);
+
+        // Add the new episodes to the end of the queue
+        await handler.addQueueItems(mediaItems);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Episodes added to queue')),
+        );
+      } else {
+        throw Exception(
+            "Expected a list of episodes but got ${items.runtimeType}");
+      }
+    } catch (e) {
+      print("Error handling add to queue button: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text('Failed to add episodes to queue. Please try again.')),
+      );
+    }
+  }
+
+  List<MediaItem> _convertEpisodesToMediaItems(
+      List<Map<String, dynamic>> episodes) {
+    return episodes.map((episode) {
+      return MediaItem(
+        id: episode['enclosureUrl'] ?? '',
+        title: episode['title'] ?? '',
+        album: episode['feedTitle'] ?? '',
+        artist: episode['feedAuthor'] ?? '',
+        duration: Duration(seconds: episode['duration'] ?? 0),
+        artUri: Uri.parse(episode['feedImage'] ?? ''),
+      );
+    }).toList();
   }
 
   // Simulated asynchronous function to fetch the category text.
