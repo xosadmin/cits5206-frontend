@@ -683,6 +683,13 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () async {
+                      Navigator.pushNamed(context, '/podcastplayer');
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                'Episodes added to the top of the queue and playing')),
+                      );
                       await _handlePlayButton(podcast);
                     },
                     icon: const Icon(Icons.play_arrow, size: 18),
@@ -694,6 +701,13 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   ),
                   ElevatedButton.icon(
                     onPressed: () async {
+                      Navigator.pushNamed(context, '/podcastplayer');
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                'Episodes added to the top of the queue and playing')),
+                      );
                       await _handleAddToQueueButton(podcast);
                     },
                     icon: const Icon(Icons.add, size: 18),
@@ -727,37 +741,47 @@ class _DiscoverBodyState extends State<DiscoverBody> {
     final handler = Provider.of<PodcastAudioHandler>(context, listen: false);
 
     try {
+      // Check if podcast ID exists
+      if (podcast['id'] == null) {
+        throw Exception("Podcast ID is null.");
+      }
+
+      // Fetch episodes from the API
       var episodeResponse =
           await PodcastIndexApiService().episodesByFeedId(podcast['id']);
+
+      // Check if the response contains a valid list of items
       var items = episodeResponse['items'];
-
-      if (items is List) {
-        var episodes = items.whereType<Map<String, dynamic>>().toList();
-        List<MediaItem> mediaItems = _convertEpisodesToMediaItems(episodes);
-
-        // Add the new episodes to the top of the queue
-        await handler.addQueueItemsAtTop(mediaItems);
-
-        // Start playing the first new episode (which is now at the top of the queue)
-        await handler.skipToQueueItem(0);
-        await handler.play();
-
-        Navigator.pushNamed(context, '/podcastplayer');
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text('Episodes added to the top of the queue and playing')),
-        );
-      } else {
+      if (items is! List) {
         throw Exception(
             "Expected a list of episodes but got ${items.runtimeType}");
       }
+
+      // Ensure the list contains valid episode data
+      var episodes = items.whereType<Map<String, dynamic>>().toList();
+      if (episodes.isEmpty) {
+        throw Exception("No valid episodes found.");
+      }
+
+      // Convert episodes to MediaItems
+      List<MediaItem> mediaItems = _convertEpisodesToMediaItems(episodes);
+
+      if (mediaItems.isEmpty) {
+        throw Exception("Failed to convert episodes to MediaItems.");
+      }
+
+      // Add episodes to the top of the queue and start playing the first one
+      await handler.addQueueItemsAtTop(mediaItems);
+      await handler.play();
     } catch (e) {
       print("Error handling play button: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to play podcast. Please try again.')),
-      );
+
+      // Ensure the widget is still mounted before showing a SnackBar
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to play podcast. Please try again.')),
+        );
+      }
     }
   }
 

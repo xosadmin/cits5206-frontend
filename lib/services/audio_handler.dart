@@ -236,10 +236,26 @@ class PodcastAudioHandler extends BaseAudioHandler
     return "";
   }
 
-  Future<void> addQueueItemsAtTop(List<MediaItem> items) async {
-    final newQueue = [...items, ...queue.value];
-    await updateQueue(newQueue);
-  }
+Future<void> addQueueItemsAtTop(List<MediaItem> items) async {
+  // Update the playlist by creating a new list with the new items at the top
+  final newQueue = [...items, ...queue.value];
+
+  // Clear the current playlist
+  await _playlist.clear();
+
+  // Convert the updated queue to audio sources and set it again as the player's playlist
+  final audioSources = newQueue
+      .map((item) => AudioSource.uri(Uri.parse(item.id), tag: item))
+      .toList();
+  await _playlist.addAll(audioSources);
+
+  // Update the queue
+  queue.add(newQueue);
+
+  // Optional: You might want to restart playback from the first item (newly added one)
+  await _player.seek(Duration.zero, index: 0);
+}
+
 
   String _setSleepTimer(Duration? duration) {
     if (duration == null) return "";
