@@ -4,7 +4,7 @@
 
 ## Repository
 
-Frontend repository: ‣
+Frontend repository: [‣](https://github.com/xosadmin/cits5206-frontend)
 
 Backend repository: https://github.com/xosadmin/cits5206-backend 
 
