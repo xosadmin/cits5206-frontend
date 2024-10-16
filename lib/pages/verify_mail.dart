@@ -68,7 +68,7 @@ class VerifyEmailPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => NewPasswordPage()),
+                    MaterialPageRoute(builder: (context) => const NewPasswordPage()),
                   ); // 重发邮件逻辑，这里先关联创建新密码页来查看新密码页的布局
                 },
                 child: const Text(
