@@ -319,8 +319,7 @@ This guide will help you checkout and set up the podcast player feature branch o
 Before proceeding, ensure you have:
 - Git installed on your system
 - Flutter development environment set up
-- [Google Speech-to-Text API Credentials](previous-guide-link) properly configured
-  > **Note**: Follow our [Google Speech-to-Text API Credentials Setup Guide](./google-credentials-guide.md) to set up the required credentials if you haven't already.
+- Follow our Google Speech-to-Text API Credentials Setup Guide.
 
 ### Step 1: Clone the Repository
 
