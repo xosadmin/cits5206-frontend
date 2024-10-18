@@ -26,7 +26,7 @@ class AudioClipTranscriptionService {
 
   Future<void> _initializeGoogleSpeechToText() async {
     try {
-      final serviceAccountJson = await rootBundle.loadString('assets/credentials/astral-genre-437819-k4-37c42fdaad5d.json');
+      final serviceAccountJson = await rootBundle.loadString('assets/credentials/credentials.json');
       final serviceAccount = ServiceAccount.fromString(serviceAccountJson);
       _speechToText = SpeechToText.viaServiceAccount(serviceAccount);
       print('Google Speech-to-Text initialized successfully.');
