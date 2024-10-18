@@ -597,6 +597,10 @@ This API is employed to convert audio snippets captured by users into text. The 
 
 [Other meeting minutes](https://drive.google.com/drive/folders/1XMT0iyp1JuL5kh2uiDmLoKDj2JgPwfMI?usp=sharing)
 
+## Project Management
+
+[Trello](https://trello.com/invite/b/66b1d5b1c27d534f45b6ae16/ATTIdc7a2d6e0d5f2c1e7953617cd1d726c2FB12FE87/group4)
+
 ## References
 
 - [Flutter Official Documentation](https://docs.flutter.dev/)
