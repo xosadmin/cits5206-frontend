@@ -182,6 +182,134 @@ flutter run
 flutter run
 ```
 
+## Google Speech-to-Text API Credentials Setup Guide
+
+### Prerequisites
+
+- Google Cloud Platform (GCP) account
+- Access to Google Cloud Console
+- Project Owner or Editor permissions
+- Flutter project initialized
+
+#### Step 1: Create or Select a Google Cloud Project
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Click on the project dropdown at the top of the page
+3. Click "New Project" or select an existing project
+4. Enter a project name if creating new (e.g., "AudioPin")
+5. Click "Create"
+
+#### Step 2: Enable the Speech-to-Text API
+
+1. In the Google Cloud Console, navigate to "APIs & Services" > "Library"
+2. Search for "Cloud Speech-to-Text API"
+3. Click on the API from the results
+4. Click "Enable" if the API isn't already enabled
+
+#### Step 3: Create a Service Account
+
+1. In the Google Cloud Console, go to "IAM & Admin" > "Service Accounts"
+2. Click "Create Service Account" at the top of the page
+3. Fill in the following details:
+   - Service account name (e.g., "audiopin-speech-to-text")
+   - Service account ID (automatically generated)
+   - Service account description (optional)
+4. Click "Create and Continue"
+
+#### Step 4: Assign Roles
+
+1. On the "Grant this service account access to project" screen
+2. Click the "Select a role" dropdown
+3. Choose the following roles:
+   - "Cloud Speech-to-Text User"
+   - "Service Account Token Creator"
+4. Click "Continue"
+5. Click "Done"
+
+#### Step 5: Generate and Store the Credentials JSON File
+
+1. From the Service Accounts list, find your newly created service account
+2. Click the three dots (⋮) in the "Actions" column
+3. Select "Manage keys"
+4. Click "Add Key" > "Create new key"
+5. Select "JSON" as the key type
+6. Click "Create"
+
+After downloading the credentials file:
+
+1. Create the following directory structure in your Flutter project:
+```
+your_project_root/
+├── assets/
+│   └── credentials/
+│       └── credentials.json
+```
+
+2. Move the downloaded credentials file to this location:
+```bash
+mkdir -p assets/credentials
+mv ~/Downloads/credentials.json assets/credentials/
+```
+
+#### Step 6: Update pubspec.yaml
+
+Add the assets directory to your `pubspec.yaml`:
+
+```yaml
+flutter:
+  assets:
+    - assets/credentials/credentials.json
+```
+
+#### Step 7: Configure Your Application
+
+Add the following code to your Flutter application to use the credentials:
+
+```dart
+import 'package:google_cloud_speech/google_cloud_speech.dart';
+
+// Initialize the Speech-to-Text client
+final speechToText = SpeechToText.viaServiceAccount(
+  ServiceAccount.fromFile('assets/credentials/credentials.json'),
+);
+```
+
+#### Step 8: Update .gitignore
+
+Add the following line to your `.gitignore` file to prevent committing credentials:
+
+```
+# Google Cloud credentials
+assets/credentials/credentials.json
+```
+
+#### Important Security Notes
+
+- Never commit the `credentials.json` file to version control
+- Keep the credentials file secure and restrict access to authorized team members
+- Regularly rotate service account keys (recommended every 90 days)
+- Monitor API usage through the Google Cloud Console
+- Set up billing alerts to avoid unexpected charges
+
+#### Troubleshooting
+
+If you encounter any issues:
+
+1. Verify the API is enabled in your project
+2. Ensure the service account has the correct roles assigned
+3. Check if the `credentials.json` file is properly formatted
+4. Verify the file path matches exactly: `assets/credentials/credentials.json`
+5. Ensure the assets directory is properly declared in `pubspec.yaml`
+6. Run `flutter pub get` after updating `pubspec.yaml`
+7. Monitor the Google Cloud Console logs for specific error messages
+
+#### Additional Resources
+
+- [Google Cloud Speech-to-Text Documentation](https://cloud.google.com/speech-to-text/docs)
+- [Google Cloud Service Accounts Documentation](https://cloud.google.com/iam/docs/service-accounts)
+- [Best Practices for Service Account Management](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)
+- [Flutter Assets Documentation](https://flutter.dev/docs/development/ui/assets-and-images)
+
 ## Backend Deployment
 
 ### System Requirement
