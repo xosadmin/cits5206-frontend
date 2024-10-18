@@ -310,6 +310,147 @@ If you encounter any issues:
 - [Best Practices for Service Account Management](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)
 - [Flutter Assets Documentation](https://flutter.dev/docs/development/ui/assets-and-images)
 
+## AudioPin Setup Guide - Podcast Player Feature
+
+This guide will help you checkout and set up the podcast player feature branch of AudioPin. Follow these steps to get started with the enhanced music player functionality.
+
+### Prerequisites
+
+Before proceeding, ensure you have:
+- Git installed on your system
+- Flutter development environment set up
+- [Google Speech-to-Text API Credentials](previous-guide-link) properly configured
+  > **Note**: Follow our [Google Speech-to-Text API Credentials Setup Guide](./google-credentials-guide.md) to set up the required credentials if you haven't already.
+
+### Step 1: Clone the Repository
+
+If you haven't already cloned the repository:
+
+```bash
+git clone https://github.com/your-username/AudioPin.git
+cd AudioPin
+```
+
+### Step 2: Checkout the Feature Branch
+
+```bash
+# Ensure you're starting from an updated main branch
+git checkout main
+git pull origin main
+
+# Checkout the feature branch
+git checkout feature/clean_music_player
+```
+
+## Step 3: Install Dependencies
+
+```bash
+# Get all required packages
+flutter pub get
+```
+
+### Step 4: Configure Credentials
+
+1. Ensure you have the `credentials.json` file in the correct location:
+```
+AudioPin/
+├── assets/
+│   └── credentials/
+│       └── credentials.json  # Place your credentials file here
+```
+
+2. Verify your `pubspec.yaml` includes the assets:
+```yaml
+flutter:
+  assets:
+    - assets/credentials/credentials.json
+```
+
+### Step 5: Run the Application
+
+```bash
+# Start the application in debug mode
+flutter run
+```
+
+### Feature Highlights
+
+The `feature/clean_music_player` branch includes the following enhancements:
+
+1. **Advanced Playback Controls**
+   - Variable playback speed (0.5x to 3.0x)
+   - Sleep timer functionality
+   - Queue management system
+
+2. **Audio Clipping**
+   - Create clips from podcast episodes
+   - Automatic transcription of clips
+   - Save clips as pins with transcribed text
+
+3. **Queue Management**
+   - Add episodes to queue
+   - Reorder upcoming episodes
+   - Clear queue functionality
+
+### Troubleshooting
+
+If you encounter issues:
+
+1. **Build Errors**
+   ```bash
+   # Clean the project and get dependencies again
+   flutter clean
+   flutter pub get
+   ```
+
+2. **Credential Issues**
+   - Verify credentials.json is properly formatted
+   - Ensure the file path matches exactly: `assets/credentials/credentials.json`
+   - Check if Google Cloud API is enabled
+
+3. **Playback Issues**
+   - Ensure your device has sufficient storage
+   - Check internet connectivity for streaming
+   - Verify audio permissions are granted
+
+## Testing the Features
+
+1. **Test Playback Speed**
+   - Play any podcast episode
+   - Tap the speed control button
+   - Select different speeds to verify functionality
+
+2. **Test Sleep Timer**
+   - Start playing an episode
+   - Set a sleep timer
+   - Verify playback stops at the set time
+
+3. **Test Clip Creation**
+   - During playback, tap the clip button
+   - Select clip duration
+   - Verify transcription is generated
+   - Check if pin is created with transcribed text
+
+### Feedback and Issues
+
+If you encounter any bugs or have suggestions:
+1. Open an issue on the GitHub repository
+2. Include your device information
+3. Provide steps to reproduce the issue
+4. Attach relevant logs if available
+
+### Additional Resources
+
+- [Flutter Documentation](https://flutter.dev/docs)
+- [Podcast Index API Documentation](https://podcastindex-org.github.io/docs-api/)
+- [FFMPEG Flutter Documentation](https://pub.dev/packages/ffmpeg_kit_flutter)
+
+### Security Notes
+
+- Keep your `credentials.json` file secure
+- Do not commit credentials to version control
+- Regularly update dependencies for security patches
+
 ## Backend Deployment
 
 ### System Requirement
